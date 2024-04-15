@@ -14,6 +14,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { validationSchema } from '../utils/validateYup';
 import { useFormik } from 'formik';
+import loginHook from '../api/login';
 
 function Copyright(props) {
   return (
@@ -48,8 +49,9 @@ export default function SignIn() {
       password: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: async (values) => {
+      const response = await loginHook(values.email, values.password);
+      console.log(response);
     },
   })
 

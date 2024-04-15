@@ -17,6 +17,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { validationSchema } from '../utils/validateYup';
 import { useFormik } from 'formik';
+import signUpHook from '../api/signup';
 
 function Copyright(props) {
     return (
@@ -59,8 +60,9 @@ export default function SignUp() {
             rePassword: '',
         },
         validationSchema: validationSchema,
-        onSubmit: (values) => {
-            console.log(values);
+        onSubmit: async (values) => {
+            const response = await signUpHook(values.firstName, values.lastName, values.email, values.password);
+            console.log(response);
         },
     })
 
