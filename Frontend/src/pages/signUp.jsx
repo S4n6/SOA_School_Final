@@ -15,9 +15,10 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { IconButton, InputAdornment } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { validationSchema } from '../utils/validateYup';
+import { validationSchemaRegister } from '../utils/validateYup';
 import { useFormik } from 'formik';
 import signUpHook from '../api/signup';
+import { validateYupSchema } from 'formik/dist';
 
 function Copyright(props) {
     return (
@@ -59,7 +60,7 @@ export default function SignUp() {
             password: '',
             rePassword: '',
         },
-        validationSchema: validationSchema,
+        validationSchema: validationSchemaRegister,
         onSubmit: async (values) => {
             const response = await signUpHook(values.firstName, values.lastName, values.email, values.password);
             console.log(response);

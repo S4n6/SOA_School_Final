@@ -22,6 +22,11 @@ function App() {
       <Routes>
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/home" 
+         element={<Layout 
+           mode={mode} 
+           toggleColorMode={toggleColorMode} 
+           showCustomTheme={showCustomTheme}> <Home /> </Layout>} />
         <Route path="/" 
           element={<Layout 
             mode={mode} 

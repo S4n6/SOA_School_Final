@@ -12,7 +12,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { validationSchema } from '../utils/validateYup';
+import { validationSchemaRegister } from '../utils/validateYup';
 import { useFormik } from 'formik';
 import loginHook from '../api/login';
 
@@ -48,7 +48,7 @@ export default function SignIn() {
       email: '',
       password: '',
     },
-    validationSchema: validationSchema,
+    validationSchema: validationSchemaRegister,
     onSubmit: async (values) => {
       const response = await loginHook(values.email, values.password);
       console.log(response);

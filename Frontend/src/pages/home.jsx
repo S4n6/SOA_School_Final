@@ -1,7 +1,17 @@
+import { Box } from "@mui/system";
+import CarouselComponent from "../components/carousel";
+
 export default function Home() {
     return (
-        <div>
-        <h1>Home</h1>
-        </div>
+       <Box 
+        sx={
+            {
+                marginTop: '100px',
+
+            }
+        }
+       >
+            <CarouselComponent/>
+       </Box>
     );
 }

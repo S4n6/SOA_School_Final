@@ -13,6 +13,7 @@ import Drawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import ToggleColorMode from './toggleColorMode';
 import { URL_LOGO } from '../utils/contants';
+import { border } from '@mui/system';
 
 const logoStyle = {
   width: '100px',
@@ -88,8 +89,14 @@ function Header({ mode, toggleColorMode }) {
                 src={
                   URL_LOGO
                 }
-                style={logoStyle}
-                alt="logo of sitemark"
+                style={{
+                  ...logoStyle,
+                  width: '60px',
+                  height: '60px',
+                  border: '2px solid black',
+                  borderRadius: '50%',
+                }}
+                alt="Home"
               />
               <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                 <MenuItem

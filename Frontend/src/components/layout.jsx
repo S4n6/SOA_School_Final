@@ -23,8 +23,7 @@ function Layout({ children, mode, toggleColorMode, showCustomTheme}) {
                     }}
                 >
                     <Header mode={mode} toggleColorMode={toggleColorMode} />
-                    <div style={{ marginTop: '6rem' }} />
-                    {children}
+                        {children}
                     <Footer />
                 </Box>
             </ThemeProvider>
