@@ -40,6 +40,10 @@ const trendingMovies = [
         
             }}
             height={'400px'}
+            sx={{
+                
+            }}
+           
         >
             {
                 trendingMovies.map( (item, i) => {

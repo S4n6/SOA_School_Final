@@ -12,7 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Drawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import ToggleColorMode from './toggleColorMode';
-import { URL_LOGO } from '../utils/contants';
+import { URL_LOGO } from '../../utils/contants';
 import { border } from '@mui/system';
 
 const logoStyle = {
