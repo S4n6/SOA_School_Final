@@ -2,7 +2,9 @@ import { Box, Typography } from '@mui/material'
 import { IMG } from '../utils/contants';
 import Button from '@mui/material/Button';
 import Search from '../components/search';
+import { useNavigate } from 'react-router-dom';
 function Introduction() {
+  const navigage = useNavigate();
   return (
     <Box
       sx={{
@@ -48,7 +50,8 @@ function Introduction() {
         <Search />
         <Button
           variant="contained"
-          sx={{ width: '50%', marginTop: '8px' }}
+          sx={{ width: '30%', marginTop: '8px' }}
+          onClick={() => navigage('/home')}
         >Go to the home</Button>
         <Box 
           sx={
