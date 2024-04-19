@@ -11,7 +11,7 @@ import { UserSchema } from './user.schema';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGODB_URI'),
+        uri: 'mongodb+srv://sang05112003:sang@cluster0.ek28moa.mongodb.net/soa_final?retryWrites=true&w=majority&appName=Cluster0',
       }),
       inject: [ConfigService],
     }),
