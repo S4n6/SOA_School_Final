@@ -1,0 +1,26 @@
+package com.microservice.film_service.film_service.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Document("tv_show")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class TVShow extends FilmModel{
+    @Id
+    private String iD;
+
+    public TVShow(String name, int duration, int firstYearRelease, String countryOfOrigin, String productionCompany, Status status, List<Genre> genres){
+        super(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genres);
+    }
+}
