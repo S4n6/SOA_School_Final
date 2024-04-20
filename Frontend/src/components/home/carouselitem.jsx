@@ -23,7 +23,7 @@ function CarouselItem({ item }) {
                     cursor: 'pointer',
                     // border: '2px solid blue',
                 },
-                // justifyContent:'space-around',
+                justifyContent: 'center',
                 borderRadius: '12px',
             }
         }
@@ -34,7 +34,7 @@ function CarouselItem({ item }) {
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-around',
-                    alignItems: 'center',
+                    alignItems: 'flex-end',
                     width: '50%',
                     position: 'relative',
                 }
@@ -43,8 +43,8 @@ function CarouselItem({ item }) {
             <Box
                 sx={{
                     position: 'absolute',
-                    top: '10%',
-                    left: '25%',
+                    top: '8%',
+                    left: '50%',
                 }}
             >
                 <Typography 
@@ -141,22 +141,18 @@ function CarouselItem({ item }) {
                 </Box>
             </Box>
         </Box>
-        {/* <Box
+
+        <Box 
+            component="img"
             sx={{
-                width: '50%',  
+                objectFit: 'scale-down',
+                width: '50%', height: '100%',
+                display: 'flex',
+                pointerEvents: 'none',
             }}
-        > */}
-            <Box 
-                component="img"
-                sx={{
-                    objectFit: 'scale-down',
-                    width: '20%', height: '100%',
-                    display: 'flex',
-                    pointerEvents: 'none',
-                }}
-                src="https://m.media-amazon.com/images/M/MV5BYTYyODhlODktYjUzNC00NjUyLWI1MzYtNmI0MTY3YTUxYjY2XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_FMjpg_UX1000_.jpg" 
-            />
-        {/* </Box> */}
+            src="https://m.media-amazon.com/images/M/MV5BYTYyODhlODktYjUzNC00NjUyLWI1MzYtNmI0MTY3YTUxYjY2XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_FMjpg_UX1000_.jpg" 
+        />
+   
     </Box>
   );
 }

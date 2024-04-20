@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Header from './navbar';
 import { ThemeProvider } from '@emotion/react';
-import getLPTheme from '../utils/getLPTheme';
+import getLPTheme from '../../utils/getLPTheme';
 import { createTheme } from '@mui/material';
 import Footer from './footer';
 import { Box } from '@mui/system';
@@ -20,6 +20,7 @@ function Layout({ children, mode, toggleColorMode, showCustomTheme}) {
                         minHeight: '100vh',
                         position: 'relative',
                         transition: 'background-color 0.5s',
+                        borderRadius: '12px',
                     }}
                 >
                     <Header mode={mode} toggleColorMode={toggleColorMode} />
