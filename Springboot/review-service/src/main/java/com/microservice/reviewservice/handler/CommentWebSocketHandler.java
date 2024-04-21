@@ -1,9 +1,9 @@
-package com.microservice.viewservice.handler;
+package com.microservice.reviewservice.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microservice.viewservice.model.CustomPayload;
-import com.microservice.viewservice.model.HistoryFilm;
-import com.microservice.viewservice.service.implement.ImplHistoryFilmService;
+import com.microservice.reviewservice.model.Comment;
+import com.microservice.reviewservice.model.CustomPayload;
+import com.microservice.reviewservice.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketHandler;
@@ -13,11 +13,13 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Component
-public class FilmWebSocketHandler implements WebSocketHandler {
+public class CommentWebSocketHandler implements WebSocketHandler {
     @Autowired
-    private ImplHistoryFilmService listHistoryVideoService;
+    private CommentService commentService;
 
     @Override
     public Mono<Void> handle(WebSocketSession session) {
@@ -32,13 +34,13 @@ public class FilmWebSocketHandler implements WebSocketHandler {
                                 );
                         synchronousSink.next(payload);
 
-                        HistoryFilm film = new HistoryFilm(payload.getUserID(), payload.getFilmID(), payload.getDuration());
-                        listHistoryVideoService.addIntoListHistoryVideo(film);
+                        Comment comment = new Comment(payload.getUserID(), payload.getFilmID(), payload.getContent(), LocalDateTime.now());
+                        commentService.addComment(comment);
                     } catch (IOException e) {
                         synchronousSink.error(e);
                     }
                 })
-                .map(msg -> session.textMessage("Echo: " + msg));
+                .map(msg -> session.textMessage(msg.toString()));
         return session.send(flux);
     }
 }

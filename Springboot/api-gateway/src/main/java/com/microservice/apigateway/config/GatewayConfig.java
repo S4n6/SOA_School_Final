@@ -23,7 +23,9 @@ public class GatewayConfig {
                 .route("season-service", r -> r.path("/api/v1/season/**").filters(f -> f.filter(filter)).uri("lb://film-service"))
                 .route("episode-service", r -> r.path("/api/v1/episode/**").filters(f -> f.filter(filter)).uri("lb://film-service"))
                 .route("view-service", r -> r.path("/api/v1/list_history_film/**").filters(f -> f.filter(filter)).uri("lb://view-service"))
-                .route("view-service", r -> r.path("/api/v1/update_history_film/**").filters(f -> f.filter(filter)).uri("lb://view-service"))
+                .route("websocket-view-service", r -> r.path("/api/v1/update_history_film/**").filters(f -> f.filter(filter)).uri("lb://view-service"))
+                .route("rate-service", r -> r.path("/api/v1/rate/**").filters(f -> f.filter(filter)).uri("lb://review-service"))
+                .route("comment-service", r -> r.path("/api/v1/comment/**").filters(f -> f.filter(filter)).uri("lb://review-service"))
                 .route("recommendation-service", r -> r.path("/api/v1/recommendation/**").filters(f -> f.filter(filter)).uri("lb://recommendation-service")).build();
     }
 

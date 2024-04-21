@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="notification" />
         <module name="payment-service" />
+        <module name="review-service" />
         <module name="api-gateway" />
         <module name="tuition" />
         <module name="view-service" />
@@ -19,7 +20,6 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="payment" target="1.5" />
-      <module name="review-service" target="17" />
       <module name="student" target="17" />
     </bytecodeTargetLevel>
   </component>
@@ -32,6 +32,7 @@
       <module name="notification-service" options="-parameters" />
       <module name="payment" options="-parameters" />
       <module name="payment-service" options="-parameters" />
+      <module name="review-service" options="-parameters" />
       <module name="student" options="-parameters" />
       <module name="tuition" options="-parameters" />
       <module name="view-service" options="-parameters" />
