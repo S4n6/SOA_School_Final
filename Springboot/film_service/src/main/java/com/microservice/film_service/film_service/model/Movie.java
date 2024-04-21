@@ -12,8 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Movie extends FilmModel{
-    @Id
-    private String iD;
+    private String movieID;
     private String video;
 
     public Movie(String name, int duration, int firstYearRelease, String countryOfOrigin, String productionCompany, Status status, List<Genre> genres){

@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface TVShowRepository extends MongoRepository<TVShow, String> {
-    Optional<TVShow> findByID(String ID);
+    Optional<TVShow> findByTvShowID(String ID);
 }

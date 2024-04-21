@@ -25,9 +25,9 @@ public class MovieController {
     public ResponseEntity<Object> getFilm(@PathVariable String id){
         Movie film = movieService.getFilm(id);
         if(film != null){
-            return ResponseMessage.createResponse(HttpStatus.OK, "GET FILM SUCCESSFULLY!", film);
+            return ResponseMessage.createResponse(HttpStatus.OK, "GET MOVIE SUCCESSFULLY!", film);
         }
-        return ResponseMessage.createResponse(HttpStatus.NOT_FOUND, "GET FILM FAILED!", null);
+        return ResponseMessage.createResponse(HttpStatus.NOT_FOUND, "GET MOVIE FAILED!", null);
     }
 
     @GetMapping("")
@@ -39,12 +39,12 @@ public class MovieController {
             @RequestParam(defaultValue = "12") int size){
         try{
             List<Movie> films = movieService.getFilms(page, size, genre, name, status);
-            return ResponseMessage.createResponse(HttpStatus.OK, "GET FILMS SUCCESSFULLY!", films);
+            return ResponseMessage.createResponse(HttpStatus.OK, "GET MOVIES SUCCESSFULLY!", films);
         }
         catch(Exception e){
             e.printStackTrace();
         }
-        return ResponseMessage.createResponse(HttpStatus.NOT_FOUND, "GET FILMS FAILED!", null);
+        return ResponseMessage.createResponse(HttpStatus.NOT_FOUND, "GET MOVIES FAILED!", null);
     }
 
 //    Add film + upload film to cloudinary
@@ -62,13 +62,13 @@ public class MovieController {
             Movie film = new Movie(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genresList);
             Movie addedFilm = movieService.addFilm(video, banner, film);
             if(addedFilm != null){
-                return ResponseMessage.createResponse(HttpStatus.CREATED, "ADD FILM SUCCESSFULLY!", film);
+                return ResponseMessage.createResponse(HttpStatus.CREATED, "ADD MOVIE SUCCESSFULLY!", film);
             }
-            return ResponseMessage.createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "ADD FILM FAILED!", null);
+            return ResponseMessage.createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "ADD MOVIE FAILED!", null);
         }
         catch(Exception e){
             e.printStackTrace();
         }
-        return ResponseMessage.createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "ADD FILM FAILED!", null);
+        return ResponseMessage.createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "ADD MOVIE FAILED!", null);
     }
 }

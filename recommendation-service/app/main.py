@@ -126,7 +126,7 @@ def get_recommendation_tv_show(title: str):
 
 
 @app.get("/api/v1/recommendation", response_description="Get recommendation", status_code=status.HTTP_200_OK)
-async def get_recommendation(studentID: str, title: str):
+async def get_recommendation(userID: str, title: str):
     result_movie = get_recommendation_movie(title)
     result_tv_show = get_recommendation_tv_show(title)
 

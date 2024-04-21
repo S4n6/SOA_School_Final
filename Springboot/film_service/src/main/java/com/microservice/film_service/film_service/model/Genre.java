@@ -7,6 +7,7 @@ public enum Genre {
     ANIME,
     ANIMATION,
     CHILDREN,
+    CRIME,
     COMEDY,
     DOCUMENTARY,
     DRAMA,

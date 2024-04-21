@@ -17,8 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TVShow extends FilmModel{
-    @Id
-    private String iD;
+    private String tvShowID;
 
     public TVShow(String name, int duration, int firstYearRelease, String countryOfOrigin, String productionCompany, Status status, List<Genre> genres){
         super(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genres);

@@ -3,6 +3,7 @@ package com.microservice.film_service.film_service.service.implement;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.EagerTransformation;
 import com.cloudinary.utils.ObjectUtils;
+import com.microservice.film_service.film_service.client.ViewClient;
 import com.microservice.film_service.film_service.model.Movie;
 import com.microservice.film_service.film_service.model.Genre;
 import com.microservice.film_service.film_service.model.Status;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,14 +37,19 @@ public class ImplMovieService implements MovieService {
     @Autowired
     private PagingAndSortingMovieRepository pagingAndSortingRepository;
 
+    @Autowired
+    private ViewClient viewClient;
+
     @Override
     public Movie getFilm(String id){
-        return movieRepository.findByID(id).orElse(null);
+        return movieRepository.findByMovieID(id).orElse(null);
     }
+
+//    public Movie watchFilm(String id, )
 
     @Override
     public List<Movie> getFilms(int page, int size, Genre genre, String name, Status status) {
-        Pageable paging = PageRequest.of(page, size);
+        Pageable paging = PageRequest.of(page, size, Sort.Direction.ASC, "firstYearRelease");
         if(!name.isEmpty() && genre != null && status != null){
             Page<Movie> filmPage = pagingAndSortingRepository.findByGenresContainingAndNameRegexIgnoreCaseAndStatus(paging, genre, ".*" + name + ".*", status);
             return filmPage.getContent();
@@ -94,7 +101,7 @@ public class ImplMovieService implements MovieService {
                             "eager_notification_url", "http://localhost:8080/api/v1/film"));
             System.out.println("Url image: " + image.get("url"));
             System.out.println("Url: " + json.get("url"));
-            film.setID(filmId);
+            film.setMovieID(filmId);
             film.setBanner(image.get("url"));
             film.setVideo(publicId + ".mp4");
             return movieRepository.insert(film);

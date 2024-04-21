@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,12 +37,12 @@ public class ImplTVShowService implements TVShowService {
     
     @Override
     public TVShow getTVShow(String id){
-        return tvShowRepository.findByID(id).orElse(null);
+        return tvShowRepository.findByTvShowID(id).orElse(null);
     }
 
     @Override
     public List<TVShow> getTVShows(int page, int size, Genre genre, String name, Status status) {
-        Pageable paging = PageRequest.of(page, size);
+        Pageable paging = PageRequest.of(page, size, Sort.Direction.ASC, "firstYearRelease");
         if(!name.isEmpty() && genre != null && status != null){
             Page<TVShow> filmPage = pagingAndSortingTVShowRepository.findByGenresContainingAndNameRegexIgnoreCaseAndStatus(paging, genre, ".*" + name + ".*", status);
             return filmPage.getContent();
@@ -82,7 +83,7 @@ public class ImplTVShowService implements TVShowService {
             String publicId = tvShow.getName()+ "_" + filmId;
             Map<String, String> image = cloudinary.uploader().upload(convertMultiPartToFile(banner), ObjectUtils.asMap(
                     "folder", "SOA/FINAL/images/", "public_id", publicId));
-            tvShow.setID(filmId);
+            tvShow.setTvShowID(filmId);
             tvShow.setBanner(image.get("url"));
             return tvShowRepository.insert(tvShow);
         }catch(Exception e){
