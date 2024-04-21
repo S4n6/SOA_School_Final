@@ -1,21 +1,20 @@
 import { Body, Injectable, UnauthorizedException } from '@nestjs/common';
-import { AuthRequestDto } from './auth.dto';
+import { AuthRequestDto, RegisterRequestDto } from './auth.dto';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import axios from 'axios';
+import { User } from './user.schema';
 
 @Injectable()
 export class AuthService {
   constructor(
-    // private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
 
   async login(data: AuthRequestDto){
-    console.log('jwt', this.configService.get('JWT_SECRET'));
-    const user = await this.userService.findByEmail(data.email);
-
+    const user = await this.getUserByEmail(data.email);
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
@@ -26,8 +25,23 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const token = this.generateToken(user.id);
+    const token = this.generateToken(user.id, user.isAdmin, user.isVip, user.isBlocked);
     return { 'token' : token.token, 'refresh_token': token.refreshToken};
+  }
+
+  async register(data: RegisterRequestDto){
+    const user = await this.getUserByEmail(data.email);
+    if (user) {
+      throw new UnauthorizedException('User already exists');
+    }
+
+    const hashedPassword = await this.hashPassword(data.password);
+    const response = await axios.post(this.configService.get('URL_USER_SERVICE'), {
+      ...data,
+      password: hashedPassword,
+    });
+
+    return response.data;
   }
 
   
@@ -46,6 +60,15 @@ export class AuthService {
     const salt = await bcrypt.genSalt(saltRounds);
     const hashedPassword = await bcrypt.hash(password, salt);
     return hashedPassword;
+  }
+
+  private async getUserByEmail(email: string) {
+    try {
+      const response = await axios.get(this.configService.get('URL_USER_SERVICE') + '/email/' + email);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
   }
 
 }
