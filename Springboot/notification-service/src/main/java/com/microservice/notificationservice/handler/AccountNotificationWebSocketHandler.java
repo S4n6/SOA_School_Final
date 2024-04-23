@@ -1,0 +1,54 @@
+package com.microservice.notificationservice.handler;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microservice.notificationservice.model.AccountNotification;
+import com.microservice.notificationservice.model.CustomPayload;
+import com.microservice.notificationservice.service.AccountNotificationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.socket.WebSocketHandler;
+import org.springframework.web.reactive.socket.WebSocketMessage;
+import org.springframework.web.reactive.socket.WebSocketSession;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+
+@Component
+public class AccountNotificationWebSocketHandler implements WebSocketHandler {
+    @Autowired
+    private AccountNotificationService accountNotificationService;
+    
+    @Override
+    public Mono<Void> handle(WebSocketSession session) {
+
+        Flux<WebSocketMessage> flux = session.receive()
+                .map(webSocketMessage -> {
+                    try {
+                        CustomPayload payload = new ObjectMapper().readValue(
+                                webSocketMessage.getPayloadAsText(),
+                                CustomPayload.class);
+
+                        // Process the payload and create a new account notification
+                        AccountNotification accountNotification = new AccountNotification(
+                                "Account notification",
+                                "Thank fot registering with use!",
+                                LocalDateTime.now(),
+                                "66200673fc13ae7cc6a242a1",
+                                "/film/66200673fc13ae7cc6a242a2");
+
+                        // Save the notification
+                        AccountNotification storedNotification = accountNotificationService.addAccountNotification(accountNotification);
+
+                        // Serialize the stored notification as JSON string
+                        return new ObjectMapper().writeValueAsString(storedNotification.toMap());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        throw new RuntimeException("Error processing WebSocket message", e);
+                    }
+                })
+                .map(session::textMessage);
+        return session.send(flux);
+    }
+}

@@ -27,9 +27,11 @@ public enum Genre {
     REALITY,
     ROMANCE,
     SCIENCE_FICTION,
+    SCI_FI,
     SPORTS,
     THRILLER,
     VARIETY_TALKSHOW,
     WESTERN,
+    WAR,
     MISCELLANEOUS,
 }

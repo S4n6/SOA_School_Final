@@ -24,14 +24,39 @@ public class ImplCommentService implements CommentService {
     }
 
     @Override
+    public Comment getCommentByID(String ID){
+        return commentRepository.findById(ID).orElse(null);
+    }
+
+    @Override
     public Comment getLatestComment(String userID, String filmID) {
         return null;
     }
 
     @Override
-    public void addComment(Comment comment) {
+    public Comment addComment(Comment comment) {
         try{
-            commentRepository.save(comment);
+            return commentRepository.save(comment);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public Comment updateComment(Comment comment) {
+        try{
+            return commentRepository.save(comment);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public void deleteComment(String id) {
+        try{
+            commentRepository.findById(id).ifPresent(storedComment -> commentRepository.delete(storedComment));
         } catch(Exception e){
             e.printStackTrace();
         }

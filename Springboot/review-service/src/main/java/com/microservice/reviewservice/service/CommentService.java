@@ -7,6 +7,9 @@ import java.util.List;
 
 public interface CommentService {
     public List<Comment> getComments(String filmID, int page, int size);
+    public Comment getCommentByID(String ID);
     public Comment getLatestComment(String userID, String filmID);
-    public void addComment(Comment comment);
+    public Comment addComment(Comment comment);
+    public Comment updateComment(Comment comment);
+    public void deleteComment(String id);
 }

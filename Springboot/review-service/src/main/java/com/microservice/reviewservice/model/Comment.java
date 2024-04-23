@@ -21,11 +21,20 @@ public class Comment {
     private String filmID;
     private String content;
     private LocalDateTime time;
+    private String replyCommentID;
 
     public Comment(String userID, String filmID, String content, LocalDateTime time){
         this.userID = userID;
         this.filmID = filmID;
         this.content = content;
         this.time = time;
+    }
+
+    public Comment(String userID, String filmID, String content, LocalDateTime time, String replyComment){
+        this.userID = userID;
+        this.filmID = filmID;
+        this.content = content;
+        this.time = time;
+        this.replyCommentID = replyComment;
     }
 }
