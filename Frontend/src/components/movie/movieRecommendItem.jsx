@@ -4,42 +4,48 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import SkipNextIcon from '@mui/icons-material/SkipNext';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
 export default function MovieRecommendItem() {
   const theme = useTheme();
 
   return (
     <Card sx={{ display: 'flex' }}>
-      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-        <CardContent sx={{ flex: '1 0 auto' }}>
-          <Typography component="div" variant="h5">
+      <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+        <CardContent >
+          <Typography 
+            component="div" 
+            variant="h8"
+            sx={{
+              marginBottom: '8px',
+            }}
+          >
             Live From Space
           </Typography>
-          <Typography variant="subtitle1" color="text.secondary" component="div">
-            Mac Miller
+          <Typography 
+            color="text.secondary" component="h9"
+            sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              marginTop: '8px',
+            }}
+          >
+            <StarBorderIcon/> 4.3 
+            <FiberManualRecordIcon style={{ fontSize: 10, margin: '8' }}/>
+            2024
+            <FiberManualRecordIcon style={{ fontSize: 10,  margin: '8' }}/>
+            90 min
           </Typography>
         </CardContent>
-        <Box sx={{ display: 'flex', alignItems: 'center', pl: 1, pb: 1 }}>
-          <IconButton aria-label="previous">
-            {theme.direction === 'rtl' ? <SkipNextIcon /> : <SkipPreviousIcon />}
-          </IconButton>
-          <IconButton aria-label="play/pause">
-            <PlayArrowIcon sx={{ height: 38, width: 38 }} />
-          </IconButton>
-          <IconButton aria-label="next">
-            {theme.direction === 'rtl' ? <SkipPreviousIcon /> : <SkipNextIcon />}
-          </IconButton>
-        </Box>
       </Box>
       <CardMedia
+        style={{ flexGrow: 1 }}
         component="img"
-        sx={{ width: 151 }}
-        image="/static/images/cards/live-from-space.jpg"
+        sx={{ width: 130, height: 100}}
+        image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3Z179QxswXB2qBZkLtuMTVl_ZdH5Gx6uIbA&s"
         alt="Live from space album cover"
       />
     </Card>

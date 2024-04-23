@@ -17,7 +17,7 @@ const Footer = () => {
                 color: theme.palette.text, // Use the secondary color from the theme
                 py: 5,
                 borderRadius: '12px',
-                marginTop: '12px',
+                marginTop: '3rem',
                 borderTop: '1px solid',
             }
         }

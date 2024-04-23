@@ -27,7 +27,7 @@ const trendingMovies = [
     <Box
         sx={
             {
-                margin: '0 auto',
+                margin: '2rem auto',
                 maxWidth: '80vw',
             }
         }
@@ -41,7 +41,7 @@ const trendingMovies = [
             }}
             height={'400px'}
             sx={{
-                
+                padding: '1.5rem',
             }}
            
         >

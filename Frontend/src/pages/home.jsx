@@ -21,7 +21,7 @@ export default function Home() {
             >
                 <Box
                     sx={{
-                        width: '70%',
+                        width: '75%',
                         marginRight: '3rem',
                     }}
                 >
@@ -29,7 +29,7 @@ export default function Home() {
                 </Box>
                 <Box
                     sx={{
-                       width: '30%',
+                       width: '25%',
                     }}
                 >
                     <MoviesRecommend/>
