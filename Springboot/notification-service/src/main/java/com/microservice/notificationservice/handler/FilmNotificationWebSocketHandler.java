@@ -35,8 +35,8 @@ public class FilmNotificationWebSocketHandler implements WebSocketHandler {
                                 "Film notification",
                                 "This film is released yesterday, don't forget to watch!",
                                 LocalDateTime.now(),
-                                "66200673fc13ae7cc6a242a1",
-                                "/film/66200673fc13ae7cc6a242a2",
+                                payload.getUserID(),
+                                "/film/"+payload.getFilmID(),
                                 payload.getFilmID());
 
                         // Save the notification

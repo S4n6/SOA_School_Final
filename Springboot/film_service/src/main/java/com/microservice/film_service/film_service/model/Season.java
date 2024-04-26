@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Document("season")
@@ -18,13 +19,27 @@ import java.util.List;
 @NoArgsConstructor
 public class Season extends FilmModel{
     @Id
-    private String iD;
+    private String id;
     private int seasonNumber;
     private String tvShowID;
 
-    public Season(String name, int duration, int firstYearRelease, String countryOfOrigin, String productionCompany, Status status, List<Genre> genres, int seasonNumber, String tvShowID){
+    public Season(String name, int duration, int firstYearRelease, String countryOfOrigin, String productionCompany, Status status, List<Genre> genres, int seasonNumber, String tvShowID, Date expectedReleaseDate){
         super(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genres);
         this.seasonNumber = seasonNumber;
         this.tvShowID = tvShowID;
+        if(expectedReleaseDate != null){
+            this.setProperty(new ComingSoonProperty(expectedReleaseDate));
+        }
+    }
+
+    public Season(String id, String banner, String name, int duration, int firstYearRelease, String countryOfOrigin, String productionCompany, Status status, List<Genre> genres, int seasonNumber, String tvShowID, Date expectedReleaseDate){
+        super(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genres);
+        this.seasonNumber = seasonNumber;
+        this.tvShowID = tvShowID;
+        this.id = id;
+        this.setBanner(banner);
+        if(expectedReleaseDate != null){
+            this.setProperty(new ComingSoonProperty(expectedReleaseDate));
+        }
     }
 }

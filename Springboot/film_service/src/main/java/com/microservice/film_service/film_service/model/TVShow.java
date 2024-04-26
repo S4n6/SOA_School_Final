@@ -17,9 +17,16 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TVShow extends FilmModel{
-    private String tvShowID;
+    @Id
+    private String id;
 
     public TVShow(String name, int duration, int firstYearRelease, String countryOfOrigin, String productionCompany, Status status, List<Genre> genres){
         super(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genres);
+    }
+
+    public TVShow(String id, String banner, String name, int duration, int firstYearRelease, String countryOfOrigin, String productionCompany, Status status, List<Genre> genres){
+        super(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genres);
+        this.id = id;
+        this.setBanner(banner);
     }
 }

@@ -11,4 +11,6 @@ public interface SeasonService {
     public Season getSeason(String id);
     public List<Season> getSeasons(String tvShowID);
     public Season addSeason(MultipartFile banner, Season season) throws IOException;
+    public Season editSeason(MultipartFile banner, Season season, boolean isChangeBanner) throws IOException;
+    public Season deleteSeason(String id);
 }

@@ -12,6 +12,6 @@ public interface MovieService {
     public Movie getFilm(String id);
     public List<Movie> getFilms(int page, int size, Genre genre, String name, Status status);
     public Movie addFilm(MultipartFile video, MultipartFile banner, Movie film) throws IOException;
-    public Movie editFilm(Movie film);
-    public Movie deleteFilm(Movie film);
+    public Movie editFilm(MultipartFile video, MultipartFile banner, Movie film, boolean isChangeVideo, boolean isChangeBanner);
+    public Movie deleteFilm(String id);
 }

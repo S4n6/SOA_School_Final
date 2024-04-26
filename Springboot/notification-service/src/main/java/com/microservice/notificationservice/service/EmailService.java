@@ -16,7 +16,7 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String sender;
 
-    public void sendOTPMessage(String to, String subject, String message) throws Exception {
+    public void sendMail(String to, String subject, String message) throws Exception {
         MimeMessage msg = javaMailSender.createMimeMessage();
 
         MimeMessageHelper helper = new MimeMessageHelper(msg, true);

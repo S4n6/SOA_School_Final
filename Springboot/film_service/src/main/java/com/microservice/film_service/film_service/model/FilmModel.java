@@ -22,6 +22,9 @@ public class FilmModel {
     private String banner;
     private Status status;
 
+    @DocumentReference
+    private ComingSoonProperty property = new ComingSoonProperty();
+
     private List<Genre> genres;
 
     public FilmModel(String name, int duration, int firstYearRelease, String countryOfOrigin, String productionCompany, Status status, List<Genre> genres) {
