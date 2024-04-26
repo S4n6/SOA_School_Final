@@ -14,6 +14,9 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ToggleColorMode from './toggleColorMode';
 import { URL_LOGO } from '../../utils/contants';
 import { border } from '@mui/system';
+import SimpleBackdrop from './backdrop';
+import SignIn from '../../pages/signIn';
+import BasicModal from './modal';
 
 const logoStyle = {
   width: '100px',
@@ -40,6 +43,11 @@ function Header({ mode, toggleColorMode }) {
       });
       setOpen(false);
     }
+  };
+
+  const [isOpen, setIsOpen] = React.useState(false);
+  const setOpenLogin = (isOpen) => {
+    setIsOpen(isOpen);
   };
 
   return (
@@ -154,8 +162,10 @@ function Header({ mode, toggleColorMode }) {
                 variant="text"
                 size="small"
                 component="a"
-                href="/material-ui/getting-started/templates/sign-in/"
                 target="_blank"
+                onClick={() => {
+                  setIsOpen(!isOpen);
+                }}
               >
                 Sign in
               </Button>
@@ -243,6 +253,9 @@ function Header({ mode, toggleColorMode }) {
           </Toolbar>
         </Container>
       </AppBar>
+      <BasicModal isOpen={isOpen}>
+        <SignIn />
+      </BasicModal>
     </div>
   );
 }

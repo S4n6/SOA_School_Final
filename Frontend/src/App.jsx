@@ -5,6 +5,7 @@ import { useState } from "react";
 import Home from "./pages/home";
 import Introduction from "./pages/introduction";
 import Layout from "./components/layout/layout";
+import LoginButton from "./components/test";
 
 function App() {
   const [mode, setMode] = useState("light");
@@ -43,6 +44,12 @@ function App() {
               {" "}
               <Introduction />{" "}
             </Layout>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <LoginButton/>
           }
         />
       </Routes>
