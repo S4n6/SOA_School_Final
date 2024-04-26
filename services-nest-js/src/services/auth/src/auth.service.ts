@@ -29,6 +29,15 @@ export class AuthService {
     return { 'token' : token.token, 'refresh_token': token.refreshToken};
   }
 
+  async loginWithGoogle(data: any){
+    const user = await this.getUserByEmail(data.email);
+    if (!user) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+    const token = this.generateToken(user.id, user.isAdmin, user.isVip, user.isBlocked);
+    return { 'token' : token.token, 'refresh_token': token.refreshToken};
+  }
+
   async register(data: RegisterRequestDto){
     const user = await this.getUserByEmail(data.email);
     if (user) {

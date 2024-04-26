@@ -6,6 +6,7 @@ import Home from "./pages/home";
 import Introduction from "./pages/introduction";
 import Layout from "./components/layout/layout";
 import LoginButton from "./components/test";
+import Watching from "./pages/watching";
 
 function App() {
   const [mode, setMode] = useState("light");
@@ -44,6 +45,20 @@ function App() {
               {" "}
               <Introduction />{" "}
             </Layout>
+          }
+        />
+         <Route
+          path="/video"
+          element={
+            <Layout
+              mode={mode}
+              toggleColorMode={toggleColorMode}
+              showCustomTheme={showCustomTheme}
+            >
+              {" "}
+              <Watching />{" "}
+            </Layout>
+            // <Watching/>
           }
         />
         <Route

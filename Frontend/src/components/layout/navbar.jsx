@@ -253,7 +253,7 @@ function Header({ mode, toggleColorMode }) {
           </Toolbar>
         </Container>
       </AppBar>
-      <BasicModal isOpen={isOpen}>
+      <BasicModal isOpen={isOpen} setIsOpen={setIsOpen}>
         <SignIn />
       </BasicModal>
     </div>

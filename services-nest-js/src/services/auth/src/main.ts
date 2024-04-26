@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AuthModule } from './auth.module';
 import { ValidationPipe } from '@nestjs/common';
+import * as session from 'express-session';
 
 async function bootstrap() {
   const app = await NestFactory.create(AuthModule);
@@ -16,6 +17,14 @@ async function bootstrap() {
     optionsSuccessStatus: 204,
     credentials: true,
   });
+  
+  app.use(
+    session({
+      secret: 'my-secret',
+      resave: false,
+      saveUninitialized: false,
+    }),
+  );
   await app.listen(5001);
 }
 bootstrap();
