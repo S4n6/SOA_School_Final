@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
 import java.util.List;
 
 @Document("episode")
@@ -16,16 +17,32 @@ import java.util.List;
 @NoArgsConstructor
 public class Episode extends FilmModel{
     @Id
-    private String iD;
+    private String id;
     private int episodeNumber;
     private String video;
     private String seasonID;
     public Episode(
             String name, int duration, int firstYearRelease,
             String countryOfOrigin, String productionCompany,
-            Status status, List<Genre> genres, int episodeNumber, String seasonID){
+            Status status, List<Genre> genres, int episodeNumber, String seasonID, Date expectedReleaseDate){
         super(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genres);
         this.episodeNumber = episodeNumber;
         this.seasonID = seasonID;
+        this.setProperty(new ComingSoonProperty(expectedReleaseDate));
+    }
+    public Episode(
+            String id, String video, String banner,
+            String name, int duration, int firstYearRelease,
+            String countryOfOrigin, String productionCompany,
+            Status status, List<Genre> genres, int episodeNumber, String seasonID, Date expectedReleaseDate){
+        super(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genres);
+        this.episodeNumber = episodeNumber;
+        this.seasonID = seasonID;
+        this.id = id;
+        this.video = video;
+        this.setBanner(banner);
+        if(expectedReleaseDate != null){
+            this.setProperty(new ComingSoonProperty(expectedReleaseDate));
+        }
     }
 }

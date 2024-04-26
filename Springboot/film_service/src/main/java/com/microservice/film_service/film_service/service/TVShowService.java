@@ -11,4 +11,6 @@ public interface TVShowService {
     public TVShow getTVShow(String id);
     public List<TVShow> getTVShows(int page, int size, Genre genre, String name, Status status);
     public TVShow addTVShow(MultipartFile banner, TVShow tvShow) throws Exception;
+    public TVShow editTVShow(MultipartFile banner, TVShow tvShow, boolean isChangeBanner);
+    public TVShow deleteTVShow(String tvShowID);
 }

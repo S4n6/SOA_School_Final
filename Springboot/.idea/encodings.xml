@@ -14,5 +14,6 @@
     <file url="file://$PROJECT_DIR$/student/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/tuition/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/view-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/watchlist-service/src/main/java" charset="UTF-8" />
   </component>
 </project>

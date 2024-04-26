@@ -70,4 +70,41 @@ public class TVShowController {
         }
         return ResponseMessage.createResponse(HttpStatus.NOT_FOUND, "ADD TV SHOW FAILED!", null);
     }
+    //    Add film + upload film to cloudinary
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updateTVShow(@PathVariable String id, @RequestParam("banner") MultipartFile banner,
+                                            @RequestParam String bannerLink, @RequestParam boolean isChangeBanner,
+                                            @RequestParam String name, @RequestParam int duration,@RequestParam int firstYearRelease,
+                                            @RequestParam String countryOfOrigin, @RequestParam String productionCompany,
+                                            @RequestParam Status status, @RequestParam("genres[]") List<String> genres){
+        try{
+            List<Genre> genresList = new ArrayList<>();
+            for(String i: genres){
+                genresList.add(Genre.valueOf(i));
+            }
+            TVShow film = new TVShow(id, bannerLink, name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genresList);
+            TVShow addedFilm = tvShowService.editTVShow(banner, film, isChangeBanner);
+            if(addedFilm != null){
+                return ResponseMessage.createResponse(HttpStatus.CREATED, "UPDATE TV SHOW SUCCESSFULLY!", film);
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return ResponseMessage.createResponse(HttpStatus.NOT_FOUND, "UPDATE TV SHOW FAILED!", null);
+    }
+
+    @DeleteMapping("/{tvShowID}")
+    public ResponseEntity<Object> deleteTVSHow(@PathVariable String tvShowID){
+        try {
+            TVShow tvShow = tvShowService.deleteTVShow(tvShowID);
+            if(tvShow != null){
+                return ResponseMessage.createResponse(HttpStatus.CREATED, "DELETE TV SHOW SUCCESSFULLY!", tvShow);
+            }
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return ResponseMessage.createResponse(HttpStatus.NOT_FOUND, "DELETE TV SHOW FAILED!", null);
+    }
 }

@@ -37,7 +37,7 @@ public class ImplTVShowService implements TVShowService {
     
     @Override
     public TVShow getTVShow(String id){
-        return tvShowRepository.findByTvShowID(id).orElse(null);
+        return tvShowRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -83,13 +83,48 @@ public class ImplTVShowService implements TVShowService {
             String publicId = tvShow.getName()+ "_" + filmId;
             Map<String, String> image = cloudinary.uploader().upload(convertMultiPartToFile(banner), ObjectUtils.asMap(
                     "folder", "SOA/FINAL/images/", "public_id", publicId));
-            tvShow.setTvShowID(filmId);
+
             tvShow.setBanner(image.get("url"));
             return tvShowRepository.insert(tvShow);
         }catch(Exception e){
             e.printStackTrace();
         }
 
+        return null;
+    }
+
+    @Override
+    public TVShow editTVShow(MultipartFile banner, TVShow tvShow, boolean isChangeBanner) {
+        Cloudinary cloudinary = new Cloudinary(cloudinary_url);
+        cloudinary.config.secure = true;
+        try{
+            String filmId = tvShow.getId();
+            String publicId = tvShow.getName()+ "_" + filmId;
+            if(isChangeBanner){
+                Map<String, String> image = cloudinary.uploader().upload(convertMultiPartToFile(banner), ObjectUtils.asMap(
+                        "folder", "SOA/FINAL/images/", "public_id", publicId));
+
+                tvShow.setBanner(image.get("url"));
+            }
+            return tvShowRepository.save(tvShow);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Override
+    public TVShow deleteTVShow(String tvShowID) {
+        try{
+            TVShow tvShow = tvShowRepository.findById(tvShowID).orElse(null);
+            if(tvShow != null){
+                tvShowRepository.delete(tvShow);
+                return tvShow;
+            }
+        } catch(Exception e){
+            e.printStackTrace();
+        }
         return null;
     }
 

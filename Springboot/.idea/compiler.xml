@@ -21,6 +21,7 @@
     <bytecodeTargetLevel>
       <module name="payment" target="1.5" />
       <module name="student" target="17" />
+      <module name="watchlist-service" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
@@ -36,6 +37,7 @@
       <module name="student" options="-parameters" />
       <module name="tuition" options="-parameters" />
       <module name="view-service" options="-parameters" />
+      <module name="watchlist-service" options="-parameters" />
     </option>
   </component>
 </project>
