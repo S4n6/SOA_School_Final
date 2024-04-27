@@ -10,7 +10,7 @@ import Watching from "./pages/watching";
 
 function App() {
   const [mode, setMode] = useState("light");
-  const [showCustomTheme, setShowCustomTheme] = useState(false);
+  const [showCustomTheme, setShowCustomTheme] = useState(true);
 
   const toggleColorMode = () => {
     setMode((prev) => (prev === "dark" ? "light" : "dark"));
