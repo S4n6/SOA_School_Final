@@ -7,11 +7,30 @@ import Footer from './footer';
 import { Box } from '@mui/system';
 
 function Layout({ children, mode, toggleColorMode, showCustomTheme}) {
-    const defaultTheme = createTheme({ palette: { mode } });
-    const LPtheme = createTheme(getLPTheme(mode));
+    const defaultTheme = (mode) => ({
+        palette: {
+          mode, // This will set the mode to either 'light' or 'dark'
+          primary: {
+            main: mode === 'light' ? 'rgba(255,0,0,1.0)' : '#0d47a1',
+          },
+          secondary: {
+            main: mode === 'light' ? 'rgba(0,255,0,0.6)' : '#c51162',
+          },
+          background: {
+            default: mode === 'light' ? 'rgba(255,255,255,1.0)' : 'rgba(18,12,40,1.0)',
+            },
+        },
+        typography: {
+          fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+          fontSize: 14,
+        },
+        
+      });
+    const defaultTheme2 = createTheme(defaultTheme(mode));
+    // const LPtheme = createTheme(getLPTheme(mode));
     return (
         <>
-            <ThemeProvider theme={showCustomTheme ? LPtheme : defaultTheme}>
+            <ThemeProvider theme={defaultTheme2}>
                 <Box
                     sx={{
                         width: '100%',
