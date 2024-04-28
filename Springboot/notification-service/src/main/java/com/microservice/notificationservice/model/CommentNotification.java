@@ -8,6 +8,10 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @EqualsAndHashCode(callSuper = true)
 @Document("comment-notification")
@@ -27,6 +31,19 @@ public class CommentNotification extends Notification{
 
     public CommentNotification(String commentID){
         this.commentID = commentID;
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        map.put("commentID", commentID);
+        map.put("title", this.getTitle());
+        map.put("content", this.getContent());
+        Date date = Date.from(this.getCreatedAt().atZone(ZoneId.systemDefault()).toInstant());
+        map.put("createdAt", date);
+        map.put("userID", this.getUserID());
+        map.put("destination", this.getDestination());
+        return map;
     }
 
 }

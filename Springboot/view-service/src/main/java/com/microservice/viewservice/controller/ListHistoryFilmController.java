@@ -18,9 +18,11 @@ public class ListHistoryFilmController {
     private HistoryFilmService historyFilmService;
 
     @GetMapping("")
-    public ResponseEntity<Object> getListHistoryVideoByUserID(@RequestParam String userID){
+    public ResponseEntity<Object> getListHistoryVideoByUserID(@RequestParam String userID,
+                                                              @RequestParam(defaultValue = "0", required = false) int page,
+                                                              @RequestParam(defaultValue = "10", required = false) int size){
         try{
-            List<HistoryFilm> films = historyFilmService.getFilmsByUserID(userID);
+            List<HistoryFilm> films = historyFilmService.getFilmsByUserID(userID, page, size);
             if(!films.isEmpty()){
                 return ResponseMessage.createResponse(HttpStatus.OK, "GET LIST OF HISTORY VIDEO SUCCESSFULLY!", films);
             }

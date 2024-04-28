@@ -1,9 +1,12 @@
 import { Typography } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import { Box } from '@mui/system';
+import { Timer, Time, TimerOptions } from 'timer-node';
+import timer from '../../utils/timer';
 
-function CommentOthers(){
-    return(
+function CommentOthers({ comment }) {
+    const time = timer(comment)
+    return (
         <Box
             sx={{
                 display: 'flex',
@@ -21,9 +24,9 @@ function CommentOthers(){
                 B
             </Avatar>
             <Box>
-                <Typography>Tên người dùng</Typography>
-                <Typography variant='subtitle1'>This is a comment exmaple for test.</Typography>
-                <Typography variant='subtitle2'>11 minutes ago</Typography>
+                <Typography>{comment?.user?.name}</Typography>
+                <Typography variant='subtitle1'>{comment?.content}</Typography>
+                <Typography variant='subtitle2'>{time} ago</Typography>
             </Box>
         </Box>
     )

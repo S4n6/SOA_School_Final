@@ -4,6 +4,9 @@ import com.microservice.viewservice.model.HistoryFilm;
 import com.microservice.viewservice.repository.HistoryFilmRepository;
 import com.microservice.viewservice.service.HistoryFilmService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,8 +18,9 @@ public class ImplHistoryFilmService implements HistoryFilmService {
     private HistoryFilmRepository historyFilmRepository;
 
     @Override
-    public List<HistoryFilm> getFilmsByUserID(String userID) {
-        return historyFilmRepository.findByUserID(userID);
+    public List<HistoryFilm> getFilmsByUserID(String userID, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "viewedAt");
+        return historyFilmRepository.findByUserID(pageable, userID).getContent();
     }
 
 //    public Map<String, Object> getFilmAndDuration(String id){
@@ -33,7 +37,7 @@ public class ImplHistoryFilmService implements HistoryFilmService {
                 historyFilmRepository.save(historyFilm);
             }
             else{
-                historyFilmRepository.insert(film);
+                historyFilmRepository.save(film);
             }
         }
         catch(Exception e){

@@ -31,21 +31,21 @@ public class CommentWebSocketHandler implements WebSocketHandler {
     public Mono<Void> handle(WebSocketSession session) {
 
         Flux<WebSocketMessage> flux = session.receive()
-                .handle((webSocketMessage, synchronousSink) -> {
+                .map(webSocketMessage -> {
                     try {
+                        System.out.print(webSocketMessage);
                         CustomPayload payload = new ObjectMapper()
                                 .readValue(
                                         webSocketMessage.getPayload().asInputStream().readAllBytes(),
                                         CustomPayload.class
                                 );
-                        synchronousSink.next(payload);
                         switch (payload.getAction()){
                             case "add":
-                                Comment addedComment = new Comment(payload.getUserID(), payload.getFilmID(), payload.getContent(), LocalDateTime.now());
+                                Comment addedComment = new Comment(payload.getUser(), payload.getFilmID(), payload.getContent(), LocalDateTime.now());
                                 commentService.addComment(addedComment);
-                                break;
+                                return addedComment.toMap();
                             case "reply":
-                                Comment replyComment = new Comment(payload.getUserID(), payload.getFilmID(), payload.getContent(), LocalDateTime.now(), payload.getReplyCommentID());
+                                Comment replyComment = new Comment(payload.getUser(), payload.getFilmID(), payload.getContent(), LocalDateTime.now(), payload.getReplyCommentID());
                                 Comment storedComment = commentService.addComment(replyComment);
                                 Map<String, Object> message = new HashMap<>();
                                 message.put("replyCommentID", storedComment.getId());
@@ -69,28 +69,35 @@ public class CommentWebSocketHandler implements WebSocketHandler {
                                                 throw new RuntimeException(e);
                                             }
                                         }).subscribe();
-                                break;
+                                return storedComment.toMap();
                             case "edit":
                                 Comment editComment = commentService.getCommentByID(payload.getId());
                                 if(editComment != null){
                                     editComment.setContent(payload.getContent());
                                     editComment.setTime(LocalDateTime.now());
                                     commentService.updateComment(editComment);
+                                    return editComment.toMap();
                                 }
-                                break;
+                                return null;
                             case "delete":
                                 commentService.deleteComment(payload.getId());
-                                break;
+                                return null;
                         }
 
                     } catch (IOException e) {
                         e.printStackTrace();
-                        synchronousSink.error(e);
                     } catch (URISyntaxException e) {
                         throw new RuntimeException(e);
                     }
+                    return null;
                 })
-                .map(msg -> session.textMessage(msg.toString()));
+                .map(msg -> {
+                    try {
+                        return session.textMessage(new ObjectMapper().writeValueAsString(msg));
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
         return session.send(flux);
     }
 }

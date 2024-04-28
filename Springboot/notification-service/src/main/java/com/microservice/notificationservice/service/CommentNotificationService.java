@@ -7,5 +7,5 @@ import java.util.List;
 public interface CommentNotificationService {
     public CommentNotification getNotification(String notificationID);
     public List<CommentNotification> getNotifications(String userID);
-    public void addNotification(CommentNotification commentNotification);
+    public CommentNotification addNotification(CommentNotification commentNotification);
 }

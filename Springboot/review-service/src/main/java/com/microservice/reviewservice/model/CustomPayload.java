@@ -13,22 +13,22 @@ import java.util.Date;
 @NoArgsConstructor
 public class CustomPayload {
     private String id;
-    private String userID;
+    private User user;
     private String filmID;
     private String content;
     private String replyCommentID;
     private String action;
 
-    public CustomPayload(String userID, String filmID, String content, String action){
-        this.userID = userID;
+    public CustomPayload(User user, String filmID, String content, String action){
+        this.user = user;
         this.filmID = filmID;
         this.content = content;
         this.action = action;
     }
 
-    public CustomPayload(String ID, String userID, String filmID, String content, String action){
+    public CustomPayload(String ID, User user, String filmID, String content, String action){
         this.id = ID;
-        this.userID = userID;
+        this.user = user;
         this.filmID = filmID;
         this.content = content;
         this.action = action;

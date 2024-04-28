@@ -3,25 +3,63 @@ import { Box } from "@mui/system";
 import Divider from '@mui/material/Divider';
 import Avatar from '@mui/material/Avatar';
 import CommentOthers from "./commentOthers";
+import { useEffect, useState } from "react";
+import { getComments } from "../../api/getComments";
+import useWebSocket from "react-use-websocket";
 
 function Comment(props) {
-    const comments = [
-        { author: 'User1', text: 'This is a comment.' },
-        { author: 'User2', text: 'This is another comment.' },
-        // Add more comments as needed...
-    ];
+
+    const [postedComment, setPostedComment] = useState("")
+    const { sendMessage, lastMessage } = useWebSocket("ws://localhost:8080/api/v1/comment");
+
+    const [comments, setComments] = useState([])
+
+    useEffect(() => {
+        getComments("66200673fc13ae7cc6a242a2", 0, 5)
+            .then((value) => {
+                setComments(value)
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+    }, [])
+
+    useEffect(() => {
+        if(lastMessage !== null){
+            setComments((prev) => prev.concat([JSON.parse(lastMessage.data)]))
+        }
+    }, [lastMessage])
+
+    const handleTextChange = (e) => {
+        setPostedComment(e.target.value)
+    }
+
+    const handleClickSendComment = () => {
+        const message = {
+            user: {
+                id: "66200673fc13ae7cc6a242a1",
+                name: "Neymar",
+                email: "neymar@gmail.com"
+            },
+            filmID: "66200673fc13ae7cc6a242a2",
+            content: postedComment,
+            action: "add"
+        }
+        sendMessage(JSON.stringify(message))
+    }
+
     return (
-       <Box
-        sx={{
-            marginTop: '3rem',
-            alignSelf:'flex-start',
-            width: '100%',
-            height: '100%',
-        }}
-       >
+        <Box
+            sx={{
+                marginTop: '3rem',
+                alignSelf: 'flex-start',
+                width: '100%',
+                height: '100%',
+            }}
+        >
             <Typography>Comment</Typography>
-            <Typography>1 Comment</Typography>
-            <Divider/>
+            <Typography>{comments.length} comments</Typography>
+            <Divider />
             <Box
                 sx={{
                     display: 'flex',
@@ -40,25 +78,26 @@ function Comment(props) {
                     rows={4}
                     variant="outlined"
                     placeholder="Write a comment..."
+                    onChange={handleTextChange}
                     sx={{ width: '100%', mt: 2 }}
                 />
-                <Button>Bình luận</Button>
+                <Button onClick={handleClickSendComment}>Bình luận</Button>
             </Box>
             <Box
-                 sx={{
+                sx={{
                     maxHeight: '200px', // Adjust this value to change the maximum height of the list
                     overflow: 'auto',
-                  }}
+                }}
             >
                 <List>
                     {comments.map((comment, index) => (
                         <ListItem key={index}>
-                            <CommentOthers/>
+                            <CommentOthers comment={comment} />
                         </ListItem>
                     ))}
                 </List>
             </Box>
-       </Box>
+        </Box>
     )
 }
 

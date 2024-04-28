@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
+
 @Document("history_video")
 @Data
 @AllArgsConstructor
@@ -16,10 +18,12 @@ public class HistoryFilm {
     private String userID;
     private String filmID;
     private double duration;
+    private LocalDateTime viewedAt;
 
-    public HistoryFilm(String userID, String filmID, double duration){
+    public HistoryFilm(String userID, String filmID, double duration, LocalDateTime viewedAt){
         this.userID = userID;
         this.filmID = filmID;
         this.duration = duration;
+        this.viewedAt = viewedAt;
     }
 }

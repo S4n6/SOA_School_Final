@@ -13,6 +13,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 @Component
 public class FilmWebSocketHandler implements WebSocketHandler {
@@ -32,7 +33,7 @@ public class FilmWebSocketHandler implements WebSocketHandler {
                                 );
                         synchronousSink.next(payload);
 
-                        HistoryFilm film = new HistoryFilm(payload.getUserID(), payload.getFilmID(), payload.getDuration());
+                        HistoryFilm film = new HistoryFilm(payload.getUserID(), payload.getFilmID(), payload.getDuration(), LocalDateTime.now());
                         listHistoryVideoService.addIntoListHistoryVideo(film);
                     } catch (IOException e) {
                         synchronousSink.error(e);

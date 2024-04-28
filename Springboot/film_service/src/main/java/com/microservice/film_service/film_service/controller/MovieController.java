@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microservice.film_service.film_service.ResponseMessage;
 import com.microservice.film_service.film_service.client.EmailNotificationClient;
-import com.microservice.film_service.film_service.model.ComingSoonProperty;
 import com.microservice.film_service.film_service.model.Movie;
 import com.microservice.film_service.film_service.model.Genre;
 import com.microservice.film_service.film_service.model.Status;
@@ -21,7 +20,6 @@ import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClien
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController
