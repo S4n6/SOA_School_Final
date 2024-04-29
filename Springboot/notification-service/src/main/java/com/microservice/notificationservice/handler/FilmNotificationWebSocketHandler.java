@@ -14,15 +14,19 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class FilmNotificationWebSocketHandler implements WebSocketHandler {
+    private final List<WebSocketSession> sessions = new ArrayList<>();
 
     @Autowired
     private FilmNotificationService filmNotificationService;
 
     @Override
     public Mono<Void> handle(WebSocketSession session) {
+        sessions.add(session);
         Flux<WebSocketMessage> flux = session.receive()
                 .map(msg -> {
                     try {
@@ -43,6 +47,7 @@ public class FilmNotificationWebSocketHandler implements WebSocketHandler {
                         FilmNotification stored = filmNotificationService.addFilmNotification(filmNotification);
 
                         // Serialize the stored notification as JSON string
+                        broadcastMessage(session, stored.toMap());
                         return new ObjectMapper().writeValueAsString(stored.toMap());
                     } catch (JsonProcessingException e) {
                         e.printStackTrace();
@@ -51,5 +56,21 @@ public class FilmNotificationWebSocketHandler implements WebSocketHandler {
                 })
                 .map(session::textMessage);
         return session.send(flux);
+    }
+    private void broadcastMessage(WebSocketSession currSession, Object message) {
+        String jsonMessage;
+        try {
+            jsonMessage = new ObjectMapper().writeValueAsString(message);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        sessions.forEach(session -> {
+            if(session.isOpen() && session != currSession){
+                session.send(Mono.just(session.textMessage(jsonMessage)))
+                        .subscribe();
+            }
+        });
     }
 }

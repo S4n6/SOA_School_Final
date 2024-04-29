@@ -1,5 +1,6 @@
 package com.microservice.notificationservice.handler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microservice.notificationservice.model.AccountNotification;
 import com.microservice.notificationservice.model.CustomPayload;
@@ -14,14 +15,18 @@ import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class AccountNotificationWebSocketHandler implements WebSocketHandler {
+    private final List<WebSocketSession> sessions = new ArrayList<>();
     @Autowired
     private AccountNotificationService accountNotificationService;
     
     @Override
     public Mono<Void> handle(WebSocketSession session) {
+        sessions.add(session);
 
         Flux<WebSocketMessage> flux = session.receive()
                 .map(webSocketMessage -> {
@@ -42,6 +47,7 @@ public class AccountNotificationWebSocketHandler implements WebSocketHandler {
                         AccountNotification storedNotification = accountNotificationService.addAccountNotification(accountNotification);
 
                         // Serialize the stored notification as JSON string
+                        broadcastMessage(session, storedNotification.toMap());
                         return new ObjectMapper().writeValueAsString(storedNotification.toMap());
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -50,5 +56,22 @@ public class AccountNotificationWebSocketHandler implements WebSocketHandler {
                 })
                 .map(session::textMessage);
         return session.send(flux);
+    }
+
+    private void broadcastMessage(WebSocketSession currSession, Object message) {
+        String jsonMessage;
+        try {
+            jsonMessage = new ObjectMapper().writeValueAsString(message);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        sessions.forEach(session -> {
+            if(session.isOpen() && session != currSession){
+                session.send(Mono.just(session.textMessage(jsonMessage)))
+                        .subscribe();
+            }
+        });
     }
 }

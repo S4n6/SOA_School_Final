@@ -8,14 +8,8 @@ function timer(object) {
     if(timer.time().d > 1){
         startObject = timer.time().d + " days"
     }
-    else if(timer.time().d == 1){
-        startObject = timer.time().h + " day"
-    }
     else if(timer.time().h > 1){
         startObject = timer.time().h + " hours"
-    }
-    else if(timer.time().h == 1){
-        startObject = timer.time().h + " hour"
     }
     else if(timer.time().m <= 1){
         startObject = timer.time().h + " minute"

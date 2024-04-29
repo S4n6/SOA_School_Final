@@ -19,8 +19,8 @@ public class ImplCommentService implements CommentService {
 
     @Override
     public List<Comment> getComments(String filmID, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "time");
-        return commentRepository.findByFilmID(pageable, filmID).getContent();
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.ASC, "time");
+        return commentRepository.findByFilmIDAndReplyCommentID(pageable, filmID, null).getContent();
     }
 
     @Override

@@ -6,12 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Document("comment")
 @Data
@@ -26,6 +25,9 @@ public class Comment {
     private String content;
     private LocalDateTime time;
     private String replyCommentID;
+
+    @DocumentReference
+    private List<Comment> repliedComments = new ArrayList<>();
 
     public Comment(User user, String filmID, String content, LocalDateTime time){
         this.user = user;
@@ -51,6 +53,11 @@ public class Comment {
         Date date = Date.from(this.time.atZone(ZoneId.systemDefault()).toInstant());
         map.put("time", date);
         map.put("replyCommentID", this.replyCommentID);
+        List<Map<String, Object>> repliedCommentMap = new ArrayList<>();
+        for(Comment comment: this.repliedComments){
+            repliedCommentMap.add(comment.toMap());
+        }
+        map.put("repliedComments", repliedCommentMap);
         return map;
     }
 }

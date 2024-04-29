@@ -10,6 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface CommentRepository extends CrudRepository<Comment, String> {
-    Page<Comment> findByFilmID(Pageable pageable, String filmID);
+    Page<Comment> findByFilmIDAndReplyCommentID(Pageable pageable, String filmID, Object object);
     Optional<Comment> findById(String id);
 }
