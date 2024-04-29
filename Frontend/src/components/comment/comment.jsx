@@ -93,58 +93,58 @@ function Comment(props) {
         sendMessage(JSON.stringify(message))
     }
 
-    return (
-        <Box
-            sx={{
-                marginTop: '3rem',
-                alignSelf: 'flex-start',
-                width: '100%',
-                height: '100%',
-            }}
-        >
-            <Typography>Comment</Typography>
-            <Typography>{comments.length} comments</Typography>
-            <Divider />
-            <Box
-                sx={{
-                    display: 'flex',
-                    marginTop: '1rem',
-                }}
-            >
-                <Avatar
-                    sx={{ bgcolor: 'black', marginRight: '1rem', marginTop: '1rem' }}
-                    alt="Remy Sharp"
-                    src="/broken-image.jpg"
-                >
-                    B
-                </Avatar>
-                <TextField
-                    multiline
-                    rows={4}
-                    variant="outlined"
-                    placeholder="Write a comment..."
-                    onChange={handleTextChange}
-                    sx={{ width: '100%', mt: 2 }}
-                />
-                <Button onClick={handleClickSendComment}>Bình luận</Button>
-            </Box>
-            <Box
-                sx={{
-                    maxHeight: '200px', // Adjust this value to change the maximum height of the list
-                    overflow: 'auto',
-                }}
-            >
-                <List>
-                    {comments.map((comment, index) => (
-                        <ListItem key={index}>
-                            <CommentOthers comment={comment} />
-                        </ListItem>
-                    ))}
-                </List>
-            </Box>
-        </Box>
-    )
-  const comments = [
+    // return (
+    //     <Box
+    //         sx={{
+    //             marginTop: '3rem',
+    //             alignSelf: 'flex-start',
+    //             width: '100%',
+    //             height: '100%',
+    //         }}
+    //     >
+    //         <Typography>Comment</Typography>
+    //         <Typography>{comments.length} comments</Typography>
+    //         <Divider />
+    //         <Box
+    //             sx={{
+    //                 display: 'flex',
+    //                 marginTop: '1rem',
+    //             }}
+    //         >
+    //             <Avatar
+    //                 sx={{ bgcolor: 'black', marginRight: '1rem', marginTop: '1rem' }}
+    //                 alt="Remy Sharp"
+    //                 src="/broken-image.jpg"
+    //             >
+    //                 B
+    //             </Avatar>
+    //             <TextField
+    //                 multiline
+    //                 rows={4}
+    //                 variant="outlined"
+    //                 placeholder="Write a comment..."
+    //                 onChange={handleTextChange}
+    //                 sx={{ width: '100%', mt: 2 }}
+    //             />
+    //             <Button onClick={handleClickSendComment}>Bình luận</Button>
+    //         </Box>
+    //         <Box
+    //             sx={{
+    //                 maxHeight: '200px', // Adjust this value to change the maximum height of the list
+    //                 overflow: 'auto',
+    //             }}
+    //         >
+    //             <List>
+    //                 {comments.map((comment, index) => (
+    //                     <ListItem key={index}>
+    //                         <CommentOthers comment={comment} />
+    //                     </ListItem>
+    //                 ))}
+    //             </List>
+    //         </Box>
+    //     </Box>
+    // )
+  const commentsTest = [
     {
       author: "Userghkghj",
       text: "This is a comment.",
@@ -163,7 +163,7 @@ function Comment(props) {
     { author: "User2", text: "This is another comment." },
     { author: "User1", text: "This is a comment." },
     { author: "User2", text: "This is another comment." },
-    // Add more comments as needed...
+    // Add more commentsTest as needed...
   ];
   return (
     <Box
@@ -221,7 +221,7 @@ function Comment(props) {
         }}
       >
         <List>
-          {comments.map((comment, index) => {
+          {commentsTest.map((comment, index) => {
             return renderCommentReply(comment, index);
           })}
         </List>
