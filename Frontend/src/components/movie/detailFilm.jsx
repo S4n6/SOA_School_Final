@@ -7,6 +7,7 @@ import { CardActionArea } from "@mui/material";
 import Button from "@mui/material/Button";
 import StarIcon from '@mui/icons-material/Star';
 import Rating from '@mui/material/Rating';
+import { Stack } from '@mui/material';
 
 function DetailMovie(){
     return (
@@ -14,10 +15,12 @@ function DetailMovie(){
             sx={{
                 display: 'flex',
                 width: '75%',
-                height: '100%',
+                // height: '100%',
                 marginTop:'12px',
                 position: 'relative',
-                justifyContent: 'space-evenly'
+                justifyContent: 'space-evenly',
+                border: '4px solid #000',
+                borderRadius: '8px',
             }}
         >
             <Box
@@ -47,10 +50,11 @@ function DetailMovie(){
                         />
                     </Card>
                 </Box>
-                <Box
+                <Stack
                     sx={{
                         marginLeft: '2rem',
                     }}
+                    spacing={1} direction="column"
                 >
                     <Typography variant="h5">Tên phim</Typography>
                     <Box
@@ -70,14 +74,10 @@ function DetailMovie(){
                     <Typography variant="subtitle2">Diễn viên</Typography>
                     <Typography variant="subtitle2">Quốc gia</Typography>
                     <Typography variant="subtitle2">Ngôn ngữ</Typography>
-
-                </Box>
+                </Stack>
             </Box>
             <Box
                 sx={{
-                    // position:'absolute',
-                    // right: '2rem',
-                    // padding: '1rem',
                     width: '20%',
                     height: '100%',
                 }}
