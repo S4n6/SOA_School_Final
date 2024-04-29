@@ -24,11 +24,12 @@ public class ImplCommentNotificationService implements CommentNotificationServic
     }
 
     @Override
-    public void addNotification(CommentNotification commentNotification) {
+    public CommentNotification addNotification(CommentNotification commentNotification) {
         try{
-            commentNotificationRepository.insert(commentNotification);
+            return commentNotificationRepository.insert(commentNotification);
         } catch (Exception e){
             e.printStackTrace();
         }
+        return null;
     }
 }

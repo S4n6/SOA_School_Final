@@ -25,14 +25,13 @@ public class CommentNotificationWebSocketHandler implements WebSocketHandler {
     public Mono<Void> handle(WebSocketSession session) {
 
         Flux<WebSocketMessage> flux = session.receive()
-                .handle((webSocketMessage, synchronousSink) -> {
+                .map(webSocketMessage -> {
                     try {
                         CustomPayload payload = new ObjectMapper()
                                 .readValue(
                                         webSocketMessage.getPayload().asInputStream().readAllBytes(),
                                         CustomPayload.class
                                 );
-                        synchronousSink.next(payload);
                         CommentNotification commentNotification = new CommentNotification(
                                 "A replied your comment",
                                 "A replied your comment, click to read detail!",
@@ -40,11 +39,13 @@ public class CommentNotificationWebSocketHandler implements WebSocketHandler {
                                 "66200673fc13ae7cc6a242a1",
                                 "/film/66200673fc13ae7cc6a242a2",
                                 payload.getReplyCommentID());
-                        commentNotificationService.addNotification(commentNotification);
+                        CommentNotification addedNotification = commentNotificationService.addNotification(commentNotification);
+
+                        return new ObjectMapper().writeValueAsString(addedNotification.toMap());
                     } catch (IOException e) {
                         e.printStackTrace();
-                        synchronousSink.error(e);
                     }
+                    return null;
                 })
                 .map(msg -> session.textMessage(msg.toString()));
         return session.send(flux);

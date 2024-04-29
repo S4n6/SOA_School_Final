@@ -19,10 +19,13 @@
     "@mui/system": "^5.15.15",
     "axios": "^1.6.8",
     "formik": "^2.4.5",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-router-dom": "^6.22.3",
+    "react-use-websocket": "^4.8.1",
     "styled-components": "^6.1.8",
+    "timer-node": "^5.0.7",
+    "ws": "^8.16.0",
     "yup": "^1.4.0"
   },
   "devDependencies": {
