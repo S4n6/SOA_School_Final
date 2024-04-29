@@ -29,10 +29,10 @@ function Eposide() {
       sx={{
         width: "25%",
         marginRight: "1rem",
-        border: "1px solid rgba(0, 0, 0, 1.0)",
-        borderRadius: 5,
+        border: "4px solid rgba(0, 0, 0, 0.8)",
+        borderRadius: '8px',
         padding: "1rem",
-        backgroundColor: "rgba(25, 21, 56, 1.0)",
+        marginTop:'12px',
       }}
     >
       <Box
