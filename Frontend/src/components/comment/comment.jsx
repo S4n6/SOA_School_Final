@@ -16,12 +16,12 @@ function Comment(props) {
 
     useEffect(() => {
         getComments("66200673fc13ae7cc6a242a2", 0, 5)
-            .then((value) => {
-                setComments(value)
-            })
-            .catch((error) => {
-                console.error(error)
-            })
+        .then((value) => {
+            setComments(value || [])
+        })
+        .catch((error) => {
+            console.error(error)
+        })
     }, [])
 
     useEffect(() => {
