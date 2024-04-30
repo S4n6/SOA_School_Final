@@ -64,13 +64,14 @@ public class MovieController {
                                           @RequestParam("video") MultipartFile video, @Nullable @RequestParam Date expectedReleaseDate,
                                           @RequestParam String name, @RequestParam int duration,@RequestParam int firstYearRelease,
                                           @RequestParam String countryOfOrigin, @RequestParam String productionCompany,
-                                          @RequestParam Status status, @RequestParam("genres[]") List<String> genres){
+                                          @RequestParam Status status, @RequestParam("genres[]") List<String> genres,
+                                          @RequestParam(defaultValue = "") String description){
         try{
             List<Genre> genresList = new ArrayList<>();
             for(String i: genres){
                 genresList.add(Genre.valueOf(i));
             }
-            Movie film = new Movie(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genresList, expectedReleaseDate);
+            Movie film = new Movie(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genresList, expectedReleaseDate, description);
             Movie addedFilm = movieService.addFilm(video, banner, film);
             if(addedFilm != null){
                 return ResponseMessage.createResponse(HttpStatus.CREATED, "ADD MOVIE SUCCESSFULLY!", film);
@@ -91,13 +92,14 @@ public class MovieController {
                                               @RequestParam String name, @RequestParam int duration, @RequestParam int firstYearRelease,
                                               @RequestParam String countryOfOrigin, @RequestParam String productionCompany,
                                               @RequestParam Status status, @RequestParam("genres[]") List<String> genres,
+                                              @RequestParam(defaultValue = "") String description,
                                               @RequestHeader HttpHeaders headers){
         try {
             List<Genre> genresList = new ArrayList<>();
             for(String i: genres){
                 genresList.add(Genre.valueOf(i));
             }
-            Movie movie = new Movie(id, videoLink, bannerLink, name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genresList, expectedReleaseDate);
+            Movie movie = new Movie(id, videoLink, bannerLink, name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genresList, expectedReleaseDate, description);
             Movie addedMovie = movieService.getFilm(id);
             Movie updatedMovie = movieService.editFilm(video, banner, movie, isChangeVideo, isChangeBanner);
             if(addedMovie != null){

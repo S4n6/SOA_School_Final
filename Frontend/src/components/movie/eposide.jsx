@@ -1,122 +1,120 @@
-import * as React from "react";
+
 import {
-  Box,
-  Button,
-  ButtonGroup,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
+    Box,
+    Button,
+    ButtonGroup,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+    Stack,
 } from "@mui/material";
 
-function Eposide() {
-  const [age, setAge] = React.useState("");
+import { getSeasonByFilmID } from "../../api/season";
+import { getEpisodeBySeasonID } from "../../api/episode";
+import { useEffect, useState } from "react";
 
-  const handleChange = (event) => {
-    setAge(event.target.value);
-  };
+function Eposide({ filmID, setVideo }) {
+    const [seasonID, setSeasonID] = useState("");
 
-  const buttons = [
-    <Button key="one">One</Button>,
-    <Button key="two">Two</Button>,
-    <Button key="three">Three</Button>,
-  ];
+    const [seasons, setSeasons] = useState([])
+    const [episodes, setEpisodes] = useState([])
 
+    useEffect(() => {
+        getSeasonByFilmID({ tvShowID: filmID })
+            .then((value) => {
+                setSeasons(value)
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+    }, [])
 
-  return (
-    <Box
-      sx={{
-        width: "25%",
-        marginRight: "1rem",
-        border: "4px solid rgba(0, 0, 0, 0.8)",
-        borderRadius: '8px',
-        padding: "1rem",
-        marginTop:'12px',
-      }}
-    >
-      <Box
-        sx={{
-          width: "95%",
-          padding: "1rem",
-          marginRight: "1rem",
-        }}
-      >
-        <FormControl fullWidth>
-          <InputLabel 
-            id="demo-simple-select-label"
-          >
-            Season
-        </InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={age}
-            label="Age"
-            onChange={handleChange}
+    useEffect(() => {
+        if(seasons.length > 0){
+            setSeasonID(seasons[0].id)
+        }
+    }, [seasons])
+
+    useEffect(() => {
+        getEpisodeBySeasonID({ seasonID: seasonID })
+            .then((value) => {
+                setEpisodes(value)
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+    }, [seasonID])
+
+    const handleChange = (event) => {
+        setSeasonID(event.target.value);
+    };
+
+    return (
+        <Box
             sx={{
-                color: 'rgba(255, 0, 0, 1)',
+                width: "25%",
+                marginRight: "1rem",
+                border: "4px solid rgba(0, 0, 0, 0.8)",
+                borderRadius: '8px',
+                padding: "1rem",
+                marginTop: '12px',
             }}
-          >
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
-      <Box
-        sx={{
-          maxHeight: "200px",
-          overflow: "auto",
-          padding: "1rem",
-        }}
-      >
-        <Stack direction="column" spacing={2}>
-          <Button 
-            key="one"
-            sx={{
-                color: 'rgba(255, 0, 0, 1)',
-            }}
-          >
-            One
-          </Button>
-          <Button 
-            key="one"
-            sx={{
-                color: 'rgba(255, 0, 0, 1)',
-            }}
-          >
-            One
-          </Button>
-          <Button 
-            key="one"
-            sx={{
-                color: 'rgba(255, 0, 0, 1)',
-            }}
-          >
-            One
-          </Button>
-          <Button 
-            key="one"
-            sx={{
-                color: 'rgba(255, 0, 0, 1)',
-            }}
-          >
-            One
-          </Button>
-          <Button 
-            key="one"
-            sx={{
-                color: 'rgba(255, 0, 0, 1)',
-            }}
-          >
-            One
-          </Button>
-         
-        </Stack>
-      </Box>
-    </Box>
-  );
+        >
+            <Box
+                sx={{
+                    width: "95%",
+                    padding: "1rem",
+                    marginRight: "1rem",
+                }}
+            >
+                <FormControl fullWidth>
+                    <InputLabel
+                        id="demo-simple-select-label"
+                    >
+                        {seasonID? "": "Season"}
+                    </InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={seasons.length > 0? seasons[0].id: null}
+                        label="Season"
+                        onChange={handleChange}
+                        sx={{
+                            color: 'rgba(255, 0, 0, 1)',
+                        }}
+                    >
+                        {seasons.map((season, index) => {
+                            return <MenuItem key={index} value={season.id}>{season.name}</MenuItem>
+                        })}
+                    </Select>
+                </FormControl>
+            </Box>
+            <Box
+                sx={{
+                    maxHeight: "200px",
+                    overflow: "auto",
+                    padding: "1rem",
+                }}
+            >
+                <Stack direction="column" spacing={2}>
+                    {episodes.map((episode, index) => {
+                        return (
+                            <Button
+                                key={index}
+                                sx={{
+                                    color: 'rgba(255, 0, 0, 1)',
+                                }}
+                                onClick={() => setVideo(episode.video)}
+                            >
+                                {episode.name}
+                            </Button>
+                        )
+                    })}
+                </Stack>
+            </Box>
+        </Box>
+    );
 }
 
 export default Eposide;

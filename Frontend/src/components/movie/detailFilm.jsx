@@ -8,15 +8,32 @@ import Button from "@mui/material/Button";
 import StarIcon from '@mui/icons-material/Star';
 import Rating from '@mui/material/Rating';
 import { Stack } from '@mui/material';
+import { useEffect, useState } from "react";
+import { addRate, getRateByFilmID } from "../../api/rate";
 
-function DetailMovie(){
+function DetailMovie({ film }) {
+    var genres_string = film?.genres.join(" ")
+
+    const [rate, setRate] = useState()
+
+    const [vote, setVote] = useState(0)
+
+    useEffect(() => {
+        getRateByFilmID(film?.id)
+            .then(value => {
+                setRate(value)
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+    }, [vote])
     return (
         <Box
             sx={{
                 display: 'flex',
                 width: '75%',
                 // height: '100%',
-                marginTop:'12px',
+                marginTop: '12px',
                 position: 'relative',
                 justifyContent: 'space-evenly',
                 border: '4px solid #000',
@@ -26,15 +43,15 @@ function DetailMovie(){
             <Box
                 sx={{
                     display: 'flex',
-                    justifyContent:'space-envenly',
+                    justifyContent: 'space-envenly',
                     width: '80%',
                     height: '100%',
                 }}
             >
                 <Box
                 >
-                    <Card 
-                        sx={{ 
+                    <Card
+                        sx={{
                             maxWidth: 300,
                             height: '100%',
                         }}
@@ -44,8 +61,8 @@ function DetailMovie(){
                             component="img"
                             image="https://assets.codepen.io/6093409/river.jpg"
                             title="green iguana"
-                            sx={{ 
-                                height: '100%' 
+                            sx={{
+                                height: '100%'
                             }}
                         />
                     </Card>
@@ -56,7 +73,7 @@ function DetailMovie(){
                     }}
                     spacing={1} direction="column"
                 >
-                    <Typography variant="h5">Tên phim</Typography>
+                    <Typography variant="h5">{film?.name}</Typography>
                     <Box
                         sx={{
                             display: 'flex',
@@ -64,16 +81,16 @@ function DetailMovie(){
                         }}
                     >
                         <Typography variant="subtitle1">HD</Typography>
-                        <StarIcon fontSize="4px"/> 7.1
+                        <StarIcon fontSize="4px" /> {rate?.average}
                     </Box>
-                    <Typography variant="subtitle2">Tóm tắt phim: </Typography>
-                    <Typography variant="subtitle2">Thể loại</Typography>
-                    <Typography variant="subtitle2">Thời lượng</Typography>
-                    <Typography variant="subtitle2">Ngày công chiếu</Typography>
-                    <Typography variant="subtitle2">Đạo diễn</Typography>
+                    <Typography variant="subtitle2">Tóm tắt phim: {film?.description}</Typography>
+                    <Typography variant="subtitle2">Thể loại: {genres_string}</Typography>
+                    <Typography variant="subtitle2">Thời lượng: {film?.duration}</Typography>
+                    <Typography variant="subtitle2">Ngày công chiếu: {film?.firstYearRelease}</Typography>
+                    <Typography variant="subtitle2">Công ty sản xuất: {film?.productionCompany}</Typography>
                     <Typography variant="subtitle2">Diễn viên</Typography>
-                    <Typography variant="subtitle2">Quốc gia</Typography>
-                    <Typography variant="subtitle2">Ngôn ngữ</Typography>
+                    <Typography variant="subtitle2">Quốc gia: {film?.countryOfOrigin}</Typography>
+                    <Typography variant="subtitle2">Ngôn ngữ:</Typography>
                 </Stack>
             </Box>
             <Box
@@ -82,8 +99,16 @@ function DetailMovie(){
                     height: '100%',
                 }}
             >
-                <Rating name="half-rating" defaultValue={2.5} precision={0.5} />
-                <Typography variant="subtitle2">5/10 (120 reviews)</Typography>
+                <Rating name="half-rating" defaultValue={5} precision={0.5} value={rate?.average / 10 * 5} onChange={(e, value) => {
+                    addRate({ userID: "66227018dea6cbf7a9ab36ba", filmID: film?.id, score: value * 2 })
+                        .then((value) => {
+                            setVote(value.average)
+                        })
+                        .catch((error) => {
+                            console.error(error)
+                        })
+                }}/>
+                <Typography variant="subtitle2">{rate? rate?.average: 0}/10 ({rate? rate?.count: 0} reviews)</Typography>
             </Box>
         </Box>
     )

@@ -24,23 +24,25 @@ public class Episode extends FilmModel{
     public Episode(
             String name, int duration, int firstYearRelease,
             String countryOfOrigin, String productionCompany,
-            Status status, List<Genre> genres, int episodeNumber, String seasonID, Date expectedReleaseDate){
-        super(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genres);
+            Status status, List<Genre> genres, int episodeNumber, String seasonID, Date expectedReleaseDate, String description){
+        super(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genres, description);
         this.episodeNumber = episodeNumber;
         this.seasonID = seasonID;
         this.setProperty(new ComingSoonProperty(expectedReleaseDate));
+        this.setType(FilmType.EPISODE);
     }
     public Episode(
             String id, String video, String banner,
             String name, int duration, int firstYearRelease,
             String countryOfOrigin, String productionCompany,
-            Status status, List<Genre> genres, int episodeNumber, String seasonID, Date expectedReleaseDate){
-        super(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genres);
+            Status status, List<Genre> genres, int episodeNumber, String seasonID, Date expectedReleaseDate, String description){
+        super(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genres, description);
         this.episodeNumber = episodeNumber;
         this.seasonID = seasonID;
         this.id = id;
         this.video = video;
         this.setBanner(banner);
+        this.setType(FilmType.EPISODE);
         if(expectedReleaseDate != null){
             this.setProperty(new ComingSoonProperty(expectedReleaseDate));
         }

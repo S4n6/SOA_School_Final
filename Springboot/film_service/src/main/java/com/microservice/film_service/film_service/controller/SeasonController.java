@@ -50,13 +50,13 @@ public class SeasonController {
                                             @RequestParam String name, @RequestParam int duration, @RequestParam int firstYearRelease,
                                             @RequestParam String countryOfOrigin, @RequestParam String productionCompany,
                                             @RequestParam Status status, @RequestParam("genres[]") List<String> genres,
-                                            @RequestParam int seasonNumber, @RequestParam String tvShowID){
+                                            @RequestParam int seasonNumber, @RequestParam String tvShowID, @RequestParam(defaultValue = "") String description){
         try{
             List<Genre> genresList = new ArrayList<>();
             for(String i: genres){
                 genresList.add(Genre.valueOf(i));
             }
-            Season season = new Season(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genresList, seasonNumber, tvShowID, expectedReleaseDate);
+            Season season = new Season(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genresList, seasonNumber, tvShowID, expectedReleaseDate, description);
             Season addedSeason = seasonService.addSeason(banner, season);
             if(addedSeason != null){
                 return ResponseMessage.createResponse(HttpStatus.CREATED, "ADD SEASON SUCCESSFULLY!", season);
@@ -75,13 +75,14 @@ public class SeasonController {
                                             @RequestParam String name, @RequestParam int duration, @RequestParam int firstYearRelease,
                                             @RequestParam String countryOfOrigin, @RequestParam String productionCompany,
                                             @RequestParam Status status, @RequestParam("genres[]") List<String> genres,
-                                            @RequestParam int seasonNumber, @RequestParam String tvShowID){
+                                            @RequestParam int seasonNumber, @RequestParam String tvShowID, @RequestParam(defaultValue = "") String description){
         try{
             List<Genre> genresList = new ArrayList<>();
             for(String i: genres){
                 genresList.add(Genre.valueOf(i));
             }
-            Season season = new Season(id, bannerLink, name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genresList, seasonNumber, tvShowID, expectedReleaseDate);
+            Season season = new Season(id, bannerLink, name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genresList,
+                    seasonNumber, tvShowID, expectedReleaseDate, description);
 
             Season addedSeason = seasonService.getSeason(id);
             Season updatedSeason = seasonService.editSeason(banner, season, isChangeBanner);

@@ -20,13 +20,15 @@ public class TVShow extends FilmModel{
     @Id
     private String id;
 
-    public TVShow(String name, int duration, int firstYearRelease, String countryOfOrigin, String productionCompany, Status status, List<Genre> genres){
-        super(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genres);
+    public TVShow(String name, int duration, int firstYearRelease, String countryOfOrigin, String productionCompany, Status status, List<Genre> genres, String description){
+        super(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genres, description);
+        this.setType(FilmType.TV_SHOW);
     }
 
-    public TVShow(String id, String banner, String name, int duration, int firstYearRelease, String countryOfOrigin, String productionCompany, Status status, List<Genre> genres){
-        super(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genres);
+    public TVShow(String id, String banner, String name, int duration, int firstYearRelease, String countryOfOrigin, String productionCompany, Status status, List<Genre> genres, String description){
+        super(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genres, description);
         this.id = id;
         this.setBanner(banner);
+        this.setType(FilmType.TV_SHOW);
     }
 }

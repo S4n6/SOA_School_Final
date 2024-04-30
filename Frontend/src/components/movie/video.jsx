@@ -9,7 +9,7 @@ import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import StorageIcon from '@mui/icons-material/Storage';
 
-function Video() {
+function Video({video}) {
   return (
     <Box
       sx={{
@@ -33,7 +33,7 @@ function Video() {
       >
         <CardMedia
           component="video"
-          src="https://assets.codepen.io/6093409/river.mp4"
+          src={video}
           autoPlay
           controls
           sx={{
