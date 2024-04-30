@@ -31,7 +31,7 @@ export class AuthController {
     // Generate a new token for the user
     let token;
     try {
-      token = await this.authService.login(user.email);
+      token = await this.authService.loginWithGoogle(user.email);
     } catch (error) {
 
       if (error instanceof UnauthorizedException) {

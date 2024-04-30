@@ -1,31 +1,43 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
+import * as React from "react";
+import PropTypes from "prop-types";
 
-import Box from '@mui/material/Box';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
-import Divider from '@mui/material/Divider';
-import Typography from '@mui/material/Typography';
-import MenuItem from '@mui/material/MenuItem';
-import Drawer from '@mui/material/Drawer';
-import MenuIcon from '@mui/icons-material/Menu';
-import ToggleColorMode from './toggleColorMode';
-import { URL_LOGO } from '../../utils/contants';
-import { border } from '@mui/system';
-import SimpleBackdrop from './backdrop';
-import SignIn from '../../pages/signIn';
-import BasicModal from './modal';
+import Box from "@mui/material/Box";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import Divider from "@mui/material/Divider";
+import Typography from "@mui/material/Typography";
+import MenuItem from "@mui/material/MenuItem";
+import Drawer from "@mui/material/Drawer";
+import MenuIcon from "@mui/icons-material/Menu";
+import ToggleColorMode from "./toggleColorMode";
+import { URL_LOGO } from "../../utils/contants";
+import { border } from "@mui/system";
+import SimpleBackdrop from "./backdrop";
+import SignIn from "../../pages/signIn";
+import BasicModal from "./modal";
+import {
+  ButtonGroup,
+  FormControl,
+  Grid,
+  InputLabel,
+  OutlinedInput,
+  Select,
+} from "@mui/material";
 
 const logoStyle = {
-  width: '100px',
-  height: '100px',
-  cursor: 'pointer',
+  width: "100px",
+  height: "100px",
+  cursor: "pointer",
 };
 
 function Header({ mode, toggleColorMode }) {
   const [open, setOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [genre, setGenre] = React.useState([]);
+  const [showGenre, setShowGenre] = React.useState(false);
+  const [country, setCountry] = React.useState([]);
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
@@ -36,19 +48,43 @@ function Header({ mode, toggleColorMode }) {
     const offset = 128;
     if (sectionElement) {
       const targetScroll = sectionElement.offsetTop - offset;
-      sectionElement.scrollIntoView({ behavior: 'smooth' });
+      sectionElement.scrollIntoView({ behavior: "smooth" });
       window.scrollTo({
         top: targetScroll,
-        behavior: 'smooth',
+        behavior: "smooth",
       });
       setOpen(false);
     }
   };
 
-  const [isOpen, setIsOpen] = React.useState(false);
-  const setOpenLogin = (isOpen) => {
-    setIsOpen(isOpen);
-  };
+  React.useEffect(() => {
+    setGenre([
+      "Action",
+      "Adventure",
+      "Animation",
+      "Biography",
+      "Comedy",
+      "Crime",
+      "Documentary",
+      "Drama",
+      "Family",
+      "Fantasy",
+      "Film-Noir",
+      "History",
+      "Horror",
+      "Music",
+      "Musical",
+      "Mystery",
+      "Romance",
+      "Sci-Fi",
+      "Short",
+      "Sport",
+      "Superhero",
+      "Thriller",
+      "War",
+      "Western",
+    ]);
+  }, []);
 
   return (
     <div>
@@ -56,104 +92,140 @@ function Header({ mode, toggleColorMode }) {
         position="fixed"
         sx={{
           boxShadow: 0,
-          bgcolor: 'transparent',
-          backgroundImage: 'none',
+          bgcolor: "transparent",
+          backgroundImage: "none",
           mt: 2,
+          width: "100%",
         }}
       >
-        <Container maxWidth="lg">
+        <Container maxWidth="false">
           <Toolbar
             variant="regular"
             sx={(theme) => ({
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
               flexShrink: 0,
-              borderRadius: '999px',
+              borderRadius: "999px",
               bgcolor:
-                theme.palette.mode === 'light'
-                  ? 'rgba(255, 255, 255, 0.4)'
-                  : 'rgba(0, 0, 0, 0.4)',
-              backdropFilter: 'blur(24px)',
+                theme.palette.mode === "light"
+                  ? "rgba(255, 255, 255, 0.4)"
+                  : "rgba(0, 0, 0, 0.4)",
+              backdropFilter: "blur(24px)",
               maxHeight: 40,
-              border: '1px solid',
-              borderColor: 'divider',
+              border: "1px solid",
+              borderColor: "divider",
               boxShadow:
-                theme.palette.mode === 'light'
+                theme.palette.mode === "light"
                   ? `0 0 1px rgba(85, 166, 246, 0.1), 1px 1.5px 2px -1px rgba(85, 166, 246, 0.15), 4px 4px 12px -2.5px rgba(85, 166, 246, 0.15)`
-                  : '0 0 1px rgba(2, 31, 59, 0.7), 1px 1.5px 2px -1px rgba(2, 31, 59, 0.65), 4px 4px 12px -2.5px rgba(2, 31, 59, 0.65)',
+                  : "0 0 1px rgba(2, 31, 59, 0.7), 1px 1.5px 2px -1px rgba(2, 31, 59, 0.65), 4px 4px 12px -2.5px rgba(2, 31, 59, 0.65)",
             })}
           >
             <Box
               sx={{
                 flexGrow: 1,
-                display: 'flex',
-                alignItems: 'center',
-                ml: '-18px',
+                display: "flex",
+                alignItems: "center",
+                ml: "-18px",
                 px: 0,
+                padding: 1,
               }}
             >
               <img
-                src={
-                  URL_LOGO
-                }
+                src={URL_LOGO}
                 style={{
                   ...logoStyle,
-                  width: '60px',
-                  height: '60px',
-                  border: '2px solid black',
-                  borderRadius: '50%',
+                  width: "60px",
+                  height: "60px",
+                  border: "2px solid black",
+                  borderRadius: "50%",
                 }}
                 alt="Home"
               />
-              <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+              <Box
+                sx={{
+                  display: { xs: "none", md: "flex" },
+                  marginLeft: "3rem",
+                }}
+              >
                 <MenuItem
-                  onClick={() => scrollToSection('features')}
-                  sx={{ py: '6px', px: '12px' }}
+                  onClick={() => scrollToSection("features")}
+                  sx={{ py: "6px", px: "12px" }}
                 >
-                  <Typography variant="body2" color="text.primary">
-                    Features
+                  <Typography variant="h6" color="text.primary">
+                    Movie
                   </Typography>
                 </MenuItem>
                 <MenuItem
-                  onClick={() => scrollToSection('testimonials')}
-                  sx={{ py: '6px', px: '12px' }}
+                  onClick={() => scrollToSection("testimonials")}
+                  sx={{ py: "6px", px: "12px" }}
                 >
-                  <Typography variant="body2" color="text.primary">
-                    Testimonials
+                  <Typography variant="h6" color="text.primary">
+                    TV Series
                   </Typography>
                 </MenuItem>
                 <MenuItem
-                  onClick={() => scrollToSection('highlights')}
-                  sx={{ py: '6px', px: '12px' }}
+                  onClick={() => scrollToSection("testimonials")}
+                  sx={{ py: "6px", px: "12px" }}
                 >
-                  <Typography variant="body2" color="text.primary">
-                    Highlights
-                  </Typography>
+                  <Box>
+                    <Button
+                      sx={{
+                        position: "relative",
+                      }}
+                      onClick={() => setShowGenre(!showGenre)}
+                    >
+                      Genre
+                    </Button>
+                    {showGenre && (
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          width: "32rem",
+                          height: "12rem",
+                          top: "4rem",
+                          backgroundColor: "white",
+                          borderRadius: "8px",
+                          overflow: "auto",
+                          padding: "4px",
+                          boxShadow: 3,
+                        }}
+                      >
+                        <Grid container spacing={1.5}>
+                          {genre?.map((item, index) => {
+                            return (
+                              <Grid
+                                item
+                                xs={3}
+                                sm={3}
+                                md={3}
+                                lg={3}
+                                key={index}
+                              >
+                                <Button>{item}</Button>
+                              </Grid>
+                            );
+                          })}
+                        </Grid>
+                      </Box>
+                    )}
+                  </Box>
                 </MenuItem>
                 <MenuItem
-                  onClick={() => scrollToSection('pricing')}
-                  sx={{ py: '6px', px: '12px' }}
+                  onClick={() => scrollToSection("testimonials")}
+                  sx={{ py: "6px", px: "12px" }}
                 >
-                  <Typography variant="body2" color="text.primary">
-                    Pricing
-                  </Typography>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => scrollToSection('faq')}
-                  sx={{ py: '6px', px: '12px' }}
-                >
-                  <Typography variant="body2" color="text.primary">
-                    FAQ
+                  <Typography variant="h6" color="text.primary">
+                    Country
                   </Typography>
                 </MenuItem>
               </Box>
             </Box>
             <Box
               sx={{
-                display: { xs: 'none', md: 'flex' },
+                display: { xs: "none", md: "flex" },
                 gap: 0.5,
-                alignItems: 'center',
+                alignItems: "center",
               }}
             >
               <ToggleColorMode mode={mode} toggleColorMode={toggleColorMode} />
@@ -180,48 +252,53 @@ function Header({ mode, toggleColorMode }) {
                 Sign up
               </Button>
             </Box>
-            <Box sx={{ display: { sm: '', md: 'none' } }}>
+            <Box sx={{ display: { sm: "", md: "none" } }}>
               <Button
                 variant="text"
                 color="primary"
                 aria-label="menu"
                 onClick={toggleDrawer(true)}
-                sx={{ minWidth: '30px', p: '4px' }}
+                sx={{ minWidth: "30px", p: "4px" }}
               >
                 <MenuIcon />
               </Button>
               <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
                 <Box
                   sx={{
-                    minWidth: '60dvw',
+                    minWidth: "60dvw",
                     p: 2,
-                    backgroundColor: 'background.paper',
+                    backgroundColor: "background.paper",
                     flexGrow: 1,
                   }}
                 >
                   <Box
                     sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'end',
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "end",
                       flexGrow: 1,
                     }}
                   >
-                    <ToggleColorMode mode={mode} toggleColorMode={toggleColorMode} />
+                    <ToggleColorMode
+                      mode={mode}
+                      toggleColorMode={toggleColorMode}
+                    />
                   </Box>
-                  <MenuItem onClick={() => scrollToSection('features')}>
+                  <MenuItem onClick={() => scrollToSection("features")}>
                     Features
                   </MenuItem>
-                  <MenuItem onClick={() => scrollToSection('testimonials')}>
+                  <MenuItem onClick={() => scrollToSection("testimonials")}>
                     Testimonials
                   </MenuItem>
-                  <MenuItem onClick={() => scrollToSection('highlights')}>
+                  <MenuItem onClick={() => scrollToSection("highlights")}>
                     Highlights
                   </MenuItem>
-                  <MenuItem onClick={() => scrollToSection('pricing')}>
+                  <MenuItem onClick={() => scrollToSection("pricing")}>
                     Pricing
                   </MenuItem>
-                  <MenuItem onClick={() => scrollToSection('faq')}>FAQ</MenuItem>
+                  <MenuItem onClick={() => scrollToSection("faq")}>
+                    FAQ
+                  </MenuItem>
                   <Divider />
                   <MenuItem>
                     <Button
@@ -230,7 +307,7 @@ function Header({ mode, toggleColorMode }) {
                       component="a"
                       href="/material-ui/getting-started/templates/sign-up/"
                       target="_blank"
-                      sx={{ width: '100%' }}
+                      sx={{ width: "100%" }}
                     >
                       Sign up
                     </Button>
@@ -242,7 +319,7 @@ function Header({ mode, toggleColorMode }) {
                       component="a"
                       href="/material-ui/getting-started/templates/sign-in/"
                       target="_blank"
-                      sx={{ width: '100%' }}
+                      sx={{ width: "100%" }}
                     >
                       Sign in
                     </Button>
@@ -253,6 +330,7 @@ function Header({ mode, toggleColorMode }) {
           </Toolbar>
         </Container>
       </AppBar>
+
       <BasicModal isOpen={isOpen} setIsOpen={setIsOpen}>
         <SignIn />
       </BasicModal>
@@ -261,7 +339,7 @@ function Header({ mode, toggleColorMode }) {
 }
 
 Header.propTypes = {
-  mode: PropTypes.oneOf(['dark', 'light']).isRequired,
+  mode: PropTypes.oneOf(["dark", "light"]).isRequired,
   toggleColorMode: PropTypes.func.isRequired,
 };
 

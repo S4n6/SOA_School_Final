@@ -20,6 +20,12 @@ function GridViewMovies({ movies }) {
     movie,
     movie,
     movie,
+    movie,
+    movie,
+    movie,
+    movie,
+    movie,
+    movie,
   ];
   return (
     <Grid 
