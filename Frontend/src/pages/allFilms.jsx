@@ -4,7 +4,7 @@ import { styled, alpha } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import {
-    Button,
+  Button,
   Checkbox,
   FormControl,
   InputLabel,
@@ -13,9 +13,9 @@ import {
   OutlinedInput,
   Select,
   TextField,
+  Grid,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-
 
 function RenderSelectByCategory(categoryName, listCategory, setCategory) {
   const handleChange = (event) => {
@@ -76,43 +76,57 @@ function AllFilm() {
 
   return (
     <Box
-        sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-        
-        }}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100%",
+      }}
     >
       <Box
         sx={{
           marginTop: "10rem",
           color: "black",
           display: "flex",
+          width: "100%", 
         }}
       >
-        <TextField
-            sx={{
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6} md={4} lg={2}>
+            <TextField
+              sx={{
                 color: "black",
-            }}
-            placeholder="Search..."
-            onChange={(event) => {
-            // Handle search here...
-            }}
-        />
+              }}
+              placeholder="Search..."
+              onChange={(event) => {
+                // Handle search here...
+              }}
+            />
+          </Grid>
 
-        {RenderSelectByCategory("Genre", genre, setGenre, genre)}
-        {RenderSelectByCategory("Country", country, setCountry, country)}
-        {RenderSelectByCategory("Rating", rating, setRating, rating)}
-        {RenderSelectByCategory("Year", year, setYear, year)}
-        <Button
-            sx={{
-                border: '1px solid',
-            }}
-        >
-            Filter
-        </Button>
+          <Grid item xs={12} sm={6} md={4} lg={2}>
+            {RenderSelectByCategory("Genre", genre, setGenre, genre)}
+          </Grid>
+          <Grid item xs={12} sm={6} md={4} lg={2}>
+            {RenderSelectByCategory("Country", country, setCountry, country)}
+          </Grid>
+          <Grid item xs={12} sm={6} md={4} lg={2}>
+            {RenderSelectByCategory("Rating", rating, setRating, rating)}
+          </Grid>
+          <Grid item xs={12} sm={6} md={4} lg={2}>
+            {RenderSelectByCategory("Year", year, setYear, year)}
+          </Grid>
+          <Grid item xs={12} sm={6} md={4} lg={2}>
+            <Button
+              sx={{
+                border: "1px solid",
+              }}
+            >
+              Filter
+            </Button>
+          </Grid>
+        </Grid>
       </Box>
     </Box>
   );
