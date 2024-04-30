@@ -51,13 +51,15 @@ public class EpisodeController {
                                              @RequestParam String name, @RequestParam int duration, @RequestParam int firstYearRelease,
                                              @RequestParam String countryOfOrigin, @RequestParam String productionCompany,
                                              @RequestParam Status status, @RequestParam("genres[]") List<String> genres,
-                                             @RequestParam(defaultValue = "1") int episodeNumber, @RequestParam String seasonID){
+                                             @RequestParam(defaultValue = "1") int episodeNumber, @RequestParam String seasonID,
+                                             @RequestParam(defaultValue = "") String description){
         try {
             List<Genre> genresList = new ArrayList<>();
             for(String i: genres){
                 genresList.add(Genre.valueOf(i));
             }
-            Episode episode = new Episode(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genresList, episodeNumber, seasonID, expectedReleaseDate);
+            Episode episode = new Episode(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genresList,
+                    episodeNumber, seasonID, expectedReleaseDate, description);
             Episode addedEpisode = episodeService.addEpisode(video, banner, episode);
             if(addedEpisode != null){
                 return ResponseMessage.createResponse(HttpStatus.CREATED, "ADD EPISODE SUCCESSFULLY!", addedEpisode);
@@ -75,13 +77,15 @@ public class EpisodeController {
                                              @RequestParam String name, @RequestParam int duration, @RequestParam int firstYearRelease,
                                              @RequestParam String countryOfOrigin, @RequestParam String productionCompany,
                                              @RequestParam Status status, @RequestParam("genres[]") List<String> genres,
-                                             @RequestParam(defaultValue = "1") int episodeNumber, @RequestParam String seasonID){
+                                             @RequestParam(defaultValue = "1") int episodeNumber, @RequestParam String seasonID,
+                                             @RequestParam(defaultValue = "") String description){
         try {
             List<Genre> genresList = new ArrayList<>();
             for(String i: genres){
                 genresList.add(Genre.valueOf(i));
             }
-            Episode episode = new Episode(id, videoLink, bannerLink, name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genresList, episodeNumber, seasonID, expectedReleaseDate);
+            Episode episode = new Episode(id, videoLink, bannerLink, name, duration, firstYearRelease, countryOfOrigin,
+                    productionCompany, status, genresList, episodeNumber, seasonID, expectedReleaseDate, description);
             Episode addedEpisode = episodeService.getEpisode(id);
             Episode updatedEpisode = episodeService.editEpisode(video, banner, episode, isChangeVideo, isChangeBanner);
             if(updatedEpisode != null){

@@ -21,13 +21,15 @@ public class FilmModel {
     private String productionCompany;
     private String banner;
     private Status status;
+    private FilmType type;
+    private String description;
 
     @DocumentReference
     private ComingSoonProperty property = new ComingSoonProperty();
 
     private List<Genre> genres;
 
-    public FilmModel(String name, int duration, int firstYearRelease, String countryOfOrigin, String productionCompany, Status status, List<Genre> genres) {
+    public FilmModel(String name, int duration, int firstYearRelease, String countryOfOrigin, String productionCompany, Status status, List<Genre> genres, String description) {
         this.name = name;
         this.duration = duration;
         this.firstYearRelease = firstYearRelease;
@@ -35,5 +37,6 @@ public class FilmModel {
         this.productionCompany = productionCompany;
         this.status = status;
         this.genres = genres;
+        this.description = description;
     }
 }

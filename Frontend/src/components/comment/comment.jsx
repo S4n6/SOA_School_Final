@@ -162,7 +162,6 @@ function Comment(props) {
                     fontWeight: "bold",
                 }}
             >
-                {connectionStatus}
                 {comments.length} Comment
             </Typography>
             <Divider />

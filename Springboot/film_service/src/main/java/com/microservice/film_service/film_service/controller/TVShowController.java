@@ -52,13 +52,14 @@ public class TVShowController {
     public ResponseEntity<Object> addTVShow(@RequestParam("banner") MultipartFile banner,
                                           @RequestParam String name, @RequestParam int duration,@RequestParam int firstYearRelease,
                                           @RequestParam String countryOfOrigin, @RequestParam String productionCompany,
-                                          @RequestParam Status status, @RequestParam("genres[]") List<String> genres){
+                                          @RequestParam Status status, @RequestParam("genres[]") List<String> genres,
+                                          @RequestParam(defaultValue = "") String description){
         try{
             List<Genre> genresList = new ArrayList<>();
             for(String i: genres){
                 genresList.add(Genre.valueOf(i));
             }
-            TVShow film = new TVShow(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genresList);
+            TVShow film = new TVShow(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genresList, description);
             TVShow addedFilm = tvShowService.addTVShow(banner, film);
             if(addedFilm != null){
                 return ResponseMessage.createResponse(HttpStatus.CREATED, "ADD TV SHOW SUCCESSFULLY!", film);
@@ -76,13 +77,14 @@ public class TVShowController {
                                             @RequestParam String bannerLink, @RequestParam boolean isChangeBanner,
                                             @RequestParam String name, @RequestParam int duration,@RequestParam int firstYearRelease,
                                             @RequestParam String countryOfOrigin, @RequestParam String productionCompany,
-                                            @RequestParam Status status, @RequestParam("genres[]") List<String> genres){
+                                            @RequestParam Status status, @RequestParam("genres[]") List<String> genres,
+                                            @RequestParam(defaultValue = "") String description){
         try{
             List<Genre> genresList = new ArrayList<>();
             for(String i: genres){
                 genresList.add(Genre.valueOf(i));
             }
-            TVShow film = new TVShow(id, bannerLink, name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genresList);
+            TVShow film = new TVShow(id, bannerLink, name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genresList, description);
             TVShow addedFilm = tvShowService.editTVShow(banner, film, isChangeBanner);
             if(addedFilm != null){
                 return ResponseMessage.createResponse(HttpStatus.CREATED, "UPDATE TV SHOW SUCCESSFULLY!", film);

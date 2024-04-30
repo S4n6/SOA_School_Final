@@ -23,21 +23,25 @@ public class Season extends FilmModel{
     private int seasonNumber;
     private String tvShowID;
 
-    public Season(String name, int duration, int firstYearRelease, String countryOfOrigin, String productionCompany, Status status, List<Genre> genres, int seasonNumber, String tvShowID, Date expectedReleaseDate){
-        super(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genres);
+    public Season(String name, int duration, int firstYearRelease, String countryOfOrigin, String productionCompany,
+                  Status status, List<Genre> genres, int seasonNumber, String tvShowID, Date expectedReleaseDate, String description){
+        super(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genres, description);
         this.seasonNumber = seasonNumber;
         this.tvShowID = tvShowID;
+        this.setType(FilmType.SEASON);
         if(expectedReleaseDate != null){
             this.setProperty(new ComingSoonProperty(expectedReleaseDate));
         }
     }
 
-    public Season(String id, String banner, String name, int duration, int firstYearRelease, String countryOfOrigin, String productionCompany, Status status, List<Genre> genres, int seasonNumber, String tvShowID, Date expectedReleaseDate){
-        super(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genres);
+    public Season(String id, String banner, String name, int duration, int firstYearRelease, String countryOfOrigin, String productionCompany,
+                  Status status, List<Genre> genres, int seasonNumber, String tvShowID, Date expectedReleaseDate, String description){
+        super(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genres, description);
         this.seasonNumber = seasonNumber;
         this.tvShowID = tvShowID;
         this.id = id;
         this.setBanner(banner);
+        this.setType(FilmType.SEASON);
         if(expectedReleaseDate != null){
             this.setProperty(new ComingSoonProperty(expectedReleaseDate));
         }
