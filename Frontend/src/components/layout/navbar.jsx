@@ -21,10 +21,20 @@ import {
   ButtonGroup,
   FormControl,
   Grid,
+  IconButton,
+  InputAdornment,
   InputLabel,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
   OutlinedInput,
   Select,
+  TextField,
 } from "@mui/material";
+import Search from "../search";
+import SearchIcon from '@mui/icons-material/Search';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 const logoStyle = {
   width: "100px",
@@ -38,6 +48,7 @@ function Header({ mode, toggleColorMode }) {
   const [genre, setGenre] = React.useState([]);
   const [showGenre, setShowGenre] = React.useState(false);
   const [country, setCountry] = React.useState([]);
+  const [showNotification, setShowNotification] = React.useState(false);
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
@@ -121,6 +132,7 @@ function Header({ mode, toggleColorMode }) {
                   : "0 0 1px rgba(2, 31, 59, 0.7), 1px 1.5px 2px -1px rgba(2, 31, 59, 0.65), 4px 4px 12px -2.5px rgba(2, 31, 59, 0.65)",
             })}
           >
+            {/* Thanh NavBar bên trái */}
             <Box
               sx={{
                 flexGrow: 1,
@@ -221,13 +233,102 @@ function Header({ mode, toggleColorMode }) {
                 </MenuItem>
               </Box>
             </Box>
+            {/* END Thanh NavBar bên trái */}
+            {/* Thanh NavBar bên phải */}
             <Box
               sx={{
                 display: { xs: "none", md: "flex" },
-                gap: 0.5,
+                gap: 1,
                 alignItems: "center",
               }}
             >
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textAlign: "center",
+                }}
+              >
+                <TextField
+                  id="filled-textarea"
+                  placeholder="TV Series, Movies, ..."
+                  multiline
+                  variant="filled"
+                  InputProps={{
+                    style: {
+                      backgroundColor: "transparent",
+                      fontSize: "0.8rem",
+                    },
+                    startAdornment: (
+                      <InputAdornment >
+                        <IconButton onClick={() => console.log('Icon clicked')}>
+                          <SearchIcon style={{}} />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                  sx={{
+                    maxWidth: 400,
+                    color: "white",
+                  }}
+                />
+              </Box>
+              
+              {/* Notification */}
+              <Box>
+                <IconButton
+                  sx={{
+                    backgroundColor: 'transparent',
+                    hover: {
+                      backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                      cursor: 'pointer',
+                    },
+                    borderRadius: 12,
+                  }}
+                  onClick={() => setShowNotification(!showNotification)}
+                >
+                  <NotificationsIcon />
+                </IconButton>
+                
+                {
+                  showNotification && (
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        width: "20rem",
+                        height: "12rem",
+                        top: "4rem",
+                        right: "0",
+                        backgroundColor: "white",
+                        borderRadius: "8px",
+                        overflow: "auto",
+                        padding: "4px",
+                        boxShadow: 3,
+                      }}
+                    >
+                      <List>
+                        <ListItemButton>
+                          <Typography variant="h6" color="text.primary">
+                            Notification 1
+                          </Typography>
+                        </ListItemButton>
+                        <ListItemButton>
+                          <Typography variant="h6" color="text.primary">
+                            Notification 2
+                          </Typography>
+                        </ListItemButton>
+                        <ListItemButton>
+                          <Typography variant="h6" color="text.primary">
+                            Notification 3
+                          </Typography>
+                        </ListItemButton>
+                      </List>
+                    </Box>
+                  )
+                }
+              </Box>
+              {/* END Notification */}
               <ToggleColorMode mode={mode} toggleColorMode={toggleColorMode} />
               <Button
                 color="primary"
@@ -252,6 +353,9 @@ function Header({ mode, toggleColorMode }) {
                 Sign up
               </Button>
             </Box>
+            {/* END Thanh NavBar bên phải */}
+
+            {/* Chuyển thành menu dạng mobile */}
             <Box sx={{ display: { sm: "", md: "none" } }}>
               <Button
                 variant="text"
@@ -327,6 +431,7 @@ function Header({ mode, toggleColorMode }) {
                 </Box>
               </Drawer>
             </Box>
+            {/* END Chuyển thành menu dạng mobile */}
           </Toolbar>
         </Container>
       </AppBar>

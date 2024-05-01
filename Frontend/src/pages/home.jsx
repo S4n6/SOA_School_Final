@@ -6,14 +6,14 @@ import MoviesRecommend from "../components/movie/moviesRecommend";
 
 export default function Home() {
     return (
-       <Box 
-        sx={
-            {
-                marginTop: '100px',
+        <Box
+            sx={
+                {
+                    marginTop: '100px',
+                }
             }
-        }
-       >
-            <CarouselComponent/>
+        >
+            <CarouselComponent />
             <Box
                 sx={{
                     display: 'flex',
@@ -23,20 +23,23 @@ export default function Home() {
                     sx={{
                         width: '75%',
                         marginRight: '3rem',
+                        boxShadow: '0 0 4px 0 rgba(0,0,0,0.2)',
+                        borderRadius: '8px',
                     }}
                 >
-                    <GridViewMovies/>
+                    <GridViewMovies />
                 </Box>
                 <Box
                     sx={{
-                       width: '25%',
+                        width: '25%',
+                        boxShadow: '0 0 4px 0 rgba(0,0,0,0.2)',
+                        borderRadius: '8px',
                     }}
                 >
-                    <MoviesRecommend/>
+                    <MoviesRecommend />
                 </Box>
-                {/* <GridViewMovies/>
-                <MoviesRecommend/> */}
+
             </Box>
-       </Box>
+        </Box>
     );
 }

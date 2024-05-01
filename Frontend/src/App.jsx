@@ -8,6 +8,7 @@ import Layout from "./components/layout/layout";
 import LoginButton from "./components/test";
 import Watching from "./pages/watching";
 import AllFilm from "./pages/allFilms";
+import Dashboard from "./pages/admin";
 
 function App() {
   const [mode, setMode] = useState("light");
@@ -35,6 +36,7 @@ function App() {
             </Layout>
           }
         />
+
         <Route
           path="/"
           element={
@@ -48,6 +50,7 @@ function App() {
             </Layout>
           }
         />
+
         <Route
           path="/video"
           element={
@@ -78,6 +81,14 @@ function App() {
             // <Watching/>
           }
         />
+
+        <Route
+          path="/admin"
+          element={
+            <Dashboard/>
+          }
+        />
+
       </Routes>
     </Router>
   );
