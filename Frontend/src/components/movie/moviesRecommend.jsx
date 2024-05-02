@@ -1,7 +1,8 @@
-import { Grid, Typography } from "@mui/material";
+import { Button, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import MovieRecommendItem from "./movieRecommendItem";
 import MovieIcon from "@mui/icons-material/Movie";
+import AddIcon from '@mui/icons-material/Add';
 
 function MoviesRecommend({ films }) {
     return (
@@ -22,10 +23,20 @@ function MoviesRecommend({ films }) {
                     Movies Trending
                 </Box>
             </Typography>
+            <Button
+                sx={{
+                    fontSize: "1rem",
+                    fontWeight: "bold",
+                    textTransform: "none",
+                }}
+            >
+                <AddIcon sx={{ mr: 1 }} />
+                View all
+            </Button>
             <Grid container spacing={2}>
                 {films.map((film, index) => {
                     return <Grid item xs={12} sm={12} md={12} lg={12} key={index}>
-                        <MovieRecommendItem film={film}/>
+                        <MovieRecommendItem film={film} />
                     </Grid>
                 })}
             </Grid>

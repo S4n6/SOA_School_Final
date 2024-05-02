@@ -101,7 +101,7 @@ function AllFilm() {
 
         const queryParams = new URLSearchParams({
             genres: selectedGenre.join(","),
-            genres: selectedGenre.join(","),
+            // genres: selectedGenre.join(","),
             years: selectedYear.join(","),
             ratings: selectedRating.join(","),
             countries: selectedCountry.join(",")

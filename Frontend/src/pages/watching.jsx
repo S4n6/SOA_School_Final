@@ -22,6 +22,7 @@ function Watching() {
         getTVShowByID({ id })
             .then((value) => {
                 setFilm(value)
+                console.log(value)
             })
             .catch((error) => {
                 console.error(error)
