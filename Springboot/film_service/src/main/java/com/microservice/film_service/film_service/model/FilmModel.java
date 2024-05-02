@@ -23,6 +23,7 @@ public class FilmModel {
     private Status status;
     private FilmType type;
     private String description;
+    private double rate = 0;
 
     @DocumentReference
     private ComingSoonProperty property = new ComingSoonProperty();

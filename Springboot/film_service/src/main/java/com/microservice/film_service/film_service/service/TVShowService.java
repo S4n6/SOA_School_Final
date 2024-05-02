@@ -9,8 +9,9 @@ import java.util.List;
 
 public interface TVShowService {
     public TVShow getTVShow(String id);
-    public List<TVShow> getTVShows(int page, int size, Genre genre, String name, Status status);
+    public List<TVShow> getTVShows(int page, int size, List<Genre> genres, String name, List<String> countries, List<Integer> ratings, List<Integer> years);
     public TVShow addTVShow(MultipartFile banner, TVShow tvShow) throws Exception;
     public TVShow editTVShow(MultipartFile banner, TVShow tvShow, boolean isChangeBanner);
+    public TVShow updateRate(String tvShowID, double rate);
     public TVShow deleteTVShow(String tvShowID);
 }

@@ -33,12 +33,14 @@ public class TVShowController {
     @GetMapping("")
     public ResponseEntity<Object> getTVShows(
             @RequestParam(required = false, defaultValue = "") String name,
-            @RequestParam(required = false) Status status,
-            @RequestParam(value = "genre", required = false) Genre genre,
+            @RequestParam(value = "genres", required = false) List<Genre> genres,
+            @RequestParam(value = "countries", required = false) List<String> countries,
+            @RequestParam(value = "ratings", required = false) List<Integer> ratings,
+            @RequestParam(value = "years", required = false) List<Integer> years,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int size){
         try{
-            List<TVShow> films = tvShowService.getTVShows(page, size, genre, name, status);
+            List<TVShow> films = tvShowService.getTVShows(page, size, genres, name, countries, ratings, years);
             return ResponseMessage.createResponse(HttpStatus.OK, "GET TV SHOW SUCCESSFULLY!", films);
         }
         catch(Exception e){
@@ -53,13 +55,15 @@ public class TVShowController {
                                           @RequestParam String name, @RequestParam int duration,@RequestParam int firstYearRelease,
                                           @RequestParam String countryOfOrigin, @RequestParam String productionCompany,
                                           @RequestParam Status status, @RequestParam("genres[]") List<String> genres,
+                                          @RequestParam("actors[]") List<String> actors,
                                           @RequestParam(defaultValue = "") String description){
         try{
             List<Genre> genresList = new ArrayList<>();
             for(String i: genres){
                 genresList.add(Genre.valueOf(i));
             }
-            TVShow film = new TVShow(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genresList, description);
+            TVShow film = new TVShow(name, duration, firstYearRelease, countryOfOrigin, productionCompany,
+                    status, genresList, description, actors);
             TVShow addedFilm = tvShowService.addTVShow(banner, film);
             if(addedFilm != null){
                 return ResponseMessage.createResponse(HttpStatus.CREATED, "ADD TV SHOW SUCCESSFULLY!", film);
@@ -78,13 +82,15 @@ public class TVShowController {
                                             @RequestParam String name, @RequestParam int duration,@RequestParam int firstYearRelease,
                                             @RequestParam String countryOfOrigin, @RequestParam String productionCompany,
                                             @RequestParam Status status, @RequestParam("genres[]") List<String> genres,
+                                            @RequestParam("actors[]") List<String> actors,
                                             @RequestParam(defaultValue = "") String description){
         try{
             List<Genre> genresList = new ArrayList<>();
             for(String i: genres){
                 genresList.add(Genre.valueOf(i));
             }
-            TVShow film = new TVShow(id, bannerLink, name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genresList, description);
+            TVShow film = new TVShow(id, bannerLink, name, duration, firstYearRelease, countryOfOrigin, productionCompany,
+                    status, genresList, description, actors);
             TVShow addedFilm = tvShowService.editTVShow(banner, film, isChangeBanner);
             if(addedFilm != null){
                 return ResponseMessage.createResponse(HttpStatus.CREATED, "UPDATE TV SHOW SUCCESSFULLY!", film);

@@ -124,7 +124,7 @@ public class ImplEpisodeService implements EpisodeService {
                 episode.setProperty(property);
             }
             episode.setProperty(property);
-            return episodeRepository.insert(episode);
+            return episodeRepository.save(episode);
 
         }catch(Exception e){
             e.printStackTrace();

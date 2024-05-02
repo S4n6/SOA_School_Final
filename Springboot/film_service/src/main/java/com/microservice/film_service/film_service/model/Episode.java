@@ -6,26 +6,35 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.util.Date;
-import java.util.List;
 
 @Document("episode")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Episode extends FilmModel{
+public class Episode{
     @Id
     private String id;
+    private String name;
+    private int duration;
+    private Status status;
     private int episodeNumber;
     private String video;
     private String seasonID;
+    private String banner;
+
+    @DocumentReference
+    private ComingSoonProperty property = new ComingSoonProperty();
+
+    private FilmType type = FilmType.EPISODE;
     public Episode(
-            String name, int duration, int firstYearRelease,
-            String countryOfOrigin, String productionCompany,
-            Status status, List<Genre> genres, int episodeNumber, String seasonID, Date expectedReleaseDate, String description){
-        super(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genres, description);
+            String name, int duration, Status status, int episodeNumber, String seasonID, Date expectedReleaseDate){
+        this.name = name;
+        this.status = status;
+        this.duration = duration;
         this.episodeNumber = episodeNumber;
         this.seasonID = seasonID;
         this.setProperty(new ComingSoonProperty(expectedReleaseDate));
@@ -33,16 +42,17 @@ public class Episode extends FilmModel{
     }
     public Episode(
             String id, String video, String banner,
-            String name, int duration, int firstYearRelease,
-            String countryOfOrigin, String productionCompany,
-            Status status, List<Genre> genres, int episodeNumber, String seasonID, Date expectedReleaseDate, String description){
-        super(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genres, description);
+            String name, int duration,
+            Status status, int episodeNumber, String seasonID, Date expectedReleaseDate){
+        this.name = name;
+        this.status = status;
+        this.duration = duration;
         this.episodeNumber = episodeNumber;
         this.seasonID = seasonID;
+        this.setType(FilmType.EPISODE);
         this.id = id;
         this.video = video;
         this.setBanner(banner);
-        this.setType(FilmType.EPISODE);
         if(expectedReleaseDate != null){
             this.setProperty(new ComingSoonProperty(expectedReleaseDate));
         }

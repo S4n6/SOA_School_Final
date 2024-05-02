@@ -3,28 +3,30 @@ package com.microservice.film_service.film_service.service.implement;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.EagerTransformation;
 import com.cloudinary.utils.ObjectUtils;
-import com.microservice.film_service.film_service.client.EmailNotificationClient;
+import com.microservice.film_service.film_service.client.ReviewClient;
 import com.microservice.film_service.film_service.client.ViewClient;
 import com.microservice.film_service.film_service.model.ComingSoonProperty;
 import com.microservice.film_service.film_service.model.Movie;
 import com.microservice.film_service.film_service.model.Genre;
-import com.microservice.film_service.film_service.model.Status;
 import com.microservice.film_service.film_service.repository.ComingSoonPropertyRepository;
 import com.microservice.film_service.film_service.repository.MovieRepository;
 import com.microservice.film_service.film_service.repository.PagingAndSortingMovieRepository;
 import com.microservice.film_service.film_service.service.MovieService;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -38,9 +40,6 @@ public class ImplMovieService implements MovieService {
     private PagingAndSortingMovieRepository pagingAndSortingRepository;
 
     @Autowired
-    private ViewClient viewClient;
-
-    @Autowired
     private ComingSoonPropertyRepository comingSoonPropertyRepository;
 
     @Override
@@ -48,39 +47,38 @@ public class ImplMovieService implements MovieService {
         return movieRepository.findById(id).orElse(null);
     }
 
-//    public Movie watchFilm(String id, )
-
     @Override
-    public List<Movie> getFilms(int page, int size, Genre genre, String name, Status status) {
-        Pageable paging = PageRequest.of(page, size, Sort.Direction.ASC, "firstYearRelease");
-        if(!name.isEmpty() && genre != null && status != null){
-            Page<Movie> filmPage = pagingAndSortingRepository.findByGenresContainingAndNameRegexIgnoreCaseAndStatus(paging, genre, ".*" + name + ".*", status);
-            return filmPage.getContent();
+    public List<Movie> getFilms(int page, int size, List<Genre> genres, String name, List<String> countries,
+                                List<Integer> ratings, List<Integer> years) {
+        Pageable paging = PageRequest.of(page, size, Sort.Direction.DESC, "firstYearRelease");
+        if(years == null){
+            years = new ArrayList<>();
+            for(int i = 1900; i <= LocalDateTime.now().getYear(); i++){
+                years.add(i);
+            }
         }
-        else if(!name.isEmpty() &&  genre != null){
-            Page<Movie> filmPage = pagingAndSortingRepository.findByGenresContainingAndNameRegexIgnoreCase(paging, genre, ".*" + name + ".*");
-            return filmPage.getContent();
+        if(years.isEmpty()){
+            years = new ArrayList<>();
+            for(int i = 1900; i <= LocalDateTime.now().getYear(); i++){
+                years.add(i);
+            }
         }
-        else if(!name.isEmpty() && status != null){
-            Page<Movie> filmPage = pagingAndSortingRepository.findByNameRegexIgnoreCaseAndStatus(paging, ".*" + name + ".*", status);
-            return filmPage.getContent();
-        } else if (genre != null && status != null) {
-            Page<Movie> filmPage = pagingAndSortingRepository.findByGenresContainingAndStatus(paging, genre, status);
-            return filmPage.getContent();
+        if(genres == null){
+            genres = new ArrayList<>();
+            genres.addAll(Arrays.asList(Genre.values()));
         }
-        else if(!name.isEmpty()){
-            Page<Movie> filmPage = pagingAndSortingRepository.findByNameRegexIgnoreCase(paging, name);
-            return filmPage.getContent();
+        if(genres.isEmpty()){
+            genres = new ArrayList<>();
+            genres.addAll(Arrays.asList(Genre.values()));
         }
-        else if(genre != null){
-            Page<Movie> filmPage = pagingAndSortingRepository.findByGenresContaining(paging, genre);
-            return filmPage.getContent();
+        if(countries == null){
+            countries = Arrays.asList("Vietnam", "Korea", "Japan", "China", "America", "France", "Poland");
         }
-        else if (status != null){
-            Page<Movie> filmPage = pagingAndSortingRepository.findByStatus(paging, status);
-            return filmPage.getContent();
+        if(countries.isEmpty()){
+            countries = Arrays.asList("Vietnam", "Korea", "Japan", "China", "America", "France", "Poland");
         }
-        Page<Movie> filmPage = pagingAndSortingRepository.findAll(paging);
+        Page<Movie> filmPage = pagingAndSortingRepository.findByGenresInAndNameRegexIgnoreCaseAndCountryOfOriginInAndFirstYearReleaseIn(
+                paging, genres, ".*" + name + ".*", countries, years);
         return filmPage.getContent();
     }
 
@@ -172,6 +170,18 @@ public class ImplMovieService implements MovieService {
             return movieRepository.save(film);
         }
         catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public Movie updateRate(String movieID, double rate) {
+        try{
+            Movie movie = getFilm(movieID);
+            movie.setRate(rate);
+            return movieRepository.save(movie);
+        } catch (Exception e){
             e.printStackTrace();
         }
         return null;

@@ -91,6 +91,22 @@ public class FilmController {
                     }
                 }
 
+                if(films.isEmpty()){
+                    List<Movie> movies = movieService.getFilms(0, 12, new ArrayList<>(), "", new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+                    List<TVShow> tvShows = tvShowService.getTVShows(0, 12, new ArrayList<>(), "", new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+
+                    for(Movie movie: movies){
+                        if(movie != null){
+                            films.add(movie);
+                        }
+                    }
+                    for(TVShow tvShow: tvShows){
+                        if(tvShow != null){
+                            films.add(tvShow);
+                        }
+                    }
+                }
+
                 return ResponseMessage.createResponse(HttpStatus.OK, "GET FILMS SUCCESSFULLY!", films);
             }
 

@@ -4,7 +4,6 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.microservice.film_service.film_service.model.Genre;
 import com.microservice.film_service.film_service.model.TVShow;
-import com.microservice.film_service.film_service.model.Status;
 import com.microservice.film_service.film_service.repository.PagingAndSortingTVShowRepository;
 import com.microservice.film_service.film_service.repository.TVShowRepository;
 import com.microservice.film_service.film_service.service.TVShowService;
@@ -20,9 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 public class ImplTVShowService implements TVShowService {
@@ -41,36 +39,24 @@ public class ImplTVShowService implements TVShowService {
     }
 
     @Override
-    public List<TVShow> getTVShows(int page, int size, Genre genre, String name, Status status) {
-        Pageable paging = PageRequest.of(page, size, Sort.Direction.ASC, "firstYearRelease");
-        if(!name.isEmpty() && genre != null && status != null){
-            Page<TVShow> filmPage = pagingAndSortingTVShowRepository.findByGenresContainingAndNameRegexIgnoreCaseAndStatus(paging, genre, ".*" + name + ".*", status);
-            return filmPage.getContent();
+    public List<TVShow> getTVShows(int page, int size, List<Genre> genres, String name, List<String> countries,
+                                   List<Integer> ratings, List<Integer> years) {
+        Pageable paging = PageRequest.of(page, size, Sort.Direction.DESC, "firstYearRelease");
+        if(years == null){
+            years = new ArrayList<>();
+            for(int i = 1900; i <= LocalDateTime.now().getYear(); i++){
+                years.add(i);
+            }
         }
-        else if(!name.isEmpty() &&  genre != null){
-            Page<TVShow> filmPage = pagingAndSortingTVShowRepository.findByGenresContainingAndNameRegexIgnoreCase(paging, genre, ".*" + name + ".*");
-            return filmPage.getContent();
+        if(genres == null){
+            genres = new ArrayList<>();
+            genres.addAll(Arrays.asList(Genre.values()));
         }
-        else if(!name.isEmpty() && status != null){
-            Page<TVShow> filmPage = pagingAndSortingTVShowRepository.findByNameRegexIgnoreCaseAndStatus(paging, ".*" + name + ".*", status);
-            return filmPage.getContent();
-        } else if (genre != null && status != null) {
-            Page<TVShow> filmPage = pagingAndSortingTVShowRepository.findByGenresContainingAndStatus(paging, genre, status);
-            return filmPage.getContent();
+        if(countries == null){
+            countries = Arrays.asList("Vietnam", "Korea", "Japan", "China", "America", "France", "Poland");
         }
-        else if(!name.isEmpty()){
-            Page<TVShow> filmPage = pagingAndSortingTVShowRepository.findByNameRegexIgnoreCase(paging, name);
-            return filmPage.getContent();
-        }
-        else if(genre != null){
-            Page<TVShow> filmPage = pagingAndSortingTVShowRepository.findByGenresContaining(paging, genre);
-            return filmPage.getContent();
-        }
-        else if (status != null){
-            Page<TVShow> filmPage = pagingAndSortingTVShowRepository.findByStatus(paging, status);
-            return filmPage.getContent();
-        }
-        Page<TVShow> filmPage = pagingAndSortingTVShowRepository.findAll(paging);
+        Page<TVShow> filmPage = pagingAndSortingTVShowRepository.findByGenresInAndNameRegexIgnoreCaseAndCountryOfOriginInAndFirstYearReleaseIn(
+                paging, genres, ".*" + name + ".*",countries, years);
         return filmPage.getContent();
     }
 
@@ -111,6 +97,20 @@ public class ImplTVShowService implements TVShowService {
             e.printStackTrace();
         }
 
+        return null;
+    }
+
+    @Override
+    public TVShow updateRate(String tvShowID, double rate) {
+        try {
+            TVShow tvShow = getTVShow(tvShowID);
+            if(tvShow != null){
+                tvShow.setRate(rate);
+                return tvShowRepository.save(tvShow);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         return null;
     }
 

@@ -1,6 +1,7 @@
 package com.microservice.reviewservice.controller;
 
 import com.microservice.reviewservice.ResponseMessage;
+import com.microservice.reviewservice.client.FilmServiceClient;
 import com.microservice.reviewservice.model.Rate;
 import com.microservice.reviewservice.service.RateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class RateController {
 
     @Autowired
     private RateService rateService;
+
+    @Autowired
+    private FilmServiceClient filmServiceClient;
 
     @GetMapping("/{filmID}")
     public ResponseEntity<Object> getRate(@PathVariable String filmID){
@@ -42,6 +46,16 @@ public class RateController {
     public ResponseEntity<Object> addRate(@RequestBody Rate rate){
         try{
             rateService.addRate(rate);
+
+            Map<String, Object> updateRate = new HashMap<>();
+            updateRate.put("id", rate.getFilmID());
+            updateRate.put("rate", rate.getScore());
+            try{
+                filmServiceClient.updateRateMovie(updateRate);
+                filmServiceClient.updateRateTvShow(updateRate);
+            } catch (Exception e){
+                e.printStackTrace();
+            }
         } catch(Exception e){
             e.printStackTrace();
         }

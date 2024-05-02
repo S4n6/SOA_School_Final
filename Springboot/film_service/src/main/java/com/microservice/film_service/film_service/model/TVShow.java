@@ -19,16 +19,21 @@ import java.util.List;
 public class TVShow extends FilmModel{
     @Id
     private String id;
+    private List<String> actors = new ArrayList<>();
 
-    public TVShow(String name, int duration, int firstYearRelease, String countryOfOrigin, String productionCompany, Status status, List<Genre> genres, String description){
+    public TVShow(String name, int duration, int firstYearRelease, String countryOfOrigin, String productionCompany,
+                  Status status, List<Genre> genres, String description, List<String> actors){
         super(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genres, description);
         this.setType(FilmType.TV_SHOW);
+        this.actors = actors;
     }
 
-    public TVShow(String id, String banner, String name, int duration, int firstYearRelease, String countryOfOrigin, String productionCompany, Status status, List<Genre> genres, String description){
+    public TVShow(String id, String banner, String name, int duration, int firstYearRelease, String countryOfOrigin,
+                  String productionCompany, Status status, List<Genre> genres, String description, List<String> actors){
         super(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genres, description);
         this.id = id;
         this.setBanner(banner);
         this.setType(FilmType.TV_SHOW);
+        this.actors = actors;
     }
 }
