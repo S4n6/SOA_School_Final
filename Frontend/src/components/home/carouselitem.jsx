@@ -56,7 +56,7 @@ function CarouselItem({ item }) {
                         marginRight: '0.5rem',
                     }}
                 >
-                    CAM
+                    Full HD
                 </Typography>
                 
                 <Typography 
@@ -69,7 +69,7 @@ function CarouselItem({ item }) {
                         fontSize: '0.7rem',
                     }}
                 >
-                    R
+                    Sắp ra mắt
                 </Typography>
                 <br/>
                 <Typography 

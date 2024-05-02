@@ -21,10 +21,22 @@ import {
   ButtonGroup,
   FormControl,
   Grid,
+  IconButton,
+  InputAdornment,
   InputLabel,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
   OutlinedInput,
   Select,
+  TextField,
 } from "@mui/material";
+import Search from "../search";
+import SearchIcon from "@mui/icons-material/Search";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 const logoStyle = {
   width: "100px",
@@ -38,7 +50,9 @@ function Header({ mode, toggleColorMode }) {
   const [genre, setGenre] = React.useState([]);
   const [showGenre, setShowGenre] = React.useState(false);
   const [country, setCountry] = React.useState([]);
-
+  const [showNotification, setShowNotification] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const openMenuAccount = Boolean(anchorEl);
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
@@ -55,6 +69,14 @@ function Header({ mode, toggleColorMode }) {
       });
       setOpen(false);
     }
+  };
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   React.useEffect(() => {
@@ -121,6 +143,7 @@ function Header({ mode, toggleColorMode }) {
                   : "0 0 1px rgba(2, 31, 59, 0.7), 1px 1.5px 2px -1px rgba(2, 31, 59, 0.65), 4px 4px 12px -2.5px rgba(2, 31, 59, 0.65)",
             })}
           >
+            {/* Thanh NavBar bên trái */}
             <Box
               sx={{
                 flexGrow: 1,
@@ -137,22 +160,25 @@ function Header({ mode, toggleColorMode }) {
                   ...logoStyle,
                   width: "60px",
                   height: "60px",
-                  border: "2px solid black",
+                  // border: "2px solid black",
                   borderRadius: "50%",
+                  hover: {
+                    backgroundColor: "rgba(255, 255, 255, 0.5)",
+                  },
                 }}
                 alt="Home"
               />
               <Box
                 sx={{
                   display: { xs: "none", md: "flex" },
-                  marginLeft: "3rem",
+                  marginLeft: "1rem",
                 }}
               >
                 <MenuItem
                   onClick={() => scrollToSection("features")}
                   sx={{ py: "6px", px: "12px" }}
                 >
-                  <Typography variant="h6" color="text.primary">
+                  <Typography variant="button" color="text.primary">
                     Movie
                   </Typography>
                 </MenuItem>
@@ -160,7 +186,7 @@ function Header({ mode, toggleColorMode }) {
                   onClick={() => scrollToSection("testimonials")}
                   sx={{ py: "6px", px: "12px" }}
                 >
-                  <Typography variant="h6" color="text.primary">
+                  <Typography variant="button" color="text.primary">
                     TV Series
                   </Typography>
                 </MenuItem>
@@ -169,14 +195,15 @@ function Header({ mode, toggleColorMode }) {
                   sx={{ py: "6px", px: "12px" }}
                 >
                   <Box>
-                    <Button
+                    <Box
                       sx={{
                         position: "relative",
+                        color: "primary.main",
                       }}
                       onClick={() => setShowGenre(!showGenre)}
                     >
-                      Genre
-                    </Button>
+                      GENRE
+                    </Box>
                     {showGenre && (
                       <Box
                         sx={{
@@ -215,43 +242,167 @@ function Header({ mode, toggleColorMode }) {
                   onClick={() => scrollToSection("testimonials")}
                   sx={{ py: "6px", px: "12px" }}
                 >
-                  <Typography variant="h6" color="text.primary">
+                  <Typography variant="button" color="text.primary">
                     Country
                   </Typography>
                 </MenuItem>
               </Box>
             </Box>
+            {/* END Thanh NavBar bên trái */}
+            {/* Thanh NavBar bên phải */}
             <Box
               sx={{
                 display: { xs: "none", md: "flex" },
-                gap: 0.5,
+                gap: 1,
                 alignItems: "center",
               }}
             >
-              <ToggleColorMode mode={mode} toggleColorMode={toggleColorMode} />
-              <Button
-                color="primary"
-                variant="text"
-                size="small"
-                component="a"
-                target="_blank"
-                onClick={() => {
-                  setIsOpen(!isOpen);
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textAlign: "center",
                 }}
               >
-                Sign in
-              </Button>
-              <Button
-                color="primary"
-                variant="contained"
-                size="small"
-                component="a"
-                href="/material-ui/getting-started/templates/sign-up/"
-                target="_blank"
+                <TextField
+                  id="filled-textarea"
+                  placeholder="TV Series, Movies, ..."
+                  multiline
+                  variant="filled"
+                  InputProps={{
+                    style: {
+                      backgroundColor: "transparent",
+                      fontSize: "0.8rem",
+                    },
+                    startAdornment: (
+                      <InputAdornment>
+                        <IconButton onClick={() => console.log("Icon clicked")}>
+                          <SearchIcon style={{}} />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                  sx={{
+                    maxWidth: 400,
+                    color: "white",
+                    marginBottom: '16px',
+                  }}
+                />
+              </Box>
+
+              {/* Notification */}
+              <Box>
+                <IconButton
+                  sx={{
+                    backgroundColor: "transparent",
+                    hover: {
+                      backgroundColor: "rgba(255, 255, 255, 0.5)",
+                      cursor: "pointer",
+                    },
+                    borderRadius: 12,
+                  }}
+                  onClick={() => setShowNotification(!showNotification)}
+                >
+                  <NotificationsIcon />
+                </IconButton>
+
+                {showNotification && (
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      width: "20rem",
+                      height: "12rem",
+                      top: "4rem",
+                      right: "0",
+                      borderRadius: "8px",
+                      overflow: "auto",
+                      padding: "4px",
+                      boxShadow: 3,
+                    }}
+                  >
+                    <List>
+                      <ListItemButton>
+                        <Typography variant="h6" color="text.primary">
+                          Notification 1
+                        </Typography>
+                      </ListItemButton>
+                      <ListItemButton>
+                        <Typography variant="h6" color="text.primary">
+                          Notification 2
+                        </Typography>
+                      </ListItemButton>
+                      <ListItemButton>
+                        <Typography variant="h6" color="text.primary">
+                          Notification 3
+                        </Typography>
+                      </ListItemButton>
+                    </List>
+                  </Box>
+                )}
+              </Box>
+              {/* END Notification */}
+              <ToggleColorMode mode={mode} toggleColorMode={toggleColorMode} />
+
+              {/* Menu Account */}
+              <IconButton
+                sx={{
+                  backgroundColor: "transparent",
+                  hover: {
+                    backgroundColor: "rgba(255, 255, 255, 0.5)",
+                    cursor: "pointer",
+                  },
+                  borderRadius: 12,
+                }}
+                aria-label="more"
+                aria-controls="long-menu"
+                aria-haspopup="true"
+                onClick={handleClick}
               >
-                Sign up
-              </Button>
+                <AccountCircleIcon />
+              </IconButton>
+              <Menu
+                id="long-menu"
+                anchorEl={anchorEl}
+                open={openMenuAccount}
+                onClose={handleClose}
+                MenuListProps={{
+                  "aria-labelledby": "basic-button",
+                }}
+              >
+                <MenuItem>
+                  <Button
+                    color="primary"
+                    variant="text"
+                    size="small"
+                    component="a"
+                    target="_blank"
+                    onClick={() => {
+                      setIsOpen(!isOpen);
+                    }}
+                  >
+                    Sign in
+                  </Button>
+                </MenuItem>
+
+                <MenuItem>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    size="small"
+                    component="a"
+                    href="/material-ui/getting-started/templates/sign-up/"
+                    target="_blank"
+                  >
+                    Sign up
+                  </Button>
+                </MenuItem>
+              </Menu>
+              {/* END Menu Account */}
             </Box>
+            {/* END Thanh NavBar bên phải */}
+
+            {/* Chuyển thành menu dạng mobile */}
             <Box sx={{ display: { sm: "", md: "none" } }}>
               <Button
                 variant="text"
@@ -327,6 +478,7 @@ function Header({ mode, toggleColorMode }) {
                 </Box>
               </Drawer>
             </Box>
+            {/* END Chuyển thành menu dạng mobile */}
           </Toolbar>
         </Container>
       </AppBar>

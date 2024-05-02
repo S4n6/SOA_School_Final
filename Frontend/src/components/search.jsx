@@ -12,7 +12,7 @@ function Search(){
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    width: '74%',
+                    width: '75%',
                     backgroundColor: 'rgba(255, 255, 255, 0.3)',
                     borderRadius: 12,
                 }
@@ -42,7 +42,6 @@ function Search(){
                         style: {
                             backgroundColor: 'transparent',
                             color: 'white',
-                            // borderRadius: 12,
                         }
                     }
                 
