@@ -48,11 +48,24 @@ public class ImplTVShowService implements TVShowService {
                 years.add(i);
             }
         }
+        if(years.isEmpty()){
+            years = new ArrayList<>();
+            for(int i = 1900; i <= LocalDateTime.now().getYear(); i++){
+                years.add(i);
+            }
+        }
         if(genres == null){
             genres = new ArrayList<>();
             genres.addAll(Arrays.asList(Genre.values()));
         }
+        if(genres.isEmpty()){
+            genres = new ArrayList<>();
+            genres.addAll(Arrays.asList(Genre.values()));
+        }
         if(countries == null){
+            countries = Arrays.asList("Vietnam", "Korea", "Japan", "China", "America", "France", "Poland");
+        }
+        if(countries.isEmpty()){
             countries = Arrays.asList("Vietnam", "Korea", "Japan", "China", "America", "France", "Poland");
         }
         Page<TVShow> filmPage = pagingAndSortingTVShowRepository.findByGenresInAndNameRegexIgnoreCaseAndCountryOfOriginInAndFirstYearReleaseIn(

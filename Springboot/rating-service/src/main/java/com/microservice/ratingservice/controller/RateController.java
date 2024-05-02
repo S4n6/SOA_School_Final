@@ -1,9 +1,9 @@
-package com.microservice.reviewservice.controller;
+package com.microservice.ratingservice.controller;
 
-import com.microservice.reviewservice.ResponseMessage;
-import com.microservice.reviewservice.client.FilmServiceClient;
-import com.microservice.reviewservice.model.Rate;
-import com.microservice.reviewservice.service.RateService;
+import com.microservice.ratingservice.ResponseMessage;
+import com.microservice.ratingservice.client.FilmServiceClient;
+import com.microservice.ratingservice.model.Rate;
+import com.microservice.ratingservice.service.RateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,8 +51,17 @@ public class RateController {
             updateRate.put("id", rate.getFilmID());
             updateRate.put("rate", rate.getScore());
             try{
-                filmServiceClient.updateRateMovie(updateRate);
-                filmServiceClient.updateRateTvShow(updateRate);
+                try {
+                    filmServiceClient.updateRateMovie(updateRate);
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+
+                try {
+                    filmServiceClient.updateRateTvShow(updateRate);
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
             } catch (Exception e){
                 e.printStackTrace();
             }

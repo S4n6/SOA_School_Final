@@ -37,7 +37,7 @@ function RenderSelectByCategory(categoryName, listCategory, setCategory, setSele
     };
 
     const handleChecked = (category) => {
-        setSelectedItems(prev => category.toUpperCase() != "" ? prev.concat(category.toUpperCase()) : prev.concat(category))
+        setSelectedItems(prev => category.toUpperCase() != "" ? prev.concat(category.toUpperCase().replace("-", "_")) : prev.concat(category.replace("-", "_")))
     }
 
     const [categories, setCategories] = useState([]);
@@ -88,7 +88,13 @@ function AllFilm() {
         setCountry(["Vietnam", "Korea", "Japan", "China", "USA", "UK"]);
         setRating(["1", "2", "3", "4", "5"]);
         setYear(["2021", "2020", "2019", "2018", "2017"]);
-        getCommendedFilms()
+        getCommendedFilms({ userID: "66227018dea6cbf7a9ab36ba", page: 0, size: 10 })
+            .then((value) => {
+                setFilms(value)
+            })
+            .catch((error) => {
+                console.error(error)
+            })
     }, []);
 
     const handleClickFilter = () => {
@@ -102,6 +108,16 @@ function AllFilm() {
         });
 
         filterMovie(queryParams.toString())
+            .then((value) => {
+                setFilms(value)
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+    }
+
+    const handleChangePage = (page) => {
+        getCommendedFilms({ userID: "66227018dea6cbf7a9ab36ba", page: page, size: 10 })
             .then((value) => {
                 setFilms(value)
             })
@@ -198,7 +214,7 @@ function AllFilm() {
                         justifyContent: "space-between",
                     }}
                 >
-                    <GridViewMovies films={films}/>
+                    <GridViewMovies films={films} />
                     <Box
                         sx={{
                             display: "flex",
@@ -207,7 +223,7 @@ function AllFilm() {
                             marginBottom: "2rem",
                         }}
                     >
-                        <Pagination count={10} showFirstButton showLastButton />
+                        <Pagination count={10} showFirstButton showLastButton onChange={(e, page) => handleChangePage(page - 1)}/>
                     </Box>
                 </Box>
                 <Box
@@ -219,7 +235,7 @@ function AllFilm() {
                         paddingBottom: "8px",
                     }}
                 >
-                    <MoviesRecommend />
+                    <MoviesRecommend films={films}/>
                 </Box>
             </Box>
             {/* END Danh sách phim */}

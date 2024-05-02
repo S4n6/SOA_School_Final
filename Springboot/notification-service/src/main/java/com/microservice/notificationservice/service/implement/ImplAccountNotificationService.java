@@ -4,6 +4,9 @@ import com.microservice.notificationservice.model.AccountNotification;
 import com.microservice.notificationservice.repository.AccountNotificationRepository;
 import com.microservice.notificationservice.service.AccountNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,8 +18,9 @@ public class ImplAccountNotificationService implements AccountNotificationServic
     private AccountNotificationRepository accountNotificationRepository;
 
     @Override
-    public List<AccountNotification> getAccountNotifications(String userID) {
-        return accountNotificationRepository.findByUserID(userID);
+    public List<AccountNotification> getAccountNotifications(String userID, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
+        return accountNotificationRepository.findByUserID(pageable, userID).getContent();
     }
 
     @Override
@@ -27,7 +31,7 @@ public class ImplAccountNotificationService implements AccountNotificationServic
     @Override
     public AccountNotification addAccountNotification(AccountNotification accountNotification) {
         try{
-            return accountNotificationRepository.insert(accountNotification);
+            return accountNotificationRepository.save(accountNotification);
         } catch(Exception e){
             e.printStackTrace();
         }

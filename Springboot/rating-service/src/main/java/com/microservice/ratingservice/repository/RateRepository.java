@@ -1,6 +1,6 @@
-package com.microservice.reviewservice.repository;
+package com.microservice.ratingservice.repository;
 
-import com.microservice.reviewservice.model.Rate;
+import com.microservice.ratingservice.model.Rate;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

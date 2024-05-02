@@ -1,4 +1,4 @@
-package com.microservice.reviewservice.model;
+package com.microservice.ratingservice.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

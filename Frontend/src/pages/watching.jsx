@@ -44,7 +44,7 @@ function Watching() {
                 flexDirection: 'column',
             }}
         >
-            {film != null? <Video video={video} />: null}
+            {film != null? <Video video={video} filmID={film.id}/>: null}
             {film != null? <Box
                 sx={{
                     display: "flex",

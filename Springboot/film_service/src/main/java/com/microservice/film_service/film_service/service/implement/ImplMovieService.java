@@ -3,8 +3,6 @@ package com.microservice.film_service.film_service.service.implement;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.EagerTransformation;
 import com.cloudinary.utils.ObjectUtils;
-import com.microservice.film_service.film_service.client.ReviewClient;
-import com.microservice.film_service.film_service.client.ViewClient;
 import com.microservice.film_service.film_service.model.ComingSoonProperty;
 import com.microservice.film_service.film_service.model.Movie;
 import com.microservice.film_service.film_service.model.Genre;
@@ -12,14 +10,12 @@ import com.microservice.film_service.film_service.repository.ComingSoonPropertyR
 import com.microservice.film_service.film_service.repository.MovieRepository;
 import com.microservice.film_service.film_service.repository.PagingAndSortingMovieRepository;
 import com.microservice.film_service.film_service.service.MovieService;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -179,8 +175,10 @@ public class ImplMovieService implements MovieService {
     public Movie updateRate(String movieID, double rate) {
         try{
             Movie movie = getFilm(movieID);
-            movie.setRate(rate);
-            return movieRepository.save(movie);
+            if(movie != null){
+                movie.setRate(rate);
+                return movieRepository.save(movie);
+            }
         } catch (Exception e){
             e.printStackTrace();
         }
