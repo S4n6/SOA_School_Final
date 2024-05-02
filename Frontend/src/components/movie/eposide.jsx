@@ -46,6 +46,12 @@ function Eposide({ filmID, setVideo }) {
             })
     }, [seasonID])
 
+    useEffect(() => {
+        if(episodes.length > 0){
+            setVideo(episodes[0].video)
+        }
+    }, [episodes])
+
     const handleChange = (event) => {
         setSeasonID(event.target.value);
     };

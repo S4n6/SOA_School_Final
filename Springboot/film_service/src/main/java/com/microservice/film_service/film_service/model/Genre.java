@@ -34,4 +34,5 @@ public enum Genre {
     WESTERN,
     WAR,
     MISCELLANEOUS,
+    IMAX
 }

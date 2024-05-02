@@ -10,8 +10,9 @@ import java.util.List;
 
 public interface MovieService {
     public Movie getFilm(String id);
-    public List<Movie> getFilms(int page, int size, Genre genre, String name, Status status);
+    public List<Movie> getFilms(int page, int size, List<Genre> genres, String name, List<String> countries, List<Integer> ratings, List<Integer> years);
     public Movie addFilm(MultipartFile video, MultipartFile banner, Movie film) throws IOException;
     public Movie editFilm(MultipartFile video, MultipartFile banner, Movie film, boolean isChangeVideo, boolean isChangeBanner);
+    public Movie updateRate(String movieID, double rate);
     public Movie deleteFilm(String id);
 }

@@ -44,12 +44,15 @@ public class MovieController {
     @GetMapping("")
     public ResponseEntity<Object> getFilms(
             @RequestParam(required = false, defaultValue = "") String name,
-            @RequestParam(required = false) Status status,
-            @RequestParam(value = "genre", required = false) Genre genre,
+            @RequestParam(value = "genres", required = false) List<Genre> genres,
+            @RequestParam(value = "countries", required = false) List<String> countries,
+            @RequestParam(value = "ratings", required = false) List<Integer> ratings,
+            @RequestParam(value = "years", required = false) List<Integer> years,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int size){
         try{
-            List<Movie> films = movieService.getFilms(page, size, genre, name, status);
+            List<Movie> films = movieService.getFilms(page, size, genres, name, countries, ratings, years);
+
             return ResponseMessage.createResponse(HttpStatus.OK, "GET MOVIES SUCCESSFULLY!", films);
         }
         catch(Exception e){
@@ -65,13 +68,15 @@ public class MovieController {
                                           @RequestParam String name, @RequestParam int duration,@RequestParam int firstYearRelease,
                                           @RequestParam String countryOfOrigin, @RequestParam String productionCompany,
                                           @RequestParam Status status, @RequestParam("genres[]") List<String> genres,
+                                          @RequestParam("actors[]") List<String> actors,
                                           @RequestParam(defaultValue = "") String description){
         try{
             List<Genre> genresList = new ArrayList<>();
             for(String i: genres){
                 genresList.add(Genre.valueOf(i));
             }
-            Movie film = new Movie(name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genresList, expectedReleaseDate, description);
+            Movie film = new Movie(name, duration, firstYearRelease, countryOfOrigin, productionCompany,
+                    status, genresList, expectedReleaseDate, description, actors);
             Movie addedFilm = movieService.addFilm(video, banner, film);
             if(addedFilm != null){
                 return ResponseMessage.createResponse(HttpStatus.CREATED, "ADD MOVIE SUCCESSFULLY!", film);
@@ -92,6 +97,7 @@ public class MovieController {
                                               @RequestParam String name, @RequestParam int duration, @RequestParam int firstYearRelease,
                                               @RequestParam String countryOfOrigin, @RequestParam String productionCompany,
                                               @RequestParam Status status, @RequestParam("genres[]") List<String> genres,
+                                              @RequestParam("actors[]") List<String> actors,
                                               @RequestParam(defaultValue = "") String description,
                                               @RequestHeader HttpHeaders headers){
         try {
@@ -99,7 +105,8 @@ public class MovieController {
             for(String i: genres){
                 genresList.add(Genre.valueOf(i));
             }
-            Movie movie = new Movie(id, videoLink, bannerLink, name, duration, firstYearRelease, countryOfOrigin, productionCompany, status, genresList, expectedReleaseDate, description);
+            Movie movie = new Movie(id, videoLink, bannerLink, name, duration, firstYearRelease, countryOfOrigin,
+                    productionCompany, status, genresList, expectedReleaseDate, description, actors);
             Movie addedMovie = movieService.getFilm(id);
             Movie updatedMovie = movieService.editFilm(video, banner, movie, isChangeVideo, isChangeBanner);
             if(addedMovie != null){
@@ -159,5 +166,21 @@ public class MovieController {
             e.printStackTrace();
         }
         return ResponseMessage.createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "DELETE MOVIE FAILED!", null);
+    }
+
+    @PutMapping("/update-rate")
+    public ResponseEntity<Object> updateRate(@RequestBody Map<String, Object> map){
+        try {
+            String movieID = map.get("id").toString();
+            double rate = Double.parseDouble(map.get("rate").toString());
+
+            Movie movie = movieService.updateRate(movieID, rate);
+            if(movie != null) {
+                return ResponseMessage.createResponse(HttpStatus.OK, "UPDATE RATE OF MOVIE SUCCESSFULLY!", movie);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return ResponseMessage.createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "UPDATE RATE OF MOVIE FAILED!", null);
     }
 }
