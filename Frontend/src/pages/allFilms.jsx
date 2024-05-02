@@ -159,7 +159,7 @@ function AllFilm() {
               sx={{
                 border: "1px solid",
                 height: "100%",
-                width: "80%",
+                width: "30%",
                 textAlign: "center",
               }}
             >

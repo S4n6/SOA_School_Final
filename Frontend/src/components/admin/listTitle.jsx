@@ -1,14 +1,17 @@
-import * as React from 'react';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import ListSubheader from '@mui/material/ListSubheader';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import PeopleIcon from '@mui/icons-material/People';
-import BarChartIcon from '@mui/icons-material/BarChart';
-import LayersIcon from '@mui/icons-material/Layers';
-import AssignmentIcon from '@mui/icons-material/Assignment';
+import * as React from "react";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import ListSubheader from "@mui/material/ListSubheader";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import PersonIcon from "@mui/icons-material/Person";
+import TheatersIcon from "@mui/icons-material/Theaters";
+import CategoryIcon from "@mui/icons-material/Category";
+import ReportIcon from "@mui/icons-material/Report";
+import TvIcon from "@mui/icons-material/Tv";
+import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 export const mainListItems = (
   <React.Fragment>
@@ -18,29 +21,72 @@ export const mainListItems = (
       </ListItemIcon>
       <ListItemText primary="Dashboard" />
     </ListItemButton>
+
     <ListItemButton>
       <ListItemIcon>
-        <ShoppingCartIcon />
+        <TvIcon />
       </ListItemIcon>
-      <ListItemText primary="Orders" />
+      <Accordion
+        sx={{
+          width: "100%",
+          backgroundColor: "transparent",
+        }}
+      >
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1-content"
+          id="panel1-header"
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          TV Show
+        </AccordionSummary>
+        <AccordionDetails>
+          <ListItemButton>
+            <ListItemText primary="Show All" />
+          </ListItemButton>
+        </AccordionDetails>
+        <AccordionDetails>
+          <ListItemButton>
+            <ListItemText primary="Seasons" />
+          </ListItemButton>
+        </AccordionDetails>
+        <AccordionDetails>
+          <ListItemButton>
+            <ListItemText primary="Eposides" />
+          </ListItemButton>
+        </AccordionDetails>
+      </Accordion>
     </ListItemButton>
+
     <ListItemButton>
       <ListItemIcon>
-        <PeopleIcon />
+        <TheatersIcon />
       </ListItemIcon>
-      <ListItemText primary="Customers" />
+      <ListItemText primary="Movie" />
     </ListItemButton>
+
     <ListItemButton>
       <ListItemIcon>
-        <BarChartIcon />
+        <CategoryIcon />
       </ListItemIcon>
-      <ListItemText primary="Reports" />
+      <ListItemText primary="Quản lí category" />
     </ListItemButton>
+
     <ListItemButton>
       <ListItemIcon>
-        <LayersIcon />
+        <PersonIcon />
       </ListItemIcon>
-      <ListItemText primary="Integrations" />
+      <ListItemText primary="Quản lí người dùng" />
+    </ListItemButton>
+
+    <ListItemButton>
+      <ListItemIcon>
+        <ReportIcon />
+      </ListItemIcon>
+      <ListItemText primary="Quản lí báo cáo" />
     </ListItemButton>
   </React.Fragment>
 );
