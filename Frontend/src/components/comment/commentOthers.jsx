@@ -98,7 +98,14 @@ function CommentOthers({ comment }) {
                         gap={2}
                     >
                         {time} ago
-                        <ReplyIcon onClick={() => setShowChat(!showChat)} />
+                        <ReplyIcon 
+                            onClick={() => setShowChat(!showChat)} 
+                            sx={{
+                                ":hover": {
+                                    cursor: "pointer",
+                                },
+                            }}
+                        />
                     </Typography>
                 </Box>
             </Box>

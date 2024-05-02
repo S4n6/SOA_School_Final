@@ -24,6 +24,7 @@ import EditFilm from '../../components/admin/addAndEditMovie';
 import ManageTvshow from './manageTvshow';
 import ManageSeason from './manageSeason';
 import ManageUser from './manageUser';
+import Statitics from './statitics';
 
 
 
@@ -94,7 +95,7 @@ export default function Dashboard() {
   const mainContents = [
     {
       title: 'Dashboard',
-      content: <></>
+      content: <Statitics/>
     },
     {
       title: 'User',

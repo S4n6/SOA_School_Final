@@ -295,7 +295,7 @@ function Header({ mode, toggleColorMode }) {
               <Box>
                 <IconButton
                   sx={{
-                    backgroundColor: "transparent",
+                    // backgroundColor: "transparent",
                     hover: {
                       backgroundColor: "rgba(255, 255, 255, 0.5)",
                       cursor: "pointer",

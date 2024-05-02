@@ -15,6 +15,9 @@ import {
     TextField,
     Grid,
     Pagination,
+    Typography,
+    Tabs,
+    Tab,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import GridViewMovies from "../components/movie/gridviewMovies";
@@ -75,6 +78,11 @@ function AllFilm() {
     const [selectedCountry, setSelectedCountry] = useState([]);
     const [selectedRating, setSelectedRating] = useState([]);
     const [selectedYear, setSelectedYear] = useState([]);
+    const [typeAll, setTypeAll] = useState(0);
+
+    const handleChange = (event, newValue) => {
+        setTypeAll(newValue);
+    };
 
     useEffect(() => {
         setGenre([
@@ -109,6 +117,21 @@ function AllFilm() {
                 console.error(error)
             })
     }
+
+    useEffect(() => {
+        if(typeAll === 0) {
+            filterMovie('')
+            .then((value) => {
+                console.log('filmsss', value)
+                setFilms(value)
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+        }else{
+            setFilms([])
+        }
+    }, [typeAll])
 
     return (
         <Box
@@ -198,6 +221,12 @@ function AllFilm() {
                         justifyContent: "space-between",
                     }}
                 >
+                    <Box>
+                        <Tabs value={typeAll} onChange={handleChange} aria-label="basic tabs example">
+                            <Tab label="Movie" />
+                            <Tab label="TV Show" />
+                        </Tabs>
+                    </Box>
                     <GridViewMovies films={films}/>
                     <Box
                         sx={{
