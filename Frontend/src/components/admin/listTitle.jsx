@@ -13,9 +13,15 @@ import TvIcon from "@mui/icons-material/Tv";
 import { Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-export const mainListItems = (
+export const mainListItems = (setMainContent) => { 
+  
+  return (
   <React.Fragment>
-    <ListItemButton>
+    <ListItemButton
+       onClick={() => {
+        console.log("ListItemButton clicked");
+      }}
+    >
       <ListItemIcon>
         <DashboardIcon />
       </ListItemIcon>
@@ -44,52 +50,88 @@ export const mainListItems = (
           TV Show
         </AccordionSummary>
         <AccordionDetails>
-          <ListItemButton>
+          <ListItemButton
+            onClick={() => {
+              setMainContent("ShowAll");
+              console.log("ListItemButton clicked");
+            }}
+          >
             <ListItemText primary="Show All" />
           </ListItemButton>
         </AccordionDetails>
         <AccordionDetails>
-          <ListItemButton>
+          <ListItemButton
+            onClick={() => {
+              setMainContent("Seasons");
+              console.log("ListItemButton clicked");
+            }}
+          >
             <ListItemText primary="Seasons" />
           </ListItemButton>
         </AccordionDetails>
         <AccordionDetails>
-          <ListItemButton>
+          <ListItemButton
+             onClick={() => {
+              setMainContent("Eposides");
+              console.log("ListItemButton clicked");
+            }}
+          >
             <ListItemText primary="Eposides" />
           </ListItemButton>
         </AccordionDetails>
       </Accordion>
     </ListItemButton>
 
-    <ListItemButton>
+    <ListItemButton
+       onClick={() => {
+        setMainContent("Movie");
+        console.log("ListItemButton clicked");
+      }}
+    >
       <ListItemIcon>
         <TheatersIcon />
       </ListItemIcon>
       <ListItemText primary="Movie" />
     </ListItemButton>
 
-    <ListItemButton>
+    <ListItemButton
+       onClick={() => {
+        setMainContent("Category");
+        console.log("ListItemButton clicked");
+      }}
+    >
       <ListItemIcon>
         <CategoryIcon />
       </ListItemIcon>
       <ListItemText primary="Quản lí category" />
     </ListItemButton>
 
-    <ListItemButton>
+    <ListItemButton
+       onClick={() => {
+        setMainContent("User");
+        console.log("ListItemButton clicked");
+      }}
+    >
       <ListItemIcon>
         <PersonIcon />
       </ListItemIcon>
       <ListItemText primary="Quản lí người dùng" />
     </ListItemButton>
 
-    <ListItemButton>
+    <ListItemButton
+       onClick={() => {
+        setMainContent("Report");
+        console.log("ListItemButton clicked");
+      }}
+    >
       <ListItemIcon>
         <ReportIcon />
       </ListItemIcon>
       <ListItemText primary="Quản lí báo cáo" />
     </ListItemButton>
   </React.Fragment>
-);
+)
+};
 
 export const secondaryListItems = (
   <React.Fragment>

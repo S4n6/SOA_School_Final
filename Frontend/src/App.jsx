@@ -8,7 +8,7 @@ import Layout from "./components/layout/layout";
 import LoginButton from "./components/test";
 import Watching from "./pages/watching";
 import AllFilm from "./pages/allFilms";
-import Dashboard from "./pages/admin";
+import Dashboard from "./pages/admin/admin";
 
 function App() {
   const [mode, setMode] = useState("light");

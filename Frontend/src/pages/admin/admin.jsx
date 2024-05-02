@@ -11,18 +11,20 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';
 import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { mainListItems, secondaryListItems } from '../components/admin/listTitle';
-import Chart from '../components/admin/chart';
-import Deposits from '../components/admin/deposits';
-import Orders from '../components/admin/order';
-import ManageFilm from './manageFilm';
+import { mainListItems, secondaryListItems } from '../../components/admin/listTitle';
+
+import ManageEposide from './manageEposide';
+import ManageMovie from './manageMovie';
+import EditFilm from '../../components/admin/addAndEditMovie';
+import ManageTvshow from './manageTvshow';
+import ManageSeason from './manageSeason';
 import ManageUser from './manageUser';
+
 
 
 function Copyright(props) {
@@ -89,9 +91,43 @@ const defaultTheme = createTheme();
 
 export default function Dashboard() {
   const [open, setOpen] = React.useState(true);
+  const mainContents = [
+    {
+      title: 'Dashboard',
+      content: <></>
+    },
+    {
+      title: 'User',
+      content: <ManageUser/>
+    },
+    {
+      title: 'Movie',
+      content: <ManageMovie/>
+    },
+    {
+      title: 'Eposides',
+      content: <ManageEposide/>
+    },
+    {
+      title: 'ShowAll',
+      content: <ManageTvshow/>
+    },
+    {
+      title: 'Seasons',
+      content: <ManageSeason/>
+    },
+  ]
+
+  const [mainContent, setMainContent] = React.useState('Dashboard');
   const toggleDrawer = () => {
     setOpen(!open);
   };
+
+  React.useEffect(() => {
+    console.log(mainContent);
+  }, [mainContent]);
+
+  
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -146,7 +182,7 @@ export default function Dashboard() {
           </Toolbar>
           <Divider />
           <List component="nav">
-            {mainListItems}
+            {mainListItems(setMainContent)}
             <Divider sx={{ my: 1 }} />
             {secondaryListItems}
           </List>
@@ -171,7 +207,14 @@ export default function Dashboard() {
                 padding: 2,
               }}
             >
-              <ManageFilm />
+              {
+                mainContents.map((content) => {
+                  if (content.title === mainContent) {
+                    return content.content;
+                  }
+                })
+              }
+
             </Paper>
             <Copyright sx={{ pt: 4 }} />
           </Container>
