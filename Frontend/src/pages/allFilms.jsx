@@ -30,7 +30,7 @@ import { getTVShows } from "../api/tvShow";
 
 
 // Hàm để render ô chọn category
-function RenderSelectByCategory(categoryName, listCategory, setCategory, setSelectedItems) {
+function RenderSelectByCategory(categoryName, listCategory, selectedItems, setSelectedItems) {
     const handleChange = (event) => {
         const {
             target: { value },
@@ -42,7 +42,14 @@ function RenderSelectByCategory(categoryName, listCategory, setCategory, setSele
     };
 
     const handleChecked = (category) => {
-        setSelectedItems(prev => category.toUpperCase() != "" ? prev.concat(category.toUpperCase().replace("-", "_")) : prev.concat(category.replace("-", "_")))
+        category = category.replace("-", "_")
+        if (!selectedItems.includes(category)) {
+            setSelectedItems(prev => prev.concat(category))
+        }
+        else {
+            const index = selectedItems.indexOf(category)
+            setSelectedItems(prev => prev.splice(index, 1))
+        }
     }
 
     const [categories, setCategories] = useState([]);
@@ -70,19 +77,20 @@ function RenderSelectByCategory(categoryName, listCategory, setCategory, setSele
 }
 
 function AllFilm() {
+    const [type, setType] = useState([])
     const [genre, setGenre] = useState([]);
     const [country, setCountry] = useState([]);
     const [rating, setRating] = useState([]);
     const [year, setYear] = useState([]);
     const [films, setFilms] = useState([]);
 
+    const [selectedType, setSelectedType] = useState([]);
     const [selectedGenre, setSelectedGenre] = useState([]);
     const [selectedCountry, setSelectedCountry] = useState([]);
     const [selectedRating, setSelectedRating] = useState([]);
     const [selectedYear, setSelectedYear] = useState([]);
     const [nameSearch, setNameSearch] = useState('');
     const [url, setUrl] = useState(window.location.search);
-    const { type } = useParams();
     const [page, setPage] = useState(1);
 
     const urlParams = new URLSearchParams(url);
@@ -90,10 +98,9 @@ function AllFilm() {
 
     useEffect(() => {
         setUrl(window.location.search)
-        
+
     }, [window.location.search])
 
-    console.log('url', url)
     const navigate = useNavigate();
 
     const handleChangePage = (event, value) => {
@@ -101,6 +108,10 @@ function AllFilm() {
     };
 
     useEffect(() => {
+        setType([
+            "Movie",
+            "TV Show",
+        ])
         setGenre([
             "Action",
             "Adventure",
@@ -124,55 +135,42 @@ function AllFilm() {
 
     const handleClickFilter = () => {
 
-        let queryParams = new URLSearchParams();
+        var queryParams = new URLSearchParams({});
 
-        if (selectedGenre.length > 0) {
-        queryParams.append('genres', selectedGenre.join(","));
-        }
+        selectedGenre.map((genre, index) => { queryParams.append("genres", genre.toUpperCase()) })
 
-        if (nameSearch) {
-        queryParams.append('name', nameSearch);
-        }
+        selectedYear.map((year, index) => { queryParams.append("years", year) })
 
-        if (selectedYear.length > 0) {
-        queryParams.append('years', selectedYear.join(","));
-        }
+        selectedCountry.map((country, index) => { queryParams.append("countries", country) })
 
-        if (selectedRating.length > 0) {
-        queryParams.append('ratings', selectedRating.join(","));
-        }
+        selectedRating.map((rating, index) => { queryParams.append("ratings", rating) })
 
-        if (selectedCountry.length > 0) {
-        queryParams.append('countries', selectedCountry.join(","));
-        }
+        queryParams.append("name", nameSearch)
+
+        console.log(queryParams.toString())
+
+        setFilms([])
 
         setPage(1)
-        if(type === "Movie"){
-            filterMovie(queryParams.toString())
-                .then((value) => {
-                    setFilms(value)
-                })
-                .catch((error) => {
-                    console.error(error)
-                })
-        }else if(type == 'TVSeries'){
-            getTVShows(queryParams.toString())
-                .then((value) => {
-                    console.log('valueee', value)
-                    setFilms(value)
-                })
-                .catch((error) => {
-                    console.error(error)
-                })
-        }else{
-            navigate('/all')
-        }
-
+        filterMovie(queryParams.toString())
+            .then((value) => {
+                setFilms(prev => prev.concat(value))
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+        getTVShows(queryParams.toString())
+            .then((value) => {
+                setFilms(prev => prev.concat(value))
+            })
+            .catch((error) => {
+                console.error(error)
+            })
     }
 
     useEffect(() => {
-        let pageNumber = 'page=' + (page-1)
-        if(type === "Movie"){
+        let pageNumber = 'page=' + (page - 1)
+        if (type === "Movie") {
             filterMovie(pageNumber)
                 .then((value) => {
                     setFilms(value)
@@ -180,7 +178,7 @@ function AllFilm() {
                 .catch((error) => {
                     console.error(error)
                 })
-        }else if (type === 'TVSeries'){
+        } else if (type === 'TVSeries') {
             getTVShows(pageNumber)
                 .then((value) => {
                     console.log('valueee', value)
@@ -189,35 +187,25 @@ function AllFilm() {
                 .catch((error) => {
                     console.error(error)
                 })
-        }else{
+        } else {
             const params = name ? 'name=' + name + '&' + pageNumber : '';
             console.log('paramsssssss', params)
             filterMovie(params)
-            .then((value) => {
-                setFilms(value)
-                getTVShows(params)
                 .then((value) => {
-                    setFilms(prevFilms => prevFilms.concat(value));
+                    setFilms(value)
+                    getTVShows(params)
+                        .then((value) => {
+                            setFilms(prevFilms => prevFilms.concat(value));
+                        })
+                        .catch((error) => {
+                            console.error(error)
+                        })
                 })
                 .catch((error) => {
                     console.error(error)
                 })
-            })
-            .catch((error) => {
-                console.error(error)
-            })
         }
-    }, [type, page, name])
-
-    // const handleChangePage = (page) => {
-    //     getCommendedFilms({ userID: "66227018dea6cbf7a9ab36ba", page: page, size: 10 })
-    //         .then((value) => {
-    //             setFilms(value)
-    //         })
-    //         .catch((error) => {
-    //             console.error(error)
-    //         })
-    // }
+    }, [page, name])
 
     return (
         <Box
@@ -255,18 +243,20 @@ function AllFilm() {
                             }}
                         />
                     </Grid>
-
                     <Grid item xs={12} sm={6} md={4} lg={2}>
-                        {RenderSelectByCategory("Genre", genre, setGenre, setSelectedGenre)}
+                        {RenderSelectByCategory("Type", type, selectedType, setSelectedType)}
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={2}>
-                        {RenderSelectByCategory("Country", country, setCountry, setSelectedCountry)}
+                        {RenderSelectByCategory("Genre", genre, selectedGenre, setSelectedGenre)}
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={2}>
-                        {RenderSelectByCategory("Rating", rating, setRating, setSelectedRating)}
+                        {RenderSelectByCategory("Country", country, selectedCountry, setSelectedCountry)}
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={2}>
-                        {RenderSelectByCategory("Year", year, setYear, setSelectedYear)}
+                        {RenderSelectByCategory("Rating", rating, selectedRating, setSelectedRating)}
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4} lg={2}>
+                        {RenderSelectByCategory("Year", year, selectedYear, setSelectedYear)}
                     </Grid>
                     <Grid item xs={12} sm={6} md={4} lg={2}>
                         <Button
@@ -306,7 +296,7 @@ function AllFilm() {
                     }}
                 >
 
-                    <GridViewMovies films={films}/>
+                    <GridViewMovies films={films} />
                     {/* <GridViewMovies films={films} /> */}
                     <Box
                         sx={{
@@ -316,7 +306,7 @@ function AllFilm() {
                             marginBottom: "2rem",
                         }}
                     >
-                        <Pagination count={10} showFirstButton showLastButton onChange={handleChangePage}/>
+                        <Pagination count={10} showFirstButton showLastButton onChange={handleChangePage} />
                         {/* <Pagination count={10} showFirstButton showLastButton onChange={(e, page) => handleChangePage(page - 1)}/> */}
                     </Box>
                 </Box>
@@ -329,7 +319,7 @@ function AllFilm() {
                         paddingBottom: "8px",
                     }}
                 >
-                    <MoviesRecommend films={films}/>
+                    <MoviesRecommend films={films} />
                 </Box>
             </Box>
             {/* END Danh sách phim */}

@@ -13,22 +13,22 @@ export default function Home() {
     const [films, setFilms] = useState([]);
 
     useEffect(() => {
-        if(typeAll === 0) {
+        if (typeAll === 0) {
             filterMovie('')
-            .then((value) => {
-                setFilms(value)
-            })
-            .catch((error) => {
-                console.error(error)
-            })
-        }else{
+                .then((value) => {
+                    setFilms(value)
+                })
+                .catch((error) => {
+                    console.error(error)
+                })
+        } else {
             getTVShows('')
-            .then((value) => {
-                setFilms(value)
-            })
-            .catch((error) => {
-                console.error(error)
-            })
+                .then((value) => {
+                    setFilms(value)
+                })
+                .catch((error) => {
+                    console.error(error)
+                })
         }
     }, [typeAll])
 
@@ -36,7 +36,7 @@ export default function Home() {
         setTypeAll(newValue);
     };
 
-   
+
     return (
         <Box
             sx={
@@ -59,10 +59,10 @@ export default function Home() {
                         borderRadius: '8px',
                     }}
                 >
-                     <Box>
-                        <Tabs 
-                            value={typeAll} 
-                            onChange={handleChange} 
+                    <Box>
+                        <Tabs
+                            value={typeAll}
+                            onChange={handleChange}
                             aria-label="basic tabs example"
                             sx={{
                                 width: "100%",
@@ -72,9 +72,9 @@ export default function Home() {
                             <Tab label="Movie" />
                             <Tab label="TV Show" />
                         </Tabs>
-                        
+
                     </Box>
-                    <GridViewMovies films={films}/>
+                    <GridViewMovies films={films} />
                 </Box>
                 <Box
                     sx={{

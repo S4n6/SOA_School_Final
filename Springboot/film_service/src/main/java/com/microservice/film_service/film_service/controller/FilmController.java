@@ -92,7 +92,6 @@ public class FilmController {
                 }
 
                 if(films.isEmpty()){
-                    List<Integer> years = new ArrayList<>();
                     List<Movie> movies = movieService.getFilms(page, size, new ArrayList<>(), "", new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
                     List<TVShow> tvShows = tvShowService.getTVShows(page, size, new ArrayList<>(), "", new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 
