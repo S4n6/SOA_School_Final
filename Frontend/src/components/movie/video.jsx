@@ -9,7 +9,7 @@ import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import StorageIcon from "@mui/icons-material/Storage";
 import useWebSocket from "react-use-websocket";
-import StorageIcon from "@mui/icons-material/Storage";
+import { AuthContext } from "../../context/AuthContext";
 
 function Video({ video, filmID }) {
   const { sendMessage, lastMessage } = useWebSocket(
@@ -19,6 +19,7 @@ function Video({ video, filmID }) {
 
   const videoRef = React.useRef(null);
   const [duration, setDuration] = React.useState(null);
+  const {user} = React.useContext(AuthContext)
 
   const handleDurationChange = () => {
     if (videoRef.current) {
@@ -53,8 +54,8 @@ function Video({ video, filmID }) {
         sx={{
           width: "100%",
           height: "100%",
-          display: "flex", // This will make the Card a flex container
-          justifyContent: "center", // This will center the items horizontally
+          display: "flex",
+          justifyContent: "center",
           alignItems: "center",
           flexDirection: "column",
           marginTop: "8px",
@@ -67,7 +68,6 @@ function Video({ video, filmID }) {
           autoPlay
           controls
           sx={{
-            // This will make the video fit its container
             width: "70%",
             objectFit: "contain",
           }}
@@ -81,8 +81,6 @@ function Video({ video, filmID }) {
             }}
           >
             <Box
-              // variant="contained"
-              // aria-label="Basic button group"
               sx={{
                 gap: "2.5rem",
                 display: "flex",
@@ -112,8 +110,8 @@ function Video({ video, filmID }) {
                 <Typography
                   variant="subtitle1"
                   sx={{
-                    display: "flex", // This will make the Typography a flex container
-                    alignItems: "center", // This will center the items vertically
+                    display: "flex",
+                    alignItems: "center",
                   }}
                 >
                   <StorageIcon
@@ -142,8 +140,8 @@ function Video({ video, filmID }) {
                 <Typography
                   variant="subtitle1"
                   sx={{
-                    display: "flex", // This will make the Typography a flex container
-                    alignItems: "center", // This will center the items vertically
+                    display: "flex",
+                    alignItems: "center",
                   }}
                 >
                   <StorageIcon
@@ -172,8 +170,8 @@ function Video({ video, filmID }) {
                 <Typography
                   variant="subtitle1"
                   sx={{
-                    display: "flex", // This will make the Typography a flex container
-                    alignItems: "center", // This will center the items vertically
+                    display: "flex",
+                    alignItems: "center",
                   }}
                 >
                   <StorageIcon
@@ -187,6 +185,26 @@ function Video({ video, filmID }) {
                 <Typography variant="h5">Three</Typography>
               </Box>
             </Box>
+            {user ? 
+            (
+              <Button
+                sx={{
+                  right: 0,
+                  position: "absolute",
+                  whiteSpace: "normal",
+                  width: "10%",
+                  marginRight: "16px",
+                  marginTop: "4px",
+                }}
+              >
+                Thêm vào danh sách xem sau
+              </Button>
+            ) : (
+              <></>
+            )
+            
+            }
+            
           </CardContent>
         </CardActionArea>
       </Card>

@@ -9,6 +9,8 @@ import LoginButton from "./components/test";
 import Watching from "./pages/watching";
 import AllFilm from "./pages/allFilms";
 import Dashboard from "./pages/admin/admin";
+import WatchList from "./pages/watchList";
+import Profile from "./pages/profile";
 
 function App() {
   const [mode, setMode] = useState("light");
@@ -47,6 +49,32 @@ function App() {
               showCustomTheme={showCustomTheme}
             >
               <AllFilm />
+            </Layout>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <Layout
+              mode={mode}
+              toggleColorMode={toggleColorMode}
+              showCustomTheme={showCustomTheme}
+            >
+              <Profile/>
+            </Layout>
+          }
+        />
+
+        <Route
+          path="/watchlist"
+          element={
+            <Layout
+              mode={mode}
+              toggleColorMode={toggleColorMode}
+              showCustomTheme={showCustomTheme}
+            >
+              <WatchList/>
             </Layout>
           }
         />

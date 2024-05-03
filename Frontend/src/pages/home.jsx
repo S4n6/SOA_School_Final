@@ -5,6 +5,7 @@ import MoviesRecommend from "../components/movie/moviesRecommend";
 import { useEffect, useState } from "react";
 import { filterMovie } from "../api/movie";
 import { Tab, Tabs } from "@mui/material";
+import { getTVShows } from "../api/tvShow";
 
 
 export default function Home() {
@@ -21,7 +22,13 @@ export default function Home() {
                 console.error(error)
             })
         }else{
-            setFilms([])
+            getTVShows('')
+            .then((value) => {
+                setFilms(value)
+            })
+            .catch((error) => {
+                console.error(error)
+            })
         }
     }, [typeAll])
 
@@ -29,6 +36,7 @@ export default function Home() {
         setTypeAll(newValue);
     };
 
+   
     return (
         <Box
             sx={

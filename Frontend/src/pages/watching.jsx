@@ -59,17 +59,20 @@ function Watching() {
             }}
         >
             {film != null? <Video video={video} filmID={film.id}/>: null}
-            {film != null? <Box
-                sx={{
-                    display: "flex",
-                    justifyContent: 'space-evenly',
-                    width: '100%',
-                    height: '100%',
-                }}
-            >
-                <DetailMovie film={film} />
-                <Eposide filmID={film?.id} setVideo={setVideo}/>
-            </Box>: null}
+            {film != null ? 
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: 'space-evenly',
+                        width: '100%',
+                        height: '100%',
+                    }}
+                >
+                    <DetailMovie film={film} />
+                    <Eposide filmID={film?.id} setVideo={setVideo}/>
+                </Box>: null
+            }
+            
             <Comment />
         </Box>
     );

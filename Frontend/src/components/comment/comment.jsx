@@ -3,12 +3,12 @@ import { Box } from "@mui/system";
 import Divider from "@mui/material/Divider";
 import Avatar from "@mui/material/Avatar";
 import CommentOthers from "./commentOthers";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { getComments } from "../../api/getComments";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 import InsertCommentIcon from "@mui/icons-material/InsertComment";
-
 import StarBorder from '@mui/icons-material/StarBorder';
+import { AuthContext } from "../../context/AuthContext";
 
 function renderComment(comment, index) {
     return (
@@ -31,6 +31,7 @@ function Comment(props) {
     }[readyState];
 
     const [comments, setComments] = useState([])
+    const { user } = useContext(AuthContext)
 
     useEffect(() => {
         getComments("66200673fc13ae7cc6a242a2", 0, 5)
@@ -65,11 +66,7 @@ function Comment(props) {
         }
         sendMessage(JSON.stringify(message))
     }
-
-<<<<<<< HEAD
    
-=======
->>>>>>> 987acdae2e2d687e86fc6ac83fe0da4d5bc0a511
     return (
         <Box
             sx={{
@@ -117,9 +114,9 @@ function Comment(props) {
                     placeholder="Write a comment..."
                     sx={{ width: "100%", mt: 2 }}
                     onChange={handleTextChange}
-                    disabled={readyState !== ReadyState.OPEN}
+                    disabled={readyState !== ReadyState.OPEN || !user}
                 />
-                <Button onClick={handleClickSendComment}>Bình luận</Button>
+                <Button onClick={handleClickSendComment} disabled={!user}>Bình luận</Button>
             </Box>
             <Box
                 sx={{

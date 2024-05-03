@@ -190,9 +190,8 @@ function AllFilm() {
                     console.error(error)
                 })
         }else{
-            
-            console.log('namesdfgdf', name)
             const params = name ? 'name=' + name + '&' + pageNumber : '';
+            console.log('paramsssssss', params)
             filterMovie(params)
             .then((value) => {
                 setFilms(value)
