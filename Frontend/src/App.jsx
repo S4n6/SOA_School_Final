@@ -9,6 +9,8 @@ import LoginButton from "./components/test";
 import Watching from "./pages/watching";
 import AllFilm from "./pages/allFilms";
 import Dashboard from "./pages/admin/admin";
+import WatchList from "./pages/watchList";
+import Profile from "./pages/profile";
 
 function App() {
   const [mode, setMode] = useState("light");
@@ -31,8 +33,87 @@ function App() {
               toggleColorMode={toggleColorMode}
               showCustomTheme={showCustomTheme}
             >
-              {" "}
-              <Home />{" "}
+              <Home />
+            </Layout>
+          }
+        />
+
+        <Route path="/admin" element={<Dashboard />} />
+        
+        <Route
+          path="/all"
+          element={
+            <Layout
+              mode={mode}
+              toggleColorMode={toggleColorMode}
+              showCustomTheme={showCustomTheme}
+            >
+              <AllFilm />
+            </Layout>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <Layout
+              mode={mode}
+              toggleColorMode={toggleColorMode}
+              showCustomTheme={showCustomTheme}
+            >
+              <Profile/>
+            </Layout>
+          }
+        />
+
+        <Route
+          path="/watchlist"
+          element={
+            <Layout
+              mode={mode}
+              toggleColorMode={toggleColorMode}
+              showCustomTheme={showCustomTheme}
+            >
+              <WatchList/>
+            </Layout>
+          }
+        />
+
+        <Route
+          path="/:type"
+          element={
+            <Layout
+              mode={mode}
+              toggleColorMode={toggleColorMode}
+              showCustomTheme={showCustomTheme}
+            >
+              <AllFilm />
+            </Layout>
+          }
+        />
+
+        <Route
+          path="/:type/:id"
+          element={
+            <Layout
+              mode={mode}
+              toggleColorMode={toggleColorMode}
+              showCustomTheme={showCustomTheme}
+            >
+              <Watching />
+            </Layout>
+          }
+        />
+
+        <Route
+          path="/all"
+          element={
+            <Layout
+              mode={mode}
+              toggleColorMode={toggleColorMode}
+              showCustomTheme={showCustomTheme}
+            >
+              <AllFilm />
             </Layout>
           }
         />
@@ -45,50 +126,10 @@ function App() {
               toggleColorMode={toggleColorMode}
               showCustomTheme={showCustomTheme}
             >
-              {" "}
-              <Introduction />{" "}
+              <Introduction />
             </Layout>
           }
         />
-
-        <Route
-          path="/video"
-          element={
-            <Layout
-              mode={mode}
-              toggleColorMode={toggleColorMode}
-              showCustomTheme={showCustomTheme}
-            >
-              {" "}
-              <Watching />{" "}
-            </Layout>
-            // <Watching/>
-          }
-        />
-        <Route path="/login" element={<LoginButton />} />
-
-        <Route
-          path="/all"
-          element={
-            <Layout
-              mode={mode}
-              toggleColorMode={toggleColorMode}
-              showCustomTheme={showCustomTheme}
-            >
-              {" "}
-              <AllFilm />{" "}
-            </Layout>
-            // <Watching/>
-          }
-        />
-
-        <Route
-          path="/admin"
-          element={
-            <Dashboard/>
-          }
-        />
-
       </Routes>
     </Router>
   );

@@ -19,6 +19,7 @@ function DetailMovie({ film }) {
     const [vote, setVote] = useState(0)
 
     useEffect(() => {
+        console.log('filmDEtailassss', film)
         getRateByFilmID(film?.id)
             .then(value => {
                 setRate(value)
@@ -59,7 +60,7 @@ function DetailMovie({ film }) {
 
                         <CardMedia
                             component="img"
-                            image="https://assets.codepen.io/6093409/river.jpg"
+                            image={film?.banner}
                             title="green iguana"
                             sx={{
                                 height: '100%'

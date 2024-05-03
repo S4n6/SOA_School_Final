@@ -19,6 +19,7 @@ export const mainListItems = (setMainContent) => {
   <React.Fragment>
     <ListItemButton
        onClick={() => {
+        setMainContent('Dashboard')
         console.log("ListItemButton clicked");
       }}
     >

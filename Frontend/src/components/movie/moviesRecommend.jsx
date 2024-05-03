@@ -34,7 +34,7 @@ function MoviesRecommend({ films }) {
                 View all
             </Button>
             <Grid container spacing={2}>
-                {films.map((film, index) => {
+                {films?.map((film, index) => {
                     return <Grid item xs={12} sm={12} md={12} lg={12} key={index}>
                         <MovieRecommendItem film={film} />
                     </Grid>

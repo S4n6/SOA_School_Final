@@ -21,6 +21,7 @@ function Eposide({ filmID, setVideo }) {
     const [episodes, setEpisodes] = useState([])
 
     useEffect(() => {
+        
         getSeasonByFilmID({ tvShowID: filmID })
             .then((value) => {
                 setSeasons(value)
@@ -50,6 +51,7 @@ function Eposide({ filmID, setVideo }) {
         if(episodes.length > 0){
             setVideo(episodes[0].video)
         }
+        
     }, [episodes])
 
     const handleChange = (event) => {
@@ -78,12 +80,13 @@ function Eposide({ filmID, setVideo }) {
                     <InputLabel
                         id="demo-simple-select-label"
                     >
-                        {seasonID? "": "Season"}
+                        {seasons.length < 1 ? "Movie": "Season"}
                     </InputLabel>
                     <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         value={seasons.length > 0? seasons[0].id: null}
+                        disabled={seasons.length < 1}
                         label="Season"
                         onChange={handleChange}
                         sx={{

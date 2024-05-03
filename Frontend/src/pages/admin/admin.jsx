@@ -24,6 +24,7 @@ import EditFilm from '../../components/admin/addAndEditMovie';
 import ManageTvshow from './manageTvshow';
 import ManageSeason from './manageSeason';
 import ManageUser from './manageUser';
+import Statitics from './statitics';
 
 
 
@@ -90,33 +91,33 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 const defaultTheme = createTheme();
 
 export default function Dashboard() {
-    const [open, setOpen] = React.useState(true);
-    const mainContents = [
-        {
-            title: 'Dashboard',
-            content: <></>
-        },
-        {
-            title: 'User',
-            content: <ManageUser />
-        },
-        {
-            title: 'Movie',
-            content: <ManageMovie />
-        },
-        {
-            title: 'Eposides',
-            content: <ManageEposide />
-        },
-        {
-            title: 'ShowAll',
-            content: <ManageTvshow />
-        },
-        {
-            title: 'Seasons',
-            content: <ManageSeason />
-        },
-    ]
+  const [open, setOpen] = React.useState(true);
+  const mainContents = [
+    {
+      title: 'Dashboard',
+      content: <Statitics/>
+    },
+    {
+      title: 'User',
+      content: <ManageUser/>
+    },
+    {
+      title: 'Movie',
+      content: <ManageMovie/>
+    },
+    {
+      title: 'Eposides',
+      content: <ManageEposide/>
+    },
+    {
+      title: 'ShowAll',
+      content: <ManageTvshow/>
+    },
+    {
+      title: 'Seasons',
+      content: <ManageSeason/>
+    },
+  ]
 
     const [mainContent, setMainContent] = React.useState('Dashboard');
     const toggleDrawer = () => {

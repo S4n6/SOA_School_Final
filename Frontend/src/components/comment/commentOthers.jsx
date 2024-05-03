@@ -3,9 +3,10 @@ import Avatar from '@mui/material/Avatar';
 import { Box } from '@mui/system';
 import { Timer, Time, TimerOptions } from 'timer-node';
 import timer from '../../utils/timer';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import ReplyIcon from '@mui/icons-material/Reply';
 import useWebSocket from 'react-use-websocket';
+import { AuthContext } from '../../context/AuthContext';
 
 
 function CommentOthers({ comment }) {
@@ -14,6 +15,7 @@ function CommentOthers({ comment }) {
 
     const [postedComment, setPostedComment] = useState("")
     const { sendMessage, lastMessage } = useWebSocket("ws://localhost:8080/api/v1/websocket-comment");
+    const {user} = useContext(AuthContext)
 
     const handleTextChange = (e) => {
         setPostedComment(e.target.value)
@@ -53,8 +55,6 @@ function CommentOthers({ comment }) {
             sx={{
                 display: "flex",
                 marginTop: "1rem",
-                // justifyContent: "center",
-                // alignItems: "center",
                 marginRight: "auto",
                 flexDirection: "column",
                 width: "100%",
@@ -98,12 +98,19 @@ function CommentOthers({ comment }) {
                         gap={2}
                     >
                         {time} ago
-                        <ReplyIcon onClick={() => setShowChat(!showChat)} />
+                        <ReplyIcon 
+                            onClick={() => setShowChat(!showChat)} 
+                            sx={{
+                                ":hover": {
+                                    cursor: "pointer",
+                                },
+                            }}
+                        />
                     </Typography>
                 </Box>
             </Box>
 
-            {showChat && (
+            {(showChat && user) && (
                 <Box
                     sx={{
                         display: "flex",

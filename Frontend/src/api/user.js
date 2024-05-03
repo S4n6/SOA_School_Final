@@ -1,18 +1,18 @@
 import axios from "axios";
 
-export async function getCommendedFilms({ userID, page, size }) {
+export async function getUserById(id) {
     try {
+        console.log('id', id)
         const response = await axios.get(
-            'http://localhost:8080/api/v1/film',
+            'http://localhost:5002/api/v1/user/' + id,
             {
-                params: { userID, page, size },
                 headers: {
                     "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNzZWEzMDNAZ21haWwuY29tIiwiaWQiOiI2NjAyNjgyN2RhMjgwOTVlODhiM2U4YWIiLCJpYXQiOjE3MTE3Mjg3OTZ9.3zNbbMaQt2YtwqBV5oamFJW1KFlx35TPfNRLIuSQmkQ"
                 }
-            },
+            }
         )
         if (response.status == 200) {
-            return response.data.data
+            return response.data
         } else {
             throw new Error(response.status);
         }
@@ -20,6 +20,4 @@ export async function getCommendedFilms({ userID, page, size }) {
         console.error('There has been a problem with your fetch operation:', error);
     }
 }
-
-
 
