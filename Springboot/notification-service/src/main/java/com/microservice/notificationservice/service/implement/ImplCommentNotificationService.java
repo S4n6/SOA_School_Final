@@ -4,6 +4,9 @@ import com.microservice.notificationservice.model.CommentNotification;
 import com.microservice.notificationservice.repository.CommentNotificationRepository;
 import com.microservice.notificationservice.service.CommentNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,14 +22,15 @@ public class ImplCommentNotificationService implements CommentNotificationServic
     }
 
     @Override
-    public List<CommentNotification> getNotifications(String userID) {
-        return commentNotificationRepository.findByUserID(userID);
+    public List<CommentNotification> getNotifications(String userID, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
+        return commentNotificationRepository.findByUserID(pageable, userID).getContent();
     }
 
     @Override
     public CommentNotification addNotification(CommentNotification commentNotification) {
         try{
-            return commentNotificationRepository.insert(commentNotification);
+            return commentNotificationRepository.save(commentNotification);
         } catch (Exception e){
             e.printStackTrace();
         }

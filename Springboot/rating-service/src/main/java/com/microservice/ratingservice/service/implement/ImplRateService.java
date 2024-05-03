@@ -1,8 +1,8 @@
-package com.microservice.reviewservice.service.implement;
+package com.microservice.ratingservice.service.implement;
 
-import com.microservice.reviewservice.model.Rate;
-import com.microservice.reviewservice.repository.RateRepository;
-import com.microservice.reviewservice.service.RateService;
+import com.microservice.ratingservice.model.Rate;
+import com.microservice.ratingservice.repository.RateRepository;
+import com.microservice.ratingservice.service.RateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

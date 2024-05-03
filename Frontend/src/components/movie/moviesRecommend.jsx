@@ -4,72 +4,44 @@ import MovieRecommendItem from "./movieRecommendItem";
 import MovieIcon from "@mui/icons-material/Movie";
 import AddIcon from '@mui/icons-material/Add';
 
-function MoviesRecommend() {
-  return (
-    <Box
-      sx={{
-        marginX: "8px",
-        textAlign: "center",
-      }}
-    >
-      <Typography
-        sx={{
-          textAlign: "center",
-            marginY: "12px",
-        }}
-      >
-        <Box display="flex" alignItems="center" justifyContent="space-evenly">
-          <Box
+function MoviesRecommend({ films }) {
+    return (
+        <Box
             sx={{
-              fontSize: "1.2rem",
-              fontWeight: "bold",
-              display: "flex",
-              alignItems: "center",
+                marginX: "8px",
+                textAlign: "center",
             }}
-          >
-          <MovieIcon sx={{ mr: 1 }}/>
-            Movies Trending
-          </Box>
-          <Button
-            sx={{
-              fontSize: "1rem",
-              fontWeight: "bold",
-              textTransform: "none",
-            }}
-          >
-            <AddIcon sx={{ mr: 1 }}/>
-            View all
-          </Button>
+        >
+            <Typography
+                sx={{
+                    textAlign: "center",
+                    marginY: "12px",
+                }}
+            >
+                <Box display="flex" alignItems="center" justifyContent="center">
+                    <MovieIcon sx={{ mr: 1 }} />
+                    Movies Trending
+                </Box>
+            </Typography>
+            <Button
+                sx={{
+                    fontSize: "1rem",
+                    fontWeight: "bold",
+                    textTransform: "none",
+                }}
+            >
+                <AddIcon sx={{ mr: 1 }} />
+                View all
+            </Button>
+            <Grid container spacing={2}>
+                {films.map((film, index) => {
+                    return <Grid item xs={12} sm={12} md={12} lg={12} key={index}>
+                        <MovieRecommendItem film={film} />
+                    </Grid>
+                })}
+            </Grid>
         </Box>
-      </Typography>
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={12} md={12} lg={12}>
-          <MovieRecommendItem />
-        </Grid>
-        <Grid item xs={12} sm={12} md={12} lg={12}>
-          <MovieRecommendItem />
-        </Grid>
-        <Grid item xs={12} sm={12} md={12} lg={12}>
-          <MovieRecommendItem />
-        </Grid>
-        <Grid item xs={12} sm={12} md={12} lg={12}>
-          <MovieRecommendItem />
-        </Grid>
-        <Grid item xs={12} sm={12} md={12} lg={12}>
-          <MovieRecommendItem />
-        </Grid>
-        <Grid item xs={12} sm={12} md={12} lg={12}>
-          <MovieRecommendItem />
-        </Grid>
-        <Grid item xs={12} sm={12} md={12} lg={12}>
-          <MovieRecommendItem />
-        </Grid>
-        <Grid item xs={12} sm={12} md={12} lg={12}>
-          <MovieRecommendItem />
-        </Grid>
-      </Grid>
-    </Box>
-  );
+    );
 }
 
 export default MoviesRecommend;

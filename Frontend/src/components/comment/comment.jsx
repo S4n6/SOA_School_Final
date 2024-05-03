@@ -21,14 +21,14 @@ function renderComment(comment, index) {
 function Comment(props) {
 
     const [postedComment, setPostedComment] = useState("")
-    const { sendMessage, lastMessage, readyState } = useWebSocket("ws://localhost:8080/api/v1/comment", {share: true});
+    const { sendMessage, lastMessage, readyState } = useWebSocket("ws://localhost:8080/api/v1/websocket-comment", { share: true });
     const connectionStatus = {
         [ReadyState.CONNECTING]: 'Connecting',
         [ReadyState.OPEN]: 'Open',
         [ReadyState.CLOSING]: 'Closing',
         [ReadyState.CLOSED]: 'Closed',
         [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
-      }[readyState];
+    }[readyState];
 
     const [comments, setComments] = useState([])
 
@@ -66,7 +66,10 @@ function Comment(props) {
         sendMessage(JSON.stringify(message))
     }
 
+<<<<<<< HEAD
    
+=======
+>>>>>>> 987acdae2e2d687e86fc6ac83fe0da4d5bc0a511
     return (
         <Box
             sx={{

@@ -1,9 +1,7 @@
 package com.microservice.film_service.film_service.controller;
 
 import com.microservice.film_service.film_service.ResponseMessage;
-import com.microservice.film_service.film_service.model.Genre;
-import com.microservice.film_service.film_service.model.TVShow;
-import com.microservice.film_service.film_service.model.Status;
+import com.microservice.film_service.film_service.model.*;
 import com.microservice.film_service.film_service.model.TVShow;
 import com.microservice.film_service.film_service.service.TVShowService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/tv_show")
@@ -114,5 +113,22 @@ public class TVShowController {
             e.printStackTrace();
         }
         return ResponseMessage.createResponse(HttpStatus.NOT_FOUND, "DELETE TV SHOW FAILED!", null);
+    }
+
+    @PutMapping("/update-rate")
+    public ResponseEntity<Object> updateRate(@RequestBody Map<String, Object> map){
+
+        try {
+            String tvShowID = map.get("id").toString();
+            double rate = Double.parseDouble(map.get("rate").toString());
+
+            TVShow tvShow = tvShowService.updateRate(tvShowID, rate);
+            if(tvShow != null) {
+                return ResponseMessage.createResponse(HttpStatus.OK, "UPDATE RATE OF MOVIE SUCCESSFULLY!", tvShow);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return ResponseMessage.createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "UPDATE RATE OF MOVIE FAILED!", null);
     }
 }

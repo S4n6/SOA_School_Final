@@ -13,7 +13,7 @@ function CommentOthers({ comment }) {
     const [showChat, setShowChat] = useState(false);
 
     const [postedComment, setPostedComment] = useState("")
-    const { sendMessage, lastMessage } = useWebSocket("ws://localhost:8080/api/v1/comment");
+    const { sendMessage, lastMessage } = useWebSocket("ws://localhost:8080/api/v1/websocket-comment");
 
     const handleTextChange = (e) => {
         setPostedComment(e.target.value)

@@ -4,6 +4,9 @@ import com.microservice.notificationservice.model.FilmNotification;
 import com.microservice.notificationservice.repository.FilmNotificationRepository;
 import com.microservice.notificationservice.service.FilmNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +17,9 @@ public class ImplFilmNotificationService implements FilmNotificationService {
     private FilmNotificationRepository filmNotificationRepository;
 
     @Override
-    public List<FilmNotification> getFilmNotifications(String userID) {
-        return filmNotificationRepository.findByUserIDAndFilmID(userID);
+    public List<FilmNotification> getFilmNotifications(String userID, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "createdAt");
+        return filmNotificationRepository.findByUserID(pageable, userID).getContent();
     }
 
     @Override
@@ -26,7 +30,7 @@ public class ImplFilmNotificationService implements FilmNotificationService {
     @Override
     public FilmNotification addFilmNotification(FilmNotification filmNotification) {
         try{
-            return filmNotificationRepository.insert(filmNotification);
+            return filmNotificationRepository.save(filmNotification);
         } catch(Exception e){
             e.printStackTrace();
         }

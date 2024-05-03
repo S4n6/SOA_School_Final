@@ -1,6 +1,7 @@
-package com.microservice.reviewservice.service;
+package com.microservice.ratingservice.service;
 
-import com.microservice.reviewservice.model.Rate;
+
+import com.microservice.ratingservice.model.Rate;
 
 import java.util.List;
 

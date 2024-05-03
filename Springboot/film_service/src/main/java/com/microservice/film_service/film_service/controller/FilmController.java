@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/v1/film")
@@ -37,7 +35,9 @@ public class FilmController {
     private TVShowService tvShowService;
 
     @GetMapping("")
-    public ResponseEntity<Object> getFilms(@RequestParam String userID){
+    public ResponseEntity<Object> getFilms(@RequestParam String userID,
+                                           @RequestParam(defaultValue = "0", required = false) int page,
+                                           @RequestParam(defaultValue = "12", required = false) int size){
         try{
             ResponseEntity<String> historyFilmResponse = viewClient.getListHistoryFilm(userID);
             JSONObject historyFilmJson = new JSONObject(historyFilmResponse.getBody());
@@ -92,8 +92,9 @@ public class FilmController {
                 }
 
                 if(films.isEmpty()){
-                    List<Movie> movies = movieService.getFilms(0, 12, new ArrayList<>(), "", new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
-                    List<TVShow> tvShows = tvShowService.getTVShows(0, 12, new ArrayList<>(), "", new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+                    List<Integer> years = new ArrayList<>();
+                    List<Movie> movies = movieService.getFilms(page, size, new ArrayList<>(), "", new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+                    List<TVShow> tvShows = tvShowService.getTVShows(page, size, new ArrayList<>(), "", new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 
                     for(Movie movie: movies){
                         if(movie != null){
@@ -105,6 +106,10 @@ public class FilmController {
                             films.add(tvShow);
                         }
                     }
+
+                    List<FilmModel> result = films.stream().filter(Objects::nonNull)
+                            .sorted(Comparator.comparing(FilmModel::getFirstYearRelease).reversed()).toList();
+                    return ResponseMessage.createResponse(HttpStatus.OK, "USER HAVEN'T SEEN ANY FILM BEFORE, RECOMMEND BY THE NEW FILMS", result);
                 }
 
                 return ResponseMessage.createResponse(HttpStatus.OK, "GET FILMS SUCCESSFULLY!", films);
