@@ -7,20 +7,20 @@ import {
     TextField,
     Tooltip,
     Typography,
-  } from "@mui/material";
-  import * as React from "react";
-  import { styled } from "@mui/material/styles";
-  import Table from "@mui/material/Table";
-  import TableBody from "@mui/material/TableBody";
-  import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-  import TableContainer from "@mui/material/TableContainer";
-  import TableHead from "@mui/material/TableHead";
-  import TableRow from "@mui/material/TableRow";
-  import Paper from "@mui/material/Paper";
-  import Avatar from "@mui/material/Avatar";
-  import DeleteIcon from "@mui/icons-material/Delete";
-  import BlockIcon from "@mui/icons-material/Block";
-  import EditIcon from "@mui/icons-material/Edit";
+} from "@mui/material";
+import * as React from "react";
+import { styled } from "@mui/material/styles";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import Avatar from "@mui/material/Avatar";
+import DeleteIcon from "@mui/icons-material/Delete";
+import BlockIcon from "@mui/icons-material/Block";
+import EditIcon from "@mui/icons-material/Edit";
 import AddAndEditTvShow from "../../components/admin/addAndEditTvShow";
 import DialogDelete from "../../components/dialogDelete";
 import { getTVShows } from "../../api/tvShow";
@@ -46,7 +46,9 @@ import { getTVShows } from "../../api/tvShow";
         >
           <Typography  
             sx={{
-              fontWeight: "bold",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
             }}
           >{name}
           </Typography>
@@ -55,9 +57,9 @@ import { getTVShows } from "../../api/tvShow";
         
       </Box>
     );
-  }
-  
-  function ManageTvshow() {
+}
+
+function ManageTvshow() {
     const [openEdit, setOpenEdit] = React.useState(false);
     const [showDialogDelete, setShowDialogDelete] = React.useState(false);
     const [objectToDelete, setObjectToDelete] = React.useState(null);
@@ -65,14 +67,14 @@ import { getTVShows } from "../../api/tvShow";
     const [tvShowEdit, setTvShowEdit] = React.useState(null);
     const [page, setPage] = React.useState(1);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  
+
     const handleChangePage = (event, newPage) => {
-      setPage(newPage);
+        setPage(newPage);
     };
-  
+
     const handleChangeRowsPerPage = (event) => {
-      setRowsPerPage(parseInt(event.target.value, 10));
-      setPage(0);
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
     };
 
     const handleDelete = (tvShow) => {
@@ -189,7 +191,6 @@ import { getTVShows } from "../../api/tvShow";
         }
       </Box>
     );
-  }
-  
-  export default ManageTvshow;
-  
+}
+
+export default ManageTvshow;
