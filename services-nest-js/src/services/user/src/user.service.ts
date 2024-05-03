@@ -22,8 +22,8 @@ export class UserService {
     }).exec();
   }
 
-  async findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
+  async findAll(limit: number, page: number): Promise<User[]> {
+    return await this.userModel.find().limit(limit).skip((page - 1) * limit).exec();
   }
 
   async findOne(id: string): Promise<User> {

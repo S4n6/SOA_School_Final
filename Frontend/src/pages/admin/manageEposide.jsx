@@ -23,6 +23,7 @@ import BlockIcon from "@mui/icons-material/Block";
 import EditIcon from "@mui/icons-material/Edit";
 import AddAndEditTvEposide from "../../components/admin/addAndEditEposide";
 import DialogDelete from "../../components/dialogDelete";
+import { getEposide } from "../../api/tvShow";
 
 function createCellMovie(name, duration, img) {
   return (
@@ -55,6 +56,7 @@ function createCellMovie(name, duration, img) {
 
 function ManageEposide() {
   const [openEdit, setOpenEdit] = React.useState(false);
+  const [episode, setEpisode] = React.useState(null);
   function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein };
   }
@@ -86,6 +88,15 @@ function ManageEposide() {
     setShowDialogDelete(true)
     console.log("Delete");
   };
+
+  React.useEffect(() => {
+    getEposide().then((data) => {
+      console.log("data", data);
+      setEpisode(data);
+    });
+  }, []);
+
+
 
   return (
     <Box>

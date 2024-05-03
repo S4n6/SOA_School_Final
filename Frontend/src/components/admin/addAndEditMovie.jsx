@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
-import { createMovie } from "../../api/movie";
+import { createMovie, updateMovie } from "../../api/movie";
 
 function AddAndEditMovie({ film, isOpen, setIsOpen }) {
   console.log("isOpenppppppp", isOpen);
@@ -60,23 +60,33 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
     const formData = new FormData();
     formData.append("banner", banner);
     formData.append("video", video);
-    formData.append("expectedReleaseDate", expectedReleaseDate);
+    formData.append("expectedReleaseDate", new Date(expectedReleaseDate));
     formData.append("name", name);
     formData.append("duration", duration);
     formData.append("firstYearRelease", firstYearRelease);
     formData.append("countryOfOrigin", countryOfOrigin);
     formData.append("productionCompany", productionCompany);
     formData.append("status", status);
-    genres.forEach((genre) => formData.append("genres[]", genre));
+    categoriesSelected.forEach((genre) => formData.append("genres[]", genre));
     actors.forEach((actor) => formData.append("actors[]", actor));
     formData.append("description", description);
-    createMovie(formData)
+    if(film) {
+      updateMovie(formData, film?.id)
+      .then((value) => {
+        console.log('updated movie', value);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    }else{
+      createMovie(formData)
       .then((value) => {
         console.log('created movie', value);
       })
       .catch((error) => {
         console.error(error);
       });
+    }
   };
 
   useEffect(() => {
@@ -86,7 +96,8 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
       "Animation",
       "Biography",
       "Comedy",
-      "Crime",
+      "CRIME",
+      "DRAMA",
     ]);
   }, []);
 
@@ -139,6 +150,15 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
             fullWidth
             onChange={(e) => setProductionCompany(e.target.value)}
           />
+
+          <TextField
+            id="outlined-basic"
+            label="Status"
+            variant="outlined"
+            fullWidth
+            onChange={(e) => setStatus(e.target.value)}
+          />
+
           <TextField
             id="outlined-basic"
             label="Casts / Crews"

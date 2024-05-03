@@ -26,14 +26,13 @@ export class AuthController {
   @UseGuards(GoogleAuthGuard)
   async googleLoginRedirect(@Req() req, @Res() res) {
     // Get the user from req.user
-    const user = req.user;
+    const user = req?.user;
     console.log('user', user);
     // Generate a new token for the user
     let token;
     try {
-      token = await this.authService.loginWithGoogle(user.email);
+      token = await this.authService.loginWithGoogle(user);
     } catch (error) {
-
       if (error instanceof UnauthorizedException) {
         const newUser = new RegisterRequestDto();
         newUser.email = user.email;
@@ -45,8 +44,9 @@ export class AuthController {
         throw error;
       }
     }
+    console.log('token', JSON.stringify(token));  
+    res.cookie('access_token', JSON.stringify(token), { secure: true });
     res.redirect('http://localhost:5173/home');
-    // res.cookie('access_token', token, { httpOnly: true, secure: true });
     return { access_token: token };
   }
 

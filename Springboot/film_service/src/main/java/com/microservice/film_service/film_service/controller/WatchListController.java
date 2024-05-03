@@ -55,6 +55,7 @@ public class WatchListController {
     @PostMapping("")
     public ResponseEntity<Object> addWatchList(@RequestBody WatchList watchList){
         try {
+            System.out.println(watchList);
             WatchList addedWatchList = watchListService.addWatchList(watchList);
             if(watchList != null){
                 return ResponseMessage.createResponse(HttpStatus.OK, "ADD WATCHLIST SUCCESSFULLY!", addedWatchList);

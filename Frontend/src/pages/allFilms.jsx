@@ -124,13 +124,13 @@ function AllFilm() {
         setRating(["1", "2", "3", "4", "5"]);
         setYear(["2021", "2020", "2019", "2018", "2017"]);
         // getCommendedFilms()
-        getCommendedFilms({ userID: "66227018dea6cbf7a9ab36ba", page: 0, size: 10 })
-            .then((value) => {
-                setFilms(value)
-            })
-            .catch((error) => {
-                console.error(error)
-            })
+        // getCommendedFilms({ userID: "66227018dea6cbf7a9ab36ba", page: 0, size: 10 })
+        //     .then((value) => {
+        //         setFilms(value)
+        //     })
+        //     .catch((error) => {
+        //         console.error(error)
+        //     })
     }, []);
 
     const handleClickFilter = () => {
@@ -191,19 +191,19 @@ function AllFilm() {
             const params = name ? 'name=' + name + '&' + pageNumber : '';
             console.log('paramsssssss', params)
             filterMovie(params)
+            .then((value) => {
+                setFilms(value)
+                getTVShows(params)
                 .then((value) => {
-                    setFilms(value)
-                    getTVShows(params)
-                        .then((value) => {
-                            setFilms(prevFilms => prevFilms.concat(value));
-                        })
-                        .catch((error) => {
-                            console.error(error)
-                        })
+                    setFilms(prevFilms => prevFilms.concat(value));
                 })
                 .catch((error) => {
                     console.error(error)
                 })
+            })
+            .catch((error) => {
+                console.error(error)
+            })
         }
     }, [page, name])
 

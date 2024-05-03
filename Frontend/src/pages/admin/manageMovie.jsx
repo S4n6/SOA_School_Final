@@ -23,14 +23,14 @@ import BlockIcon from "@mui/icons-material/Block";
 import EditIcon from "@mui/icons-material/Edit";
 import AddAndEditMovie from "../../components/admin/addAndEditMovie";
 import DialogDelete from "../../components/dialogDelete";
+import { filterMovie } from "../../api/movie";
 
 function createCellMovie(name, duration, img) {
   return (
-    <TableCell
+    <Box
       align="left"
       sx={{
         display: "flex",
-        justifyContent: "center",
         alignItems: "center",
       }}
     >
@@ -49,7 +49,7 @@ function createCellMovie(name, duration, img) {
         </Typography>
         <Typography>{duration}</Typography>
       </Box>
-    </TableCell>
+    </Box>
   );
 }
 
@@ -71,6 +71,9 @@ function ManageMovie() {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [showDialogDelete, setShowDialogDelete] = React.useState(false);
   const [objectToDelete, setObjectToDelete] = React.useState(null);
+  const [movies, setMovies] = React.useState([]);
+  const [tvShowEdit, setTvShowEdit] = React.useState(null);
+
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -86,6 +89,16 @@ function ManageMovie() {
     setShowDialogDelete(true)
     console.log("Delete");
   };
+
+  React.useEffect(() => {
+    filterMovie().then((res) => {
+      if (res) {
+        setMovies(res);
+      }
+    }
+    );
+
+  }, []);
 
   return (
     <Box>
@@ -136,34 +149,38 @@ function ManageMovie() {
             </TableHead>
 
             <TableBody>
-              {rows.map((row) => (
-                <TableRow key={row.name}>
-                  {createCellMovie("Frozen yoghurt", 159, 6.0)}
-                  <TableCell align="left">480/720/1080</TableCell>
-                  <TableCell align="left">Action</TableCell>
-                  <TableCell align="left">10/07/2018</TableCell>
-                  <TableCell align="left">11/04/2024</TableCell>
-                  <TableCell align="left">
-                    <Tooltip title="Edit Movie">
-                      <IconButton
-                        onClick={() => {
-                          setOpenEdit(true);
-                        }}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Delete Movie">
-                      <IconButton
-                        onClick={() => handleDelete('testttt')}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
+                {movies.map((movie) => (
+                  <TableRow key={movie?.name}>
+                    <TableCell>
+
+                      {createCellMovie(movie?.name, movie?.duration, movie?.banner)}
+                    </TableCell>
+                    <TableCell align="left">{movie?.productionCompany}</TableCell>
+                    <TableCell align="left">{movie?.genresmovie?.join(', ')}</TableCell>
+                    <TableCell align="left">{movie?.firstYearRelease}</TableCell>
+                    <TableCell align="left">11/04/2024</TableCell>
+                    <TableCell align="left">
+                      <Tooltip title="Edit Movie">
+                        <IconButton
+                          onClick={() => {
+                            setOpenEdit(true);
+                            setTvShowEdit(movie);
+                          }}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Delete Movie">
+                        <IconButton
+                          onClick={() => handleDelete(movie)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
           </Table>
         </TableContainer>
 
@@ -176,7 +193,7 @@ function ManageMovie() {
           }}
         />
       </Box>
-      <AddAndEditMovie isOpen={openEdit} setIsOpen={setOpenEdit} />
+      <AddAndEditMovie isOpen={openEdit} setIsOpen={setOpenEdit} film={tvShowEdit}/>
       {
           showDialogDelete && <DialogDelete setOpenDialog={setShowDialogDelete} objectToDelete={objectToDelete}/>
         }
