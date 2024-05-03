@@ -90,10 +90,9 @@ function AllFilm() {
 
     useEffect(() => {
         setUrl(window.location.search)
-        
     }, [window.location.search])
 
-    console.log('url', url)
+
     const navigate = useNavigate();
 
     const handleChangePage = (event, value) => {
@@ -113,40 +112,51 @@ function AllFilm() {
         setRating(["1", "2", "3", "4", "5"]);
         setYear(["2021", "2020", "2019", "2018", "2017"]);
         // getCommendedFilms()
-        getCommendedFilms({ userID: "66227018dea6cbf7a9ab36ba", page: 0, size: 10 })
-            .then((value) => {
-                setFilms(value)
-            })
-            .catch((error) => {
-                console.error(error)
-            })
+        // getCommendedFilms({ userID: "66227018dea6cbf7a9ab36ba", page: 0, size: 10 })
+        //     .then((value) => {
+        //         setFilms(value)
+        //     })
+        //     .catch((error) => {
+        //         console.error(error)
+        //     })
     }, []);
 
     const handleClickFilter = () => {
 
-        let queryParams = new URLSearchParams();
+        // let queryParams = new URLSearchParams();
 
-        if (selectedGenre.length > 0) {
-        queryParams.append('genres', selectedGenre.join(","));
-        }
+        // if (selectedGenre.length > 0) {
+        // queryParams.append('genres', selectedGenre.join(","));
+        // }
 
-        if (nameSearch) {
-        queryParams.append('name', nameSearch);
-        }
+        // if (nameSearch) {
+        // queryParams.append('name', nameSearch);
+        // }
 
-        if (selectedYear.length > 0) {
-        queryParams.append('years', selectedYear.join(","));
-        }
+        // if (selectedYear.length > 0) {
+        // queryParams.append('years', selectedYear.join(","));
+        // }
 
-        if (selectedRating.length > 0) {
-        queryParams.append('ratings', selectedRating.join(","));
-        }
+        // if (selectedRating.length > 0) {
+        // queryParams.append('ratings', selectedRating.join(","));
+        // }
 
-        if (selectedCountry.length > 0) {
-        queryParams.append('countries', selectedCountry.join(","));
-        }
+        // if (selectedCountry.length > 0) {
+        // queryParams.append('countries', selectedCountry.join(","));
+        // }
+
+        const queryParams = new URLSearchParams({
+            name: nameSearch,
+            countries: JSON.stringify(selectedCountry),
+            ratings: JSON.stringify(selectedRating),
+            years: JSON.stringify(selectedYear),
+            page: page - 1,
+        });
+
+        selectedGenre.forEach(g => queryParams.append('genres', g));
 
         setPage(1)
+        console.log('query params', queryParams.toString())
         if(type === "Movie"){
             filterMovie(queryParams.toString())
                 .then((value) => {
@@ -194,10 +204,15 @@ function AllFilm() {
             console.log('paramsssssss', params)
             filterMovie(params)
             .then((value) => {
-                setFilms(value)
+                if(value.length > 0)
+                    setFilms(value)
+                console.log('search film', value)
                 getTVShows(params)
                 .then((value) => {
-                    setFilms(prevFilms => prevFilms.concat(value));
+                    console.log('search film2', value)
+                    if(value.length > 0){
+                        setFilms(prevFilms => prevFilms.concat(value));
+                    }
                 })
                 .catch((error) => {
                     console.error(error)

@@ -34,8 +34,8 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    const token = this.generateToken(user.id, user.isAdmin, user.isVip, user.isBlocked);
-    return { 'token' : token.token, 'refresh_token': token.refreshToken};
+    const token = this.generateToken(user._id, user.isAdmin, user.isVip, user.isBlocked);
+    return { 'token' : token.token, 'refresh_token': token.refreshToken, 'userId': user._id};
   }
 
   async register(data: RegisterRequestDto){

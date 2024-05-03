@@ -23,14 +23,15 @@ import {
   import EditIcon from "@mui/icons-material/Edit";
 import AddAndEditTvShow from "../../components/admin/addAndEditTvShow";
 import DialogDelete from "../../components/dialogDelete";
+import { getTVShows } from "../../api/tvShow";
   
   function createCellMovie(name, duration, img) {
     return (
-      <TableCell 
+      <Box 
         align="left"
         sx={{
           display: "flex",
-          justifyContent: "center",
+          // justifyContent: "center",
           alignItems: "center",
         }}
       >
@@ -52,7 +53,7 @@ import DialogDelete from "../../components/dialogDelete";
           <Typography>{duration}</Typography>
         </Box>
         
-      </TableCell>
+      </Box>
     );
   }
   
@@ -60,19 +61,9 @@ import DialogDelete from "../../components/dialogDelete";
     const [openEdit, setOpenEdit] = React.useState(false);
     const [showDialogDelete, setShowDialogDelete] = React.useState(false);
     const [objectToDelete, setObjectToDelete] = React.useState(null);
-    function createData(name, calories, fat, carbs, protein) {
-      return { name, calories, fat, carbs, protein };
-    }
-  
-    const rows = [
-      createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-      createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-      createData("Eclair", 262, 16.0, 24, 6.0),
-      createData("Cupcake", 305, 3.7, 67, 4.3),
-      createData("Gingerbread", 356, 16.0, 49, 3.9),
-    ];
-  
-    const [page, setPage] = React.useState(2);
+    const [tvShows, setTvShows] = React.useState([]);
+    const [tvShowEdit, setTvShowEdit] = React.useState(null);
+    const [page, setPage] = React.useState(1);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
   
     const handleChangePage = (event, newPage) => {
@@ -84,11 +75,18 @@ import DialogDelete from "../../components/dialogDelete";
       setPage(0);
     };
 
-    const handleDelete = (season) => {
-      setObjectToDelete(season);
+    const handleDelete = (tvShow) => {
+      setObjectToDelete(tvShow);
       setShowDialogDelete(true)
       console.log("Delete");
     };
+
+    React.useEffect(() => {
+      getTVShows('page='+(page-1)).then((data) => {
+        console.log("data", data);
+        setTvShows(data);
+      });
+    }, [page]);
   
     return (
       <Box>
@@ -132,7 +130,7 @@ import DialogDelete from "../../components/dialogDelete";
                   }}
                 >
                   <TableCell align="left">TV Show</TableCell>
-                  <TableCell align="left">Quality</TableCell>
+                  <TableCell align="left">Company</TableCell>
                   <TableCell align="left">Category</TableCell>
                   <TableCell align="left">Publish Date</TableCell>
                   <TableCell align="left">Added Date</TableCell>
@@ -141,18 +139,22 @@ import DialogDelete from "../../components/dialogDelete";
               </TableHead>
   
               <TableBody>
-                {rows.map((row) => (
-                  <TableRow key={row.name}>
-                    {createCellMovie("Frozen yoghurt", 159, 6.0)}
-                    <TableCell align="left">480/720/1080</TableCell>
-                    <TableCell align="left">Action</TableCell>
-                    <TableCell align="left">10/07/2018</TableCell>
+                {tvShows.map((tvShow) => (
+                  <TableRow key={tvShow?.name}>
+                    <TableCell>
+
+                      {createCellMovie(tvShow?.name, tvShow?.duration, tvShow?.banner)}
+                    </TableCell>
+                    <TableCell align="left">{tvShow?.productionCompany}</TableCell>
+                    <TableCell align="left">{tvShow?.genres?.join(', ')}</TableCell>
+                    <TableCell align="left">{tvShow?.firstYearRelease}</TableCell>
                     <TableCell align="left">11/04/2024</TableCell>
                     <TableCell align="left">
                       <Tooltip title="Edit Movie">
                         <IconButton
                           onClick={() => {
                             setOpenEdit(true);
+                            setTvShowEdit(tvShow);
                           }}
                         >
                           <EditIcon />
@@ -160,7 +162,7 @@ import DialogDelete from "../../components/dialogDelete";
                       </Tooltip>
                       <Tooltip title="Delete Movie">
                         <IconButton
-                          onClick={() => handleDelete(row.name)}
+                          onClick={() => handleDelete(tvShow)}
                         >
                           <DeleteIcon />
                         </IconButton>
@@ -174,15 +176,14 @@ import DialogDelete from "../../components/dialogDelete";
   
           <Pagination
             count={11}
-            defaultPage={6}
-            boundaryCount={2}
+            onChange={handleChangePage}
             sx={{
               marginTop: "2rem",
             }}
           />
         </Box>
 
-        <AddAndEditTvShow isOpen={openEdit} setIsOpen={setOpenEdit}/>
+        <AddAndEditTvShow isOpen={openEdit} setIsOpen={setOpenEdit} film={tvShowEdit}/>
         {
           showDialogDelete && <DialogDelete setOpenDialog={setShowDialogDelete} objectToDelete={objectToDelete}/>
         }

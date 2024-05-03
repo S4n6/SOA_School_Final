@@ -21,8 +21,35 @@ import Paper from "@mui/material/Paper";
 import Avatar from "@mui/material/Avatar";
 import DeleteIcon from "@mui/icons-material/Delete";
 import BlockIcon from "@mui/icons-material/Block";
+import { blockedUser, deleteUser, getAllUsers } from "../../api/user";
 
-function dialog(message, type, setOpenDialog){
+function dialog(message, type, setOpenDialog, object){
+
+  const agree = () => {
+    if(type === "block"){
+      blockedUser(object?._id, true).then((res) => {
+        console.log(res);
+      });
+  
+    }
+  
+    if(type === "delete"){
+      deleteUser(object?._id).then((res) => {
+        console.log(res);
+      });
+    }
+
+    if(type === "unblock"){
+      console.log(type, object?._id)
+      blockedUser(object?._id, false).then((res) => {
+        console.log(res);
+      });
+  
+    }
+    setOpenDialog(false)
+  }
+  
+
   return(
     <Dialog open={true} onClose={() => setOpenDialog(false)}>
     <DialogTitle>{message}</DialogTitle>
@@ -36,17 +63,19 @@ function dialog(message, type, setOpenDialog){
     >
       <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
       <Button 
-        onClick={() => setOpenDialog(false)}
+        onClick={agree}
         sx={{
-          backgroundColor: "red",
+          backgroundColor: type !== "unblock" ? "red" : 'green',
           color: "white",
           ":hover": {
-            backgroundColor: "error.light",
+            backgroundColor: type !== "unblock" ? "error.light" : 'success.light',
           }
         }}
         
       >
-        {type === "block" ? "Block" : "Delete"}
+        { type === "block" ? "Block" : ""}
+        { type === "delete" ? "Delete" : ""}
+        {type === "unblock" ? "UnBlock" : ""}
       </Button>
     </Box>
   </Dialog>
@@ -72,6 +101,10 @@ function ManageUser() {
   const [openDialogDelete, setOpenDialogDelete] = React.useState(false);
   const [openDialogBlock, setOpenDialogBlock] = React.useState(false);
   const [pageNumber, setPageNumber] = React.useState(1);
+  const [users, setUsers] = React.useState([]);
+  const [openBlock, setOpenBlock] = React.useState(false);
+  const [userBlocked, setUserBlocked] = React.useState(null);
+  const [userDeleted, setUserDeleted] = React.useState(null);
 
 
   const handleChangePage = (event, newPage) => {
@@ -83,12 +116,19 @@ function ManageUser() {
     setPage(0);
   };
 
-  const handleDelete = (message) => {
+  const handleDelete = (userDeleted) => {
     setOpenDialogDelete(true);
+    setUserDeleted(userDeleted);
   };
 
-  const handleBlock = (message) => {
-    setOpenDialogBlock(true);
+  const handleBlock = (userBlocked) => {
+    setUserBlocked(userBlocked);
+    if(userBlocked?.isBlocked){
+      setOpenBlock(true);
+    }else{
+      setOpenDialogBlock(true);
+    }
+    
   }
 
   const handlePageChange = (event, value) => {
@@ -99,6 +139,14 @@ function ManageUser() {
   const handleSearch = (event) => {
     console.log(event.target.value); // This will log the search value
   }
+
+  React.useEffect(() => {
+    const params = 'page='+pageNumber;
+    getAllUsers(params).then((res) => {
+      console.log(res);
+      setUsers(res);
+    });
+  }, [openDialogDelete, openDialogBlock, openBlock, page]);
 
   return (
     <Box>
@@ -134,26 +182,26 @@ function ManageUser() {
             </TableHead>
 
             <TableBody>
-              {rows.map((row) => (
-                <TableRow key={row.name}>
+              {users.map((user) => (
+                <TableRow key={user?.name}>
                   <TableCell align="left">
                     <Avatar />
                   </TableCell>
-                  <TableCell align="left">Nguyễn Hoàng Sang</TableCell>
-                  <TableCell align="left">sang05112003@gmail.com</TableCell>
-                  <TableCell align="left">Vip</TableCell>
-                  <TableCell align="left">Active</TableCell>
-                  <TableCell align="left">11/04/2024</TableCell>
+                  <TableCell align="left">{user?.name}</TableCell>
+                  <TableCell align="left">{user?.email}</TableCell>
+                  <TableCell align="left">{user?.isVip ? 'Vip' : 'Normal'}</TableCell>
+                  <TableCell align="left">{user?.isBlocked ? 'Blocked' : 'Active'}</TableCell>
+                  <TableCell align="left">{user?.birthdate?.toLocaleString()}</TableCell>
                   <TableCell align="left">
-                    <Tooltip title="Block User">
+                    <Tooltip title= {user?.isBlocked ? "Unblock User" : "Block User"}>
                       <IconButton
-                        onClick={() => handleBlock()}
+                        onClick={() => handleBlock(user)}
                       >
                         <BlockIcon />
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Delete User">
-                      <IconButton onClick={handleDelete}>
+                      <IconButton onClick={() => handleDelete(user)}>
                         <DeleteIcon />
                       </IconButton>
                     </Tooltip>
@@ -166,7 +214,6 @@ function ManageUser() {
 
         <Pagination
           count={11}
-          page={page}
           boundaryCount={2}
           onChange={handlePageChange}
           sx={{
@@ -176,9 +223,9 @@ function ManageUser() {
       </Box>
 
       {/* HIển thị dialog xác nhận xóa và block */}
-      {openDialogDelete && dialog("Are you sure you want to delete this user?", "delete", setOpenDialogDelete)}
-      {openDialogBlock && dialog("Are you sure you want to block this user?", "block", setOpenDialogBlock)}
-
+      {openDialogDelete && dialog(`Are you sure you want to delete ${userDeleted?.name}?`, "delete", setOpenDialogDelete, userDeleted)}
+      {openDialogBlock && dialog(`Are you sure you want to block ${userBlocked?.name}?`, "block", setOpenDialogBlock, userBlocked)}
+      {openBlock && dialog(`Are you sure you want to unblock ${userBlocked?.name}?`, "unblock", setOpenBlock, userBlocked)}
     </Box>
   );
 }

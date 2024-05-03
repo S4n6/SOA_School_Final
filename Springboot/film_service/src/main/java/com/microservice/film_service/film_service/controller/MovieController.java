@@ -43,7 +43,7 @@ public class MovieController {
 
     @GetMapping("")
     public ResponseEntity<Object> getFilms(
-            @RequestParam(required = false, defaultValue = "") String name,
+            @RequestParam(value = "name", required = false, defaultValue = "") String name,
             @RequestParam(value = "genres", required = false) List<Genre> genres,
             @RequestParam(value = "countries", required = false) List<String> countries,
             @RequestParam(value = "ratings", required = false) List<Integer> ratings,
