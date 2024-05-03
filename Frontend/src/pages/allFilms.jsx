@@ -25,6 +25,8 @@ import Movie from "@mui/icons-material/Movie";
 import MoviesRecommend from "../components/movie/moviesRecommend";
 import { filterMovie } from "../api/movie";
 import { getCommendedFilms } from "../api/film";
+import { unstable_HistoryRouter, useNavigate, useParams } from "react-router-dom";
+import { getTVShows } from "../api/tvShow";
 
 
 // Hàm để render ô chọn category
@@ -78,10 +80,24 @@ function AllFilm() {
     const [selectedCountry, setSelectedCountry] = useState([]);
     const [selectedRating, setSelectedRating] = useState([]);
     const [selectedYear, setSelectedYear] = useState([]);
-    const [typeAll, setTypeAll] = useState(0);
+    const [nameSearch, setNameSearch] = useState('');
+    const [url, setUrl] = useState(window.location.search);
+    const { type } = useParams();
+    const [page, setPage] = useState(1);
 
-    const handleChange = (event, newValue) => {
-        setTypeAll(newValue);
+    const urlParams = new URLSearchParams(url);
+    const name = urlParams.get('name');
+
+    useEffect(() => {
+        setUrl(window.location.search)
+        
+    }, [window.location.search])
+
+    console.log('url', url)
+    const navigate = useNavigate();
+
+    const handleChangePage = (event, value) => {
+        setPage(value);
     };
 
     useEffect(() => {
@@ -96,42 +112,96 @@ function AllFilm() {
         setCountry(["Vietnam", "Korea", "Japan", "China", "USA", "UK"]);
         setRating(["1", "2", "3", "4", "5"]);
         setYear(["2021", "2020", "2019", "2018", "2017"]);
-        getCommendedFilms()
+        // getCommendedFilms()
     }, []);
 
     const handleClickFilter = () => {
 
-        const queryParams = new URLSearchParams({
-            genres: selectedGenre.join(","),
-            // genres: selectedGenre.join(","),
-            years: selectedYear.join(","),
-            ratings: selectedRating.join(","),
-            countries: selectedCountry.join(",")
-        });
+        let queryParams = new URLSearchParams();
 
-        filterMovie(queryParams.toString())
-            .then((value) => {
-                setFilms(value)
-            })
-            .catch((error) => {
-                console.error(error)
-            })
+        if (selectedGenre.length > 0) {
+        queryParams.append('genres', selectedGenre.join(","));
+        }
+
+        if (nameSearch) {
+        queryParams.append('name', nameSearch);
+        }
+
+        if (selectedYear.length > 0) {
+        queryParams.append('years', selectedYear.join(","));
+        }
+
+        if (selectedRating.length > 0) {
+        queryParams.append('ratings', selectedRating.join(","));
+        }
+
+        if (selectedCountry.length > 0) {
+        queryParams.append('countries', selectedCountry.join(","));
+        }
+
+        setPage(1)
+        if(type === "Movie"){
+            filterMovie(queryParams.toString())
+                .then((value) => {
+                    setFilms(value)
+                })
+                .catch((error) => {
+                    console.error(error)
+                })
+        }else if(type == 'TVSeries'){
+            getTVShows(queryParams.toString())
+                .then((value) => {
+                    console.log('valueee', value)
+                    setFilms(value)
+                })
+                .catch((error) => {
+                    console.error(error)
+                })
+        }else{
+            navigate('/all')
+        }
+
     }
 
     useEffect(() => {
-        if(typeAll === 0) {
-            filterMovie('')
+        let pageNumber = 'page=' + (page-1)
+        if(type === "Movie"){
+            filterMovie(pageNumber)
+                .then((value) => {
+                    setFilms(value)
+                })
+                .catch((error) => {
+                    console.error(error)
+                })
+        }else if (type === 'TVSeries'){
+            getTVShows(pageNumber)
+                .then((value) => {
+                    console.log('valueee', value)
+                    setFilms(value)
+                })
+                .catch((error) => {
+                    console.error(error)
+                })
+        }else{
+            
+            console.log('namesdfgdf', name)
+            const params = name ? 'name=' + name + '&' + pageNumber : '';
+            filterMovie(params)
             .then((value) => {
-                console.log('filmsss', value)
                 setFilms(value)
+                getTVShows(params)
+                .then((value) => {
+                    setFilms(prevFilms => prevFilms.concat(value));
+                })
+                .catch((error) => {
+                    console.error(error)
+                })
             })
             .catch((error) => {
                 console.error(error)
             })
-        }else{
-            setFilms([])
         }
-    }, [typeAll])
+    }, [type, page, name])
 
     return (
         <Box
@@ -165,7 +235,7 @@ function AllFilm() {
                             }}
                             placeholder="Search..."
                             onChange={(event) => {
-                                // Handle search here...
+                                setNameSearch(event.target.value);
                             }}
                         />
                     </Grid>
@@ -212,8 +282,6 @@ function AllFilm() {
                     sx={{
                         width: "75%",
                         marginRight: "2rem",
-                        // border: "1px solid",
-                        // borderColor: "background.default.100",
                         boxShadow: 5,
                         borderRadius: "8px",
                         display: "flex",
@@ -221,12 +289,7 @@ function AllFilm() {
                         justifyContent: "space-between",
                     }}
                 >
-                    <Box>
-                        <Tabs value={typeAll} onChange={handleChange} aria-label="basic tabs example">
-                            <Tab label="Movie" />
-                            <Tab label="TV Show" />
-                        </Tabs>
-                    </Box>
+
                     <GridViewMovies films={films}/>
                     <Box
                         sx={{
@@ -236,7 +299,7 @@ function AllFilm() {
                             marginBottom: "2rem",
                         }}
                     >
-                        <Pagination count={10} showFirstButton showLastButton />
+                        <Pagination count={10} showFirstButton showLastButton onChange={handleChangePage}/>
                     </Box>
                 </Box>
                 <Box

@@ -37,6 +37,7 @@ import Search from "../search";
 import SearchIcon from "@mui/icons-material/Search";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { useNavigate } from "react-router-dom";
 
 const logoStyle = {
   width: "100px",
@@ -52,6 +53,8 @@ function Header({ mode, toggleColorMode }) {
   const [country, setCountry] = React.useState([]);
   const [showNotification, setShowNotification] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [search, setSearch] = React.useState('');
+  const navigate = useNavigate();
   const openMenuAccount = Boolean(anchorEl);
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
@@ -77,6 +80,12 @@ function Header({ mode, toggleColorMode }) {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  
+
+  const handleSearchChange = (event) => {
+    setSearch(event.target.value);
   };
 
   React.useEffect(() => {
@@ -167,6 +176,7 @@ function Header({ mode, toggleColorMode }) {
                   },
                 }}
                 alt="Home"
+                onClick={() => navigate("/home")}
               />
               <Box
                 sx={{
@@ -175,7 +185,7 @@ function Header({ mode, toggleColorMode }) {
                 }}
               >
                 <MenuItem
-                  onClick={() => scrollToSection("features")}
+                  onClick={() => navigate("/Movie")}
                   sx={{ py: "6px", px: "12px" }}
                 >
                   <Typography variant="button" color="text.primary">
@@ -183,7 +193,7 @@ function Header({ mode, toggleColorMode }) {
                   </Typography>
                 </MenuItem>
                 <MenuItem
-                  onClick={() => scrollToSection("testimonials")}
+                  onClick={() => navigate("/TVSeries")}
                   sx={{ py: "6px", px: "12px" }}
                 >
                   <Typography variant="button" color="text.primary">
@@ -249,6 +259,7 @@ function Header({ mode, toggleColorMode }) {
               </Box>
             </Box>
             {/* END Thanh NavBar bên trái */}
+
             {/* Thanh NavBar bên phải */}
             <Box
               sx={{
@@ -270,6 +281,8 @@ function Header({ mode, toggleColorMode }) {
                   placeholder="TV Series, Movies, ..."
                   multiline
                   variant="filled"
+                  value={search}
+                  onChange={handleSearchChange}
                   InputProps={{
                     style: {
                       backgroundColor: "transparent",
@@ -277,8 +290,8 @@ function Header({ mode, toggleColorMode }) {
                     },
                     startAdornment: (
                       <InputAdornment>
-                        <IconButton onClick={() => console.log("Icon clicked")}>
-                          <SearchIcon style={{}} />
+                        <IconButton onClick={() => navigate('/all?name='+search)}>
+                          <SearchIcon />
                         </IconButton>
                       </InputAdornment>
                     ),

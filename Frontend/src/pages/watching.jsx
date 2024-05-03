@@ -9,27 +9,41 @@ import Comment from "../components/comment/comment";
 import Eposide from "../components/movie/eposide";
 import { useEffect, useState } from "react";
 import { getTVShowByID } from "../api/tvShow";
+import { useParams } from "react-router-dom";
+import { getMovieByID } from "../api/movie";
 
 function Watching() {
-
-    const id = "6625e6fe967796ed0924be08"
+    const { type, id } = useParams();
 
     const [film, setFilm] = useState(null)
-
     const [video, setVideo] = useState("")
 
     useEffect(() => {
-        getTVShowByID({ id })
-            .then((value) => {
-                setFilm(value)
-                console.log(value)
-            })
-            .catch((error) => {
-                console.error(error)
-            })
+        console.log('typeid', type, id)
+        if (type === "TV_SHOW") {
+            
+            getTVShowByID({id})
+                .then((value) => {
+                    setFilm(value)
+                })
+                .catch((error) => {
+                    console.error(error)
+                })
+        }else{
+            getMovieByID(id)
+                .then((value) => {
+                    setFilm(value)
+                    console.log(value)
+                })
+                .catch((error) => {
+                    console.error(error)
+                })
+        }
+        
     }, [id])
 
     useEffect(() => {
+        console.log('film', film)
         setVideo(film?.video)
     }, [film])
 

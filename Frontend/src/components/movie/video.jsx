@@ -10,7 +10,12 @@ import ButtonGroup from "@mui/material/ButtonGroup";
 import StorageIcon from "@mui/icons-material/Storage";
 
 function Video({ video }) {
-  
+  const [videoError, setVideoError] = React.useState(false);
+  const handleVideoError = () => {
+    setVideoError(true);
+  };
+
+  const videoUrl = "https://www.youtube.com/watch?v=J1jzs6dk4bs";
   return (
     <Box
       sx={{
@@ -25,24 +30,37 @@ function Video({ video }) {
         sx={{
           width: "100%",
           height: "100%",
-          display: "flex", // This will make the Card a flex container
-          justifyContent: "center", // This will center the items horizontally
+          display: "flex",
+          justifyContent: "center",
           alignItems: "center",
           flexDirection: "column",
           marginTop: "8px",
         }}
       >
-        <CardMedia
-          component="video"
-          src={video}
-          autoPlay
-          controls
-          sx={{
-            // This will make the video fit its container
-            width: "70%",
-            objectFit: "contain",
-          }}
-        />
+        {videoError ? (
+            <CardMedia
+            component="video"
+            src={videoUrl}
+            autoPlay
+            controls
+            sx={{
+              width: "70%",
+              objectFit: "contain",
+            }}
+            />
+        ) : (
+          <CardMedia
+            component="video"
+            src={video}
+            autoPlay
+            controls
+            onError={handleVideoError}
+            sx={{
+              width: "70%",
+              objectFit: "contain",
+            }}
+            />
+          )}
         <CardActionArea>
           <CardContent
             sx={{
