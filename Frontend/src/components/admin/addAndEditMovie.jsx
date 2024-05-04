@@ -1,8 +1,13 @@
 import {
+  Alert,
+  Backdrop,
   Button,
   Checkbox,
+  CircularProgress,
   Divider,
   Drawer,
+  FormControl,
+  InputLabel,
   List,
   ListItem,
   ListItemButton,
@@ -18,12 +23,22 @@ import {
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import { createMovie, updateMovie } from "../../api/movie";
+import { COUNTRY, GENRES, STATUS } from "../../utils/contants";
+
+
+function alert(type, message) {
+  if (type === "success") {
+    return <Alert severity="success">{message}</Alert>;
+  }
+  return <Alert severity="error">{message}</Alert>;
+}
+
 
 function AddAndEditMovie({ film, isOpen, setIsOpen }) {
   console.log("isOpenppppppp", isOpen);
   const [open, setOpen] = useState(false);
-  const [categoriesSelected, setCategoriesSelected] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [categoriesSelected, setCategoriesSelected] = useState(film ? film?.genres : []);
+  const [categories, setCategories] = useState(GENRES);
   const [banner, setBanner] = useState(null);
   const [video, setVideo] = useState(null);
   const [expectedReleaseDate, setExpectedReleaseDate] = useState(null);
@@ -36,10 +51,19 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
   const [genres, setGenres] = useState([]);
   const [actors, setActors] = useState([]);
   const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
     setOpen(isOpen);
   }, [isOpen]);
+
+  useEffect(() => {
+    if (film?.genres) {
+      setCategoriesSelected(film.genres);
+    }
+  }, [film]);
 
   const toggleDrawer = (newOpen) => () => {
     setIsOpen(newOpen);
@@ -51,7 +75,6 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
       target: { value },
     } = event;
     setCategoriesSelected(
-      // On autofill we get a stringified value.
       typeof value === "string" ? value.split(",") : value
     );
   };
@@ -70,10 +93,24 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
     categoriesSelected.forEach((genre) => formData.append("genres[]", genre));
     actors.forEach((actor) => formData.append("actors[]", actor));
     formData.append("description", description);
+    setLoading(true);
     if(film) {
       updateMovie(formData, film?.id)
       .then((value) => {
         console.log('updated movie', value);
+        if(value === undefined) {
+          setIsSuccess(false);
+        }else{
+          setIsSuccess(true);
+        }
+        setTimeout(() => {
+          setLoading(false);
+          setIsOpen(false);
+          setShowAlert(true);
+          setTimeout(() => {
+            setShowAlert(false);
+          }, 2000);
+        }, 1500);
       })
       .catch((error) => {
         console.error(error);
@@ -82,24 +119,25 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
       createMovie(formData)
       .then((value) => {
         console.log('created movie', value);
+        if(value === undefined) {
+          setIsSuccess(false);
+        }else{
+          setIsSuccess(true);
+        }
+        setTimeout(() => {
+          setLoading(false);
+          setIsOpen(false);
+          setShowAlert(true);
+          setTimeout(() => {
+            setShowAlert(false);
+          }, 2000);
+        }, 1500);
       })
       .catch((error) => {
         console.error(error);
       });
     }
   };
-
-  useEffect(() => {
-    setCategories([
-      "Action",
-      "Adventure",
-      "Animation",
-      "Biography",
-      "Comedy",
-      "CRIME",
-      "DRAMA",
-    ]);
-  }, []);
 
   const DrawerList = (
     <Box sx={{ width: "50rem", marginTop: "5rem" }} role="presentation">
@@ -119,6 +157,7 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
             id="outlined-basic"
             label="Movie Name"
             variant="outlined"
+            value={film?.name ? film.name : name}
             fullWidth
             onChange={(e) => setName(e.target.value)}
           />
@@ -127,6 +166,7 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
             label="Duration"
             variant="outlined"
             fullWidth
+            value={film?.duration ? film?.duration : duration}
             onChange={(e) => setDuration(e.target.value)}
           />
           <TextField
@@ -134,30 +174,53 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
             label="Description"
             variant="outlined"
             fullWidth
+            value={film?.description ? film?.description : description}
             onChange={(e) => setDescription(e.target.value)}
           />
-          <TextField
-            id="outlined-basic"
-            label="Country"
-            variant="outlined"
-            fullWidth
-            onChange={(e) => setCountryOfOrigin(e.target.value)}
-          />
+
+
+         <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Country of origin</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={film?.countryOfOrigin ? film?.countryOfOrigin : countryOfOrigin}
+              label="Countryoforigin"
+              onChange={(e) => setCountryOfOrigin(e.target.value)}
+            >
+              {COUNTRY?.map((country) => (
+                <MenuItem key={country} value={country}>
+                  {country}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
            <TextField
             id="outlined-basic"
             label="Company"
             variant="outlined"
             fullWidth
+            value={film?.productionCompany ? film?.productionCompany : productionCompany}
             onChange={(e) => setProductionCompany(e.target.value)}
           />
 
-          <TextField
-            id="outlined-basic"
-            label="Status"
-            variant="outlined"
-            fullWidth
-            onChange={(e) => setStatus(e.target.value)}
-          />
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Status</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={film?.status ? film?.status : status}
+              label="Status"
+              onChange={(e) => setStatus(e.target.value)}
+            >
+              {STATUS?.map((status) => (
+                <MenuItem key={status} value={status}>
+                  {status}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
           <TextField
             id="outlined-basic"
@@ -165,6 +228,7 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
             variant="outlined"
             helperText='Separate by ","'
             fullWidth
+            value={film?.actors ? (film?.actors)?.join(', ') : actors}
             onChange={(e) => setActors(e.target.value.split(","))}
           />
            <TextField
@@ -173,6 +237,7 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
             variant="outlined"
             fullWidth
             type="number"
+            value={film?.firstYearRelease ? film?.firstYearRelease : firstYearRelease}
             InputProps={{
               inputProps: { 
                 min: 1900, max: new Date().getFullYear() 
@@ -181,7 +246,7 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
             onChange={(e) => {
               const year = e.target.value;
               if (year >= 1900 && year <= new Date().getFullYear()) {
-                setExpectedReleaseDate(year);
+                setFirstYearRelease(year);
               }
             }}
             InputLabelProps={{
@@ -195,11 +260,13 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
             variant="outlined"
             type="date"
             fullWidth
+            value={film?.property?.expectedReleaseDate ? new Date(film?.property?.expectedReleaseDate).toISOString().substring(0, 10) : expectedReleaseDate}
             onChange={(e) => setExpectedReleaseDate(e.target.value)}
             InputLabelProps={{
               shrink: true,
             }}
           />
+
           <Select
             labelId="demo-multiple-checkbox-label"
             id="demo-multiple-checkbox"
@@ -220,32 +287,26 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
             ))}
           </Select>
 
-          {/* <TextField
-            id="outlined-basic"
-            label="URl Poster"
-            variant="outlined"
-            fullWidth
-          />
-
-        <TextField
-            id="outlined-basic"
-            label="URL Video"
-            variant="outlined"
-            fullWidth
-          /> */}
 
           <TextField
             label="Banner"
             type="file"
             inputProps={{ accept: "image/*" }}
             onChange={(e) => setBanner(e.target.files[0])}
+            InputLabelProps={{
+              shrink: true,
+            }}
           />
           <TextField
             label="Video"
             type="file"
-            // inputProps={{ accept: "video/*" }}
             onChange={(e) => setVideo(e.target.files[0])}
+            InputLabelProps={{
+              shrink: true,
+            }}
           />
+
+
           <Button
             sx={{
               width: "30%",
@@ -271,6 +332,26 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
       <Drawer open={open} onClose={toggleDrawer(false)} anchor="right">
         {DrawerList}
       </Drawer>
+
+      {console.log('fimlmasfa', film)}
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      {showAlert && (
+        <Box
+          sx={{
+            position: "fixed",
+            top: "7rem",
+            left: "50%",
+          }}
+        >
+          {isSuccess ? alert("success", "Create season successfully") : null}
+          {isSuccess === false ? alert("error", "Create season failed") : null}
+        </Box>
+      )}
     </Box>
   );
 }

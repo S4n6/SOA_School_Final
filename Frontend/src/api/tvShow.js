@@ -54,7 +54,7 @@ export async function createTvShow(formData){
                 }
             }
         )
-        if (response.status == 200) {
+        if (response.status == 201) {
             return response.data.data
         } else {
             throw new Error(response.status);
@@ -77,8 +77,8 @@ export async function createSeason(formData){
                 }
             }
         )
-        if (response.status == 200) {
-            return response.data.data
+        if (response.status == 201) {
+            return response.data
         } else {
             throw new Error(response.status);
         }
@@ -100,8 +100,8 @@ export async function createEposide(formData){
                 }
             }
         )
-        if (response.status == 200) {
-            return response.data.data
+        if (response.status == 201) {
+            return response.data
         } else {
             throw new Error(response.status);
         }

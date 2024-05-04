@@ -1,14 +1,33 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Drawer,
+  List,
+  TextField,
+  Typography,
+} from "@mui/material";
 import GridViewMovies from "../components/movie/gridviewMovies";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { createWatchList } from "../api/watchlist";
+import WatchListContainer from "../components/watchlist/watchListContainer";
+import WatchListItem from "../components/watchlist/watchListItem";
 
 function WatchList() {
   const { user } = useContext(AuthContext);
   const [films, setFilms] = useState([]);
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
+  const [isOpenListFilm, setIsOpenListFilm] = useState(false);
+
+  const handleCloseDrawer = () => {
+    setIsOpenListFilm(false);
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -21,19 +40,18 @@ function WatchList() {
   const handleCreateWatchList = () => {
     console.log(name);
     createWatchList(user, name)
-    .then((value) => {
-      console.log(value);
-      setOpen(false);
-    })
-    .catch((error) => {
+      .then((value) => {
+        console.log(value);
+        setOpen(false);
+      })
+      .catch((error) => {
         console.error(error);
         setOpen(false);
-    });
-  }
+      });
+  };
 
   useEffect(() => {
-    console.log('userrrr', user);
-
+    console.log("userrrr", user);
   }, []);
 
   return (
@@ -55,16 +73,15 @@ function WatchList() {
         sx={{ marginTop: "1rem" }}
       >
         Tạo WatchList
-        </Button>
+      </Button>
+
       <Dialog
         open={open}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          Tạo Watch List mới
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-title">Tạo Watch List mới</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -83,9 +100,33 @@ function WatchList() {
           </Button>
         </DialogActions>
       </Dialog>
-      <Box>
-        <GridViewMovies films={films}/>
+      <Box
+        sx={{
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <WatchListContainer setIsOpenListFilm={setIsOpenListFilm}/>
       </Box>
+      <Drawer
+        anchor={'right'}
+        open={isOpenListFilm}
+        onClose={handleCloseDrawer}
+      >
+        <Box
+          sx={{
+            width: "30rem",
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: "1rem",
+          }}
+        >
+          <WatchListItem/>
+        </Box>
+      </Drawer>
     </Box>
   );
 }

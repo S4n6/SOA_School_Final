@@ -28,11 +28,10 @@ import { getEpisodeBySeasonID } from "../../api/episode";
 
 function createCellMovie(name, duration, img) {
   return (
-    <TableCell
+    <Box
       align="left"
       sx={{
         display: "flex",
-        justifyContent: "center",
         alignItems: "center",
       }}
     >
@@ -51,7 +50,7 @@ function createCellMovie(name, duration, img) {
         </Typography>
         <Typography>{duration}</Typography>
       </Box>
-    </TableCell>
+    </Box>
   );
 }
 
@@ -62,6 +61,7 @@ function ManageEposide({season}) {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [showDialogDelete, setShowDialogDelete] = React.useState(false);
   const [objectToDelete, setObjectToDelete] = React.useState(null);
+  const [episodeEdit, setEpisodeEdit] = React.useState(null);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -141,8 +141,10 @@ function ManageEposide({season}) {
 
             <TableBody>
               {episodes?.map((episode) => (
-                <TableRow key={episode?.name}>
-                  {createCellMovie(episode?.name, episode?.duration, episode?.banner)}
+                <TableRow key={episode?.id}>
+                  <TableCell align="left">
+                    {createCellMovie(episode?.name, episode?.duration, episode?.banner)}
+                  </TableCell>
                   <TableCell align="left">{season?.name}</TableCell>
                   <TableCell align="left">{episode?.episodeNumber}</TableCell>
                   <TableCell align="left">{episode?.name}</TableCell>
@@ -153,6 +155,7 @@ function ManageEposide({season}) {
                       <IconButton
                         onClick={() => {
                           setOpenEdit(true);
+                          setEpisodeEdit(episode);
                         }}
                       >
                         <EditIcon />
@@ -181,7 +184,7 @@ function ManageEposide({season}) {
           }}
         />
       </Box>
-      <AddAndEditTvEposide isOpen={openEdit} setIsOpen={setOpenEdit}/>
+      <AddAndEditTvEposide film={episodeEdit} isOpen={openEdit} setIsOpen={setOpenEdit} season={season}/>
       {
           showDialogDelete && <DialogDelete setOpenDialog={setShowDialogDelete} objectToDelete={objectToDelete}/>
         }

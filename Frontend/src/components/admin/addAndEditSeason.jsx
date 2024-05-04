@@ -1,13 +1,13 @@
 import {
-  Autocomplete,
-    Button,
-    Checkbox,
+  Alert,
+  Backdrop,
+  Button,
+  Checkbox,
+  CircularProgress,
   Divider,
   Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
+  FormControl,
+  InputLabel,
   ListItemText,
   MenuItem,
   OutlinedInput,
@@ -18,49 +18,43 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
-import { createSeason, getTVShows } from "../../api/tvShow";
+import { createSeason } from "../../api/tvShow";
+import { COUNTRY, GENRES, STATUS } from "../../utils/contants";
 
-function AddAndEditTvSeason({ film, isOpen, setIsOpen }) {
-  console.log("isOpenppppppp", isOpen);
+function alert(type, message) {
+  if (type === "success") {
+    return <Alert severity="success">{message}</Alert>;
+  }
+  return <Alert severity="error">{message}</Alert>;
+}
+
+function AddAndEditTvSeason({ film, isOpen, setIsOpen, tvshow }) {
   const [open, setOpen] = useState(false);
-  const [categoriesSelected, setCategoriesSelected] = useState([]);
-  const [categories, setCategories] = useState([]);
-
+  const [categoriesSelected, setCategoriesSelected] = useState(film?.genres || []);
+  const [categories, setCategories] = useState(GENRES);
   const [banner, setBanner] = useState(null);
   const [expectedReleaseDate, setExpectedReleaseDate] = useState(null);
   const [name, setName] = useState("");
   const [duration, setDuration] = useState(0);
   const [firstYearRelease, setFirstYearRelease] = useState(0);
-  const [countryOfOrigin, setCountryOfOrigin] = useState("");
-  const [productionCompany, setProductionCompany] = useState("");
+  const [countryOfOrigin, setCountryOfOrigin] = useState(COUNTRY);
+  const [countrySelected, setCountrySelected] = useState("");
   const [status, setStatus] = useState("");
-  const [genres, setGenres] = useState([]);
   const [seasonNumber, setSeasonNumber] = useState(0);
-  const [tvShowID, setTvShowID] = useState("");
   const [description, setDescription] = useState("");
-  const [tvShow, setTvShow] = useState([]);
-  const [tvShowSelected, setTvShowSelected] = useState('');
-    
+  const [loading, setLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+
   useEffect(() => {
     setOpen(isOpen);
   }, [isOpen]);
 
   useEffect(() => {
-
-    getTVShows('name='+tvShowID).then((data) => {
-      console.log('data in admin', data);
-      // setTvShow(data)
-      const newTvShow = data.map((tvShowItem) => ({
-        title: tvShowItem.name, 
-        productionCompany: tvShowItem.productionCompany,
-        id: tvShowItem.id,
-      }));
-      setTvShow(newTvShow);
-    }).catch((error) => {
-      console.log('error', error);
-    });
-
-  }, [tvShowID]);
+    if (film?.genres) {
+      setCategoriesSelected(film.genres);
+    }
+  }, [film]);
 
   const toggleDrawer = (newOpen) => () => {
     setIsOpen(newOpen);
@@ -71,51 +65,55 @@ function AddAndEditTvSeason({ film, isOpen, setIsOpen }) {
     const {
       target: { value },
     } = event;
-    setCategoriesSelected(
-      typeof value === 'string' ? value.split(',') : value,
-    );
+    setCategoriesSelected(typeof value === "string" ? value.split(",") : value);
   };
 
-    const handleUpload = () => {
-      const formData = new FormData();
-      formData.append('banner', banner);
-      formData.append('expectedReleaseDate', new Date(expectedReleaseDate));
-      formData.append('name', name);
-      formData.append('duration', duration);
-      formData.append('firstYearRelease', firstYearRelease);
-      formData.append('countryOfOrigin', countryOfOrigin);
-      formData.append('productionCompany', productionCompany);
-      formData.append('status', status);
-      categoriesSelected.forEach(genre => formData.append('genres[]', genre));
-      formData.append('seasonNumber', seasonNumber);
-      formData.append('tvShowID', tvShowSelected?.id);
-      formData.append('description', description);
-      console.log('upload');
-      createSeason(formData)
-        .then((value) => {
-          console.log('created season', value);
-        })
-        .catch((error) => {
-          console.error('error', error);
-        });
-    }
+  const handleChangeCountry = (e) => {
+    setCountrySelected(e.target.value);
+  };
 
-  useEffect(() => {
-    setCategories([
-        'ACTION',
-        'ADVENTURE',
-        'Animation',
-        'Biography',
-        'COMEDY',
-        'CRIME',  
-    ]);
-  }, []);
-
-  const top100Films = [
-    { label: 'The Shawshank Redemption', year: 1994 },
-    { label: 'The Godfather', year: 1972 },
-    { label: 'The Godfather: Part II', year: 1974 },
-    { label: 'The Dark Knight', year: 2008 },]
+  const handleUpload = () => {
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("banner", banner);
+    formData.append("expectedReleaseDate", new Date(expectedReleaseDate));
+    formData.append("name", name);
+    formData.append("duration", duration);
+    formData.append("firstYearRelease", firstYearRelease);
+    formData.append("countryOfOrigin", countrySelected);
+    formData.append("productionCompany", tvshow?.productionCompany);
+    formData.append("status", status);
+    categoriesSelected.forEach((genre) => formData.append("genres[]", genre));
+    formData.append("seasonNumber", seasonNumber);
+    formData.append("tvShowID", tvshow?.id);
+    formData.append("description", description);
+    console.log("upload");
+    createSeason(formData)
+      .then((value) => {
+        console.log("created season", value);
+        if(value === undefined) {
+          setIsSuccess(false);
+        }else{
+          setIsSuccess(true);
+        }
+        setTimeout(() => {
+          setLoading(false);
+          setIsOpen(false);
+          setShowAlert(true);
+          setTimeout(() => {
+            setShowAlert(false);
+          }, 2000);
+        }, 1500);
+      })
+      .catch((error) => {
+        setIsSuccess(false);
+        setTimeout(() => {
+          setLoading(false);
+          setIsOpen(false);
+          setShowAlert(true);
+        }, 2000);
+      });
+  };
 
   const DrawerList = (
     <Box sx={{ width: "50rem", marginTop: "5rem" }} role="presentation">
@@ -124,64 +122,56 @@ function AddAndEditTvSeason({ film, isOpen, setIsOpen }) {
           {film ? "Edit Season" : "Add Season"}
         </Typography>
         <Box
-            sx={{
-                padding: "2rem",
-                display: "flex",
-                flexDirection: "column",
-                gap: "1rem",
-            }}
+          sx={{
+            padding: "2rem",
+            display: "flex",
+            flexDirection: "column",
+            gap: "1rem",
+          }}
         >
-          <Box
-            sx={{
-              display: 'flex'
-            }}
-          >
-           <Autocomplete
-              disablePortal
-              id="combo-box-demo"
-              options={tvShow}
-              getOptionLabel={(option) => option.title}
-              sx={{ width: 300 }}
-              onInputChange={(event, newValue) => {
-                setTvShowID(newValue);
-              }}
-              onChange={(event, newValue) => {
-                console.log('newValue', newValue);
-                setTvShowSelected(newValue);
-              }}
-              renderInput={(params) => <TextField {...params} label="Tv Show" />}
-            />
-            <TextField
-              id="outlined-basic"
-              variant="outlined"
-              fullWidth
-              value={tvShowSelected?.productionCompany}
-              disabled
-            />
-          </Box>
           <TextField
             id="outlined-basic"
             label="Season Name"
             variant="outlined"
             fullWidth
+            value={film?.name || name}
             onChange={(e) => setName(e.target.value)}
           />
-           <TextField
+          <TextField
             id="outlined-basic"
             label="Description"
             variant="outlined"
             fullWidth
+            value={film?.description || description}
             onChange={(e) => setDescription(e.target.value)}
-
           />
+
           <TextField
             id="outlined-basic"
-            label="Status"
+            label="First Year Released"
             variant="outlined"
+            type="number"
             fullWidth
-            onChange={(e) => setStatus(e.target.value)}
-
+            value={film?.firstYearRelease || firstYearRelease}
+            onChange={(e) => setFirstYearRelease(e.target.value)}
           />
+
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Status</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={film?.status || status}
+              label="Status"
+              onChange={(e) => setStatus(e.target.value)}
+            >
+              {STATUS?.map((status) => (
+                <MenuItem key={status} value={status}>
+                  {status}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
           <TextField
             id="outlined-basic"
@@ -189,18 +179,28 @@ function AddAndEditTvSeason({ film, isOpen, setIsOpen }) {
             type="number"
             variant="outlined"
             fullWidth
+            value={film?.seasonNumber || seasonNumber}
             onChange={(e) => setSeasonNumber(e.target.value)}
-
           />
 
-          <TextField
-            id="outlined-basic"
-            label="Country"
-            variant="outlined"
-            fullWidth
-            onChange={(e) => setCountryOfOrigin(e.target.value)}
-
-          />
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">
+              Country of origin
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={film?.countryOfOrigin || countrySelected}
+              label="Country of Origin"
+              onChange={handleChangeCountry}
+            >
+              {countryOfOrigin?.map((country) => (
+                <MenuItem key={country} value={country}>
+                  {country}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
           <TextField
             id="outlined-basic"
@@ -208,16 +208,17 @@ function AddAndEditTvSeason({ film, isOpen, setIsOpen }) {
             type="number"
             variant="outlined"
             fullWidth
+            value={film?.duration || duration}
             onChange={(e) => setDuration(e.target.value)}
-
           />
 
-<TextField
+          <TextField
             id="outlined-basic"
             label="Expected release date"
             variant="outlined"
             type="date"
             fullWidth
+            value={ film?.property?.expectedReleaseDate ? new Date(film?.property?.expectedReleaseDate)?.toISOString().substring(0, 10) : expectedReleaseDate}
             onChange={(e) => setExpectedReleaseDate(e.target.value)}
             InputLabelProps={{
               shrink: true,
@@ -230,10 +231,13 @@ function AddAndEditTvSeason({ film, isOpen, setIsOpen }) {
             multiple
             value={categoriesSelected}
             onChange={handleChange}
-            input={<OutlinedInput label="Category" />}
+            input={<OutlinedInput label="Genres" />}
             renderValue={(selected) => selected.join(", ")}
             sx={{
-                width: "100%",
+              width: "100%",
+            }}
+            InputLabelProps={{
+              shrink: true,
             }}
           >
             {categories.map((category) => (
@@ -249,19 +253,22 @@ function AddAndEditTvSeason({ film, isOpen, setIsOpen }) {
             type="file"
             inputProps={{ accept: "image/*" }}
             onChange={(e) => setBanner(e.target.files[0])}
+            InputLabelProps={{
+              shrink: true,
+            }}
           />
 
-        <Button
+          <Button
             sx={{
-                width:'30%',
-                height: '3rem',
-                marginLeft: 'auto',
-                marginBottom: '1rem',
+              width: "30%",
+              height: "3rem",
+              marginLeft: "auto",
+              marginBottom: "1rem",
             }}
             onClick={handleUpload}
-        >
+          >
             Upload
-        </Button>
+          </Button>
         </Box>
       </Paper>
     </Box>
@@ -276,6 +283,25 @@ function AddAndEditTvSeason({ film, isOpen, setIsOpen }) {
       <Drawer open={open} onClose={toggleDrawer(false)} anchor="right">
         {DrawerList}
       </Drawer>
+
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      {showAlert && (
+        <Box
+          sx={{
+            position: "fixed",
+            top: "7rem",
+            left: "50%",
+          }}
+        >
+          {isSuccess ? alert("success", "Create season successfully") : null}
+          {isSuccess === false ? alert("error", "Create season failed") : null}
+        </Box>
+      )}
     </Box>
   );
 }

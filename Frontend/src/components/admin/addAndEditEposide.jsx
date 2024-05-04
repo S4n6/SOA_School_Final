@@ -1,9 +1,14 @@
 import {
+  Alert,
   Autocomplete,
+  Backdrop,
   Button,
   Checkbox,
+  CircularProgress,
   Divider,
   Drawer,
+  FormControl,
+  InputLabel,
   List,
   ListItem,
   ListItemButton,
@@ -19,11 +24,18 @@ import {
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import { createEposide, getSeasonByTvShow, getTVShows } from "../../api/tvShow";
+import { STATUS } from "../../utils/contants";
 
-function AddAndEditTvEposide({ film, isOpen, setIsOpen }) {
-  console.log("isOpenppppppp", isOpen);
+function alert(type, message) {
+  if (type === "success") {
+    return <Alert severity="success">{message}</Alert>;
+  }
+  return <Alert severity="error">{message}</Alert>;
+}
+
+
+function AddAndEditTvEposide({ film, isOpen, setIsOpen, season }) {
   const [open, setOpen] = useState(false);
-
   const [video, setVideo] = useState(null);
   const [banner, setBanner] = useState(null);
   const [expectedReleaseDate, setExpectedReleaseDate] = useState(null);
@@ -31,11 +43,9 @@ function AddAndEditTvEposide({ film, isOpen, setIsOpen }) {
   const [duration, setDuration] = useState(0);
   const [status, setStatus] = useState("");
   const [episodeNumber, setEpisodeNumber] = useState(1);
-  const [tvShowID, setTvShowID] = useState("");
-  const [tvShow, setTvShow] = useState([]);
-  const [tvShowSelected, setTvShowSelected] = useState("");
-  const [season, setSeason] = useState([]);
-  const [seasonID, setSeasonID] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
     setOpen(isOpen);
@@ -48,56 +58,38 @@ function AddAndEditTvEposide({ film, isOpen, setIsOpen }) {
 
   const handleUpload = () => {
     const formData = new FormData();
-    formData.append('video', video);  // video should be a File object
-    formData.append('banner', banner);  // banner should be a File object
-    formData.append('expectedReleaseDate', new Date(expectedReleaseDate));
-    formData.append('name', name);
-    formData.append('duration', duration);
-    formData.append('status', status);
-    formData.append('episodeNumber', episodeNumber);
-    formData.append('seasonID', seasonID);
+    formData.append("video", video);
+    formData.append("banner", banner);
+    formData.append("expectedReleaseDate", new Date(expectedReleaseDate));
+    formData.append("name", name);
+    formData.append("duration", duration);
+    formData.append("status", status);
+    formData.append("episodeNumber", episodeNumber);
+    formData.append("seasonID", season?.id);
+    setLoading(true);
     createEposide(formData)
       .then((data) => {
         console.log("data", data);
+        if(data === undefined) {
+          setIsSuccess(false);
+        }else{
+          setIsSuccess(true);
+        }
+        setLoading(true);
+        setTimeout(() => {
+          setLoading(false);
+          setIsOpen(false);
+          setShowAlert(true);
+          setTimeout(() => {
+            setShowAlert(false);
+          }, 2000);
+        }, 1500);
       })
       .catch((error) => {
         console.log("error", error);
       });
     console.log("Upload");
   };
-
-  useEffect(() => {
-    getSeasonByTvShow("tvShowID=" + tvShowSelected?.id)
-      .then((data) => {
-        console.log("data in admin", data);
-        const newSeason = data.map((seasonItem) => ({
-          title: seasonItem.name,
-          productionCompany: seasonItem.productionCompany,
-          id: seasonItem.id,
-        }));
-        setSeason(newSeason);
-      })
-      .catch((error) => {
-        console.log("error", error);
-      });
-  }, [tvShowSelected]);
-
-  useEffect(() => {
-    getTVShows("name=" + tvShowID)
-      .then((data) => {
-        console.log("data in admin", data);
-        // setTvShow(data)
-        const newTvShow = data.map((tvShowItem) => ({
-          title: tvShowItem.name,
-          productionCompany: tvShowItem.productionCompany,
-          id: tvShowItem.id,
-        }));
-        setTvShow(newTvShow);
-      })
-      .catch((error) => {
-        console.log("error", error);
-      });
-  }, [tvShowID]);
 
   const DrawerList = (
     <Box sx={{ width: "50rem", marginTop: "5rem" }} role="presentation">
@@ -113,54 +105,12 @@ function AddAndEditTvEposide({ film, isOpen, setIsOpen }) {
             gap: "1rem",
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-            }}
-          >
-            <Autocomplete
-              disablePortal
-              id="combo-box-demo"
-              options={tvShow}
-              getOptionLabel={(option) => option.title}
-              sx={{ width: 300 }}
-              onInputChange={(event, newValue) => {
-                setTvShowID(newValue);
-              }}
-              onChange={(event, newValue) => {
-                console.log("newValue", newValue);
-                setTvShowSelected(newValue);
-              }}
-              renderInput={(params) => (
-                <TextField {...params} label="Tv Show" />
-              )}
-            />
-            <TextField
-              id="outlined-basic"
-              variant="outlined"
-              fullWidth
-              value={tvShowSelected?.productionCompany}
-              disabled
-            />
-          </Box>
-
-          <Autocomplete
-            disablePortal
-            id="combo-box-demo"
-            options={season}
-            getOptionLabel={(option) => option.title}
-            sx={{ width: 300 }}
-            onChange={(event, newValue) => {
-              setSeasonID(newValue.id);
-            }}
-            renderInput={(params) => <TextField {...params} label="Season" />}
-          />
-
           <TextField
             id="outlined-basic"
             label="Eposide Name"
             variant="outlined"
             fullWidth
+            value={film?.name ? film.name : name}
             onChange={(e) => setName(e.target.value)}
           />
 
@@ -170,6 +120,7 @@ function AddAndEditTvEposide({ film, isOpen, setIsOpen }) {
             label="Eposide Number"
             variant="outlined"
             fullWidth
+            value={film?.episodeNumber ? film.episodeNumber : episodeNumber}
             onChange={(e) => setEpisodeNumber(e.target.value)}
           />
 
@@ -179,29 +130,26 @@ function AddAndEditTvEposide({ film, isOpen, setIsOpen }) {
             label="Duration"
             variant="outlined"
             fullWidth
+            value={film?.duration ? film.duration : duration}
             onChange={(e) => setDuration(e.target.value)}
           />
 
-          <TextField
-            id="outlined-basic"
-            label="Status"
-            variant="outlined"
-            fullWidth
-            onChange={(e) => setStatus(e.target.value)}
-          />
-
-          <TextField
-            label="Banner"
-            type="file"
-            inputProps={{ accept: "image/*" }}
-            onChange={(e) => setBanner(e.target.files[0])}
-          />
-          <TextField
-            label="Video"
-            type="file"
-            // inputProps={{ accept: "video/*" }}
-            onChange={(e) => setVideo(e.target.files[0])}
-          />
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Status</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={film?.status ? film.status : status}
+              label="Status"
+              onChange={(e) => setStatus(e.target.value)}
+            >
+              {STATUS?.map((status) => (
+                <MenuItem key={status} value={status}>
+                  {status}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
           <TextField
             id="outlined-basic"
@@ -209,7 +157,27 @@ function AddAndEditTvEposide({ film, isOpen, setIsOpen }) {
             variant="outlined"
             type="date"
             fullWidth
+            value={film?.property?.expectedReleaseDate ? new Date(film?.property?.expectedReleaseDate).toISOString().substring(0, 10) : expectedReleaseDate}
             onChange={(e) => setExpectedReleaseDate(e.target.value)}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+
+          <TextField
+            label="Banner"
+            type="file"
+            inputProps={{ accept: "image/*" }}
+            onChange={(e) => setBanner(e.target.files[0])}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+
+          <TextField
+            label="Video"
+            type="file"
+            onChange={(e) => setVideo(e.target.files[0])}
             InputLabelProps={{
               shrink: true,
             }}
@@ -240,6 +208,25 @@ function AddAndEditTvEposide({ film, isOpen, setIsOpen }) {
       <Drawer open={open} onClose={toggleDrawer(false)} anchor="right">
         {DrawerList}
       </Drawer>
+      {console.log('filmsdhkf', film)}
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      {showAlert && (
+        <Box
+          sx={{
+            position: "fixed",
+            top: "7rem",
+            left: "50%",
+          }}
+        >
+          {isSuccess ? alert("success", "Create episode successfully") : null}
+          {isSuccess === false ? alert("error", "Create episode failed") : null}
+        </Box>
+      )}
     </Box>
   );
 }

@@ -19,7 +19,7 @@ import {
     Tabs,
     Tab,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import GridViewMovies from "../components/movie/gridviewMovies";
 import Movie from "@mui/icons-material/Movie";
 import MoviesRecommend from "../components/movie/moviesRecommend";
@@ -27,6 +27,7 @@ import { filterMovie } from "../api/movie";
 import { getCommendedFilms } from "../api/film";
 import { unstable_HistoryRouter, useNavigate, useParams } from "react-router-dom";
 import { getTVShows } from "../api/tvShow";
+import { AuthContext } from "../context/AuthContext";
 
 
 // Hàm để render ô chọn category
@@ -92,7 +93,6 @@ function AllFilm() {
     const [nameSearch, setNameSearch] = useState('');
     const [url, setUrl] = useState(window.location.search);
     const [page, setPage] = useState(1);
-
     const urlParams = new URLSearchParams(url);
     const name = urlParams.get('name');
 
