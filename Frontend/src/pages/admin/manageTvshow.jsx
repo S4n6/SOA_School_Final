@@ -59,23 +59,19 @@ import { getTVShows } from "../../api/tvShow";
     );
 }
 
-function ManageTvshow() {
+function ManageTvshow({setMainContent, setObjectIntermediate}) {
     const [openEdit, setOpenEdit] = React.useState(false);
     const [showDialogDelete, setShowDialogDelete] = React.useState(false);
     const [objectToDelete, setObjectToDelete] = React.useState(null);
     const [tvShows, setTvShows] = React.useState([]);
     const [tvShowEdit, setTvShowEdit] = React.useState(null);
     const [page, setPage] = React.useState(1);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [search, setSearch] = React.useState('');
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
 
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
-    };
 
     const handleDelete = (tvShow) => {
       setObjectToDelete(tvShow);
@@ -83,12 +79,29 @@ function ManageTvshow() {
       console.log("Delete");
     };
 
+    const handleSearch = (e) => {
+      setSearch(e.target.value);
+    }
+
+    React.useEffect(() => {
+      setTimeout(() => {
+        let params = 'name='+search+'&page='+(page-1);
+        getTVShows(params).then((res) => {
+          if (res) {
+            setTvShows(res);
+          }
+        }
+        );
+      }, 2000)
+  
+    }, [search, page]);
+
     React.useEffect(() => {
       getTVShows('page='+(page-1)).then((data) => {
         console.log("data", data);
         setTvShows(data);
       });
-    }, [page]);
+    }, []);
   
     return (
       <Box>
@@ -99,7 +112,7 @@ function ManageTvshow() {
             alignItems: "center",
           }}
         >
-          <TextField id="outlined-basic" label="Search..." variant="outlined" />
+          <TextField id="outlined-basic" label="Search..." variant="outlined" onChange={handleSearch}/>
           <Button
             variant="contained"
             sx={{
@@ -137,6 +150,7 @@ function ManageTvshow() {
                   <TableCell align="left">Publish Date</TableCell>
                   <TableCell align="left">Added Date</TableCell>
                   <TableCell align="left">Action</TableCell>
+                  <TableCell align="left">Quản lí Season</TableCell>
                 </TableRow>
               </TableHead>
   
@@ -169,6 +183,20 @@ function ManageTvshow() {
                           <DeleteIcon />
                         </IconButton>
                       </Tooltip>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Button
+                        variant="contained"
+                        sx={{
+                          backgroundColor: "green",
+                        }}
+                        onClick={() => {
+                          setMainContent("Seasons")
+                          setObjectIntermediate(tvShow)
+                        }}
+                      >
+                        Quản lí Season
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}

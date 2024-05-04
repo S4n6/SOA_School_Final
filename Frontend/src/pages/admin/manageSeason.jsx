@@ -23,6 +23,8 @@ import {
   import EditIcon from "@mui/icons-material/Edit";
 import AddAndEditTvSeason from "../../components/admin/addAndEditSeason";
 import DialogDelete from "../../components/dialogDelete";
+import { getSeasonByTvShow } from "../../api/tvShow";
+import { getSeasonByFilmID } from "../../api/season";
   
   function createCellMovie(name, duration, img) {
     return (
@@ -37,6 +39,7 @@ import DialogDelete from "../../components/dialogDelete";
         <Avatar 
           variant="square" 
           src={img}
+          style={{height: '50px', width: '50px'}}
         />
         <Box
           sx={{
@@ -56,10 +59,11 @@ import DialogDelete from "../../components/dialogDelete";
     );
   }
   
-  function ManageSeason() {
+  function ManageSeason({setMainContent, tvshow, setObjectIntermediate}) {
     const [openEdit, setOpenEdit] = React.useState(false);
     const [showDialogDelete, setShowDialogDelete] = React.useState(false);
     const [objectToDelete, setObjectToDelete] = React.useState(null);
+    const [seasons, setSeasons] = React.useState([]);
     function createData(name, calories, fat, carbs, protein) {
       return { name, calories, fat, carbs, protein };
     }
@@ -87,8 +91,16 @@ import DialogDelete from "../../components/dialogDelete";
     const handleDelete = (season) => {
       setObjectToDelete(season);
       setShowDialogDelete(true)
-      console.log("Delete");
     };
+
+    React.useEffect(() => {
+      console.log('tvshow', tvshow);
+      const id = tvshow?.id;
+      getSeasonByFilmID({tvShowID : '6625e6fe967796ed0924be08'}).then((res) => {
+        console.log('res', res);
+        setSeasons(res);
+      });
+    }, []);
   
     return (
       <Box>
@@ -134,23 +146,24 @@ import DialogDelete from "../../components/dialogDelete";
                 >
                   <TableCell align="left">TV Show</TableCell>
                   <TableCell align="left">Season</TableCell>
-                  <TableCell align="left">Quality</TableCell>
-                  <TableCell align="left">Category</TableCell>
+                  <TableCell align="left">Name</TableCell>
+                  <TableCell align="left">Company</TableCell>
                   <TableCell align="left">Publish Date</TableCell>
-                  <TableCell align="left">Added Date</TableCell>
+                  <TableCell align="left">Country</TableCell>
                   <TableCell align="left">Action</TableCell>
+                  <TableCell align="left">Quản lí Episode</TableCell>
                 </TableRow>
               </TableHead>
   
               <TableBody>
-                {rows.map((row) => (
-                  <TableRow key={row.name}>
-                    {createCellMovie("Frozen yoghurt", 159, 6.0)}
-                    <TableCell align="left">1</TableCell>
-                    <TableCell align="left">480/720/1080</TableCell>
-                    <TableCell align="left">Action</TableCell>
-                    <TableCell align="left">10/07/2018</TableCell>
-                    <TableCell align="left">11/04/2024</TableCell>
+                {seasons?.map((season) => (
+                  <TableRow key={season?.name}>
+                    {createCellMovie(season?.name, season?.duration, season?.banner)}
+                    <TableCell align="left">{season?.seasonNumber}</TableCell>
+                    <TableCell align="left">{season?.name}</TableCell>
+                    <TableCell align="left">{season?.productionCompany}</TableCell>
+                    <TableCell align="left">{season?.firstYearRelease}</TableCell>
+                    <TableCell align="left">{season?.countryOfOrigin}</TableCell>
                     <TableCell align="left">
                       <Tooltip title="Edit Movie">
                         <IconButton
@@ -162,12 +175,29 @@ import DialogDelete from "../../components/dialogDelete";
 
                       <Tooltip title="Delete Movie">
                         <IconButton
-                          onClick={() => handleDelete(row.name)}
+                          onClick={() => handleDelete(season?.name)}
 
                         >
                           <DeleteIcon />
                         </IconButton>
                       </Tooltip>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Button
+                        sx={{
+                          backgroundColor: "primary.main",
+                          color: "white",
+                          "&:hover": {
+                            backgroundColor: "primary.dark",
+                          },
+                        }}
+                        onClick={() => {
+                          setMainContent('Eposides');
+                          setObjectIntermediate(season);
+                        }}
+                      >
+                        Quản lí
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}

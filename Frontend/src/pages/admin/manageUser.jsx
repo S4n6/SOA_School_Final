@@ -21,81 +21,64 @@ import Paper from "@mui/material/Paper";
 import Avatar from "@mui/material/Avatar";
 import DeleteIcon from "@mui/icons-material/Delete";
 import BlockIcon from "@mui/icons-material/Block";
-import { blockedUser, deleteUser, getAllUsers } from "../../api/user";
+import { blockedUser, deleteUser, getAllUsers, getUserByEmail } from "../../api/user";
 
-function dialog(message, type, setOpenDialog, object){
-
+function dialog(message, type, setOpenDialog, object) {
   const agree = () => {
-    if(type === "block"){
+    if (type === "block") {
       blockedUser(object?._id, true).then((res) => {
         console.log(res);
       });
-  
     }
-  
-    if(type === "delete"){
+
+    if (type === "delete") {
       deleteUser(object?._id).then((res) => {
         console.log(res);
       });
     }
 
-    if(type === "unblock"){
-      console.log(type, object?._id)
+    if (type === "unblock") {
+      console.log(type, object?._id);
       blockedUser(object?._id, false).then((res) => {
         console.log(res);
       });
-  
     }
-    setOpenDialog(false)
-  }
-  
+    setOpenDialog(false);
+  };
 
-  return(
+  return (
     <Dialog open={true} onClose={() => setOpenDialog(false)}>
-    <DialogTitle>{message}</DialogTitle>
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "space-evenly",
-        alignItems: "center",
-        marginBottom: "1rem",
-      }}
-    >
-      <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
-      <Button 
-        onClick={agree}
+      <DialogTitle>{message}</DialogTitle>
+      <Box
         sx={{
-          backgroundColor: type !== "unblock" ? "red" : 'green',
-          color: "white",
-          ":hover": {
-            backgroundColor: type !== "unblock" ? "error.light" : 'success.light',
-          }
+          display: "flex",
+          justifyContent: "space-evenly",
+          alignItems: "center",
+          marginBottom: "1rem",
         }}
-        
       >
-        { type === "block" ? "Block" : ""}
-        { type === "delete" ? "Delete" : ""}
-        {type === "unblock" ? "UnBlock" : ""}
-      </Button>
-    </Box>
-  </Dialog>
-  )
+        <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+        <Button
+          onClick={agree}
+          sx={{
+            backgroundColor: type !== "unblock" ? "red" : "green",
+            color: "white",
+            ":hover": {
+              backgroundColor:
+                type !== "unblock" ? "error.light" : "success.light",
+            },
+          }}
+        >
+          {type === "block" ? "Block" : ""}
+          {type === "delete" ? "Delete" : ""}
+          {type === "unblock" ? "UnBlock" : ""}
+        </Button>
+      </Box>
+    </Dialog>
+  );
 }
 
-
 function ManageUser() {
-  function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-  }
-
-  const rows = [
-    createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-    createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-    createData("Eclair", 262, 16.0, 24, 6.0),
-    createData("Cupcake", 305, 3.7, 67, 4.3),
-    createData("Gingerbread", 356, 16.0, 49, 3.9),
-  ];
-
   const [page, setPage] = React.useState(2);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [openDialogDelete, setOpenDialogDelete] = React.useState(false);
@@ -105,16 +88,7 @@ function ManageUser() {
   const [openBlock, setOpenBlock] = React.useState(false);
   const [userBlocked, setUserBlocked] = React.useState(null);
   const [userDeleted, setUserDeleted] = React.useState(null);
-
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+  const [searchTimeout, setSearchTimeout] = React.useState(null);
 
   const handleDelete = (userDeleted) => {
     setOpenDialogDelete(true);
@@ -123,27 +97,46 @@ function ManageUser() {
 
   const handleBlock = (userBlocked) => {
     setUserBlocked(userBlocked);
-    if(userBlocked?.isBlocked){
+    if (userBlocked?.isBlocked) {
       setOpenBlock(true);
-    }else{
+    } else {
       setOpenDialogBlock(true);
     }
-    
-  }
+  };
 
   const handlePageChange = (event, value) => {
     setPage(value);
-    console.log(value); // This will log the current page number
   };
 
   const handleSearch = (event) => {
-    console.log(event.target.value); // This will log the search value
-  }
+   
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+
+    setSearchTimeout(
+      setTimeout(() => {
+        const params = "page=" + pageNumber;
+        let searchingEmail = event.target.value;
+        if (event.target.value === "") {
+          searchingEmail = ''
+          getAllUsers(params).then((res) => {
+            setUsers(res);
+          });
+          return
+        }
+        getUserByEmail(searchingEmail)
+        .then((res) => {
+          console.log(res);
+          setUsers(res);
+        });
+      }, 3600)
+    );
+  };
 
   React.useEffect(() => {
-    const params = 'page='+pageNumber;
+    const params = "page=" + pageNumber;
     getAllUsers(params).then((res) => {
-      console.log(res);
       setUsers(res);
     });
   }, [openDialogDelete, openDialogBlock, openBlock, page]);
@@ -151,7 +144,12 @@ function ManageUser() {
   return (
     <Box>
       <Box>
-        <TextField id="outlined-basic" label="Search..." variant="outlined"  onChange={handleSearch} />
+        <TextField
+          id="outlined-basic"
+          label="Search..."
+          variant="outlined"
+          onChange={handleSearch}
+        />
       </Box>
 
       <Box
@@ -182,21 +180,27 @@ function ManageUser() {
             </TableHead>
 
             <TableBody>
-              {users.map((user) => (
+              {users?.map((user) => (
                 <TableRow key={user?.name}>
                   <TableCell align="left">
                     <Avatar />
                   </TableCell>
                   <TableCell align="left">{user?.name}</TableCell>
                   <TableCell align="left">{user?.email}</TableCell>
-                  <TableCell align="left">{user?.isVip ? 'Vip' : 'Normal'}</TableCell>
-                  <TableCell align="left">{user?.isBlocked ? 'Blocked' : 'Active'}</TableCell>
-                  <TableCell align="left">{user?.birthdate?.toLocaleString()}</TableCell>
                   <TableCell align="left">
-                    <Tooltip title= {user?.isBlocked ? "Unblock User" : "Block User"}>
-                      <IconButton
-                        onClick={() => handleBlock(user)}
-                      >
+                    {user?.isVip ? "Vip" : "Normal"}
+                  </TableCell>
+                  <TableCell align="left">
+                    {user?.isBlocked ? "Blocked" : "Active"}
+                  </TableCell>
+                  <TableCell align="left">
+                    {user?.birthdate?.toLocaleString()}
+                  </TableCell>
+                  <TableCell align="left">
+                    <Tooltip
+                      title={user?.isBlocked ? "Unblock User" : "Block User"}
+                    >
+                      <IconButton onClick={() => handleBlock(user)}>
                         <BlockIcon />
                       </IconButton>
                     </Tooltip>
@@ -223,9 +227,27 @@ function ManageUser() {
       </Box>
 
       {/* HIển thị dialog xác nhận xóa và block */}
-      {openDialogDelete && dialog(`Are you sure you want to delete ${userDeleted?.name}?`, "delete", setOpenDialogDelete, userDeleted)}
-      {openDialogBlock && dialog(`Are you sure you want to block ${userBlocked?.name}?`, "block", setOpenDialogBlock, userBlocked)}
-      {openBlock && dialog(`Are you sure you want to unblock ${userBlocked?.name}?`, "unblock", setOpenBlock, userBlocked)}
+      {openDialogDelete &&
+        dialog(
+          `Are you sure you want to delete ${userDeleted?.name}?`,
+          "delete",
+          setOpenDialogDelete,
+          userDeleted
+        )}
+      {openDialogBlock &&
+        dialog(
+          `Are you sure you want to block ${userBlocked?.name}?`,
+          "block",
+          setOpenDialogBlock,
+          userBlocked
+        )}
+      {openBlock &&
+        dialog(
+          `Are you sure you want to unblock ${userBlocked?.name}?`,
+          "unblock",
+          setOpenBlock,
+          userBlocked
+        )}
     </Box>
   );
 }
