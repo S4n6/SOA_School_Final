@@ -18,8 +18,14 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 				email = "nguyenhuutin124@gmail.com"), title = "Payment Service",
 				description = "Payment service provide the department information to the other users.",
 				license = @License(name = "Payment service licence", url = "www.google.com/licence"),
-				version = "v1"))
-@SecurityScheme(name = "header", scheme = "bearer", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER)
+				version = "v1"),
+		security = @SecurityRequirement(name = "bearerAuth"))
+@SecurityScheme(
+		name = "bearerAuth",
+		type = SecuritySchemeType.HTTP,
+		scheme = "bearer",
+		bearerFormat = "JWT"
+)
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableFeignClients

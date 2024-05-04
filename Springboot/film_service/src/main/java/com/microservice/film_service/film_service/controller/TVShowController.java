@@ -4,6 +4,7 @@ import com.microservice.film_service.film_service.ResponseMessage;
 import com.microservice.film_service.film_service.model.*;
 import com.microservice.film_service.film_service.model.TVShow;
 import com.microservice.film_service.film_service.service.TVShowService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +51,7 @@ public class TVShowController {
 
     //    Add film + upload film to cloudinary
     @PostMapping("")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Object> addTVShow(@RequestParam("banner") MultipartFile banner,
                                           @RequestParam String name, @RequestParam int duration,@RequestParam int firstYearRelease,
                                           @RequestParam String countryOfOrigin, @RequestParam String productionCompany,
@@ -76,6 +78,7 @@ public class TVShowController {
     }
     //    Add film + upload film to cloudinary
     @PutMapping("/{id}")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Object> updateTVShow(@PathVariable String id, @RequestParam("banner") MultipartFile banner,
                                             @RequestParam String bannerLink, @RequestParam boolean isChangeBanner,
                                             @RequestParam String name, @RequestParam int duration,@RequestParam int firstYearRelease,
@@ -102,6 +105,7 @@ public class TVShowController {
     }
 
     @DeleteMapping("/{tvShowID}")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Object> deleteTVSHow(@PathVariable String tvShowID){
         try {
             TVShow tvShow = tvShowService.deleteTVShow(tvShowID);
@@ -116,6 +120,7 @@ public class TVShowController {
     }
 
     @PutMapping("/update-rate")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Object> updateRate(@RequestBody Map<String, Object> map){
 
         try {

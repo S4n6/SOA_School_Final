@@ -7,6 +7,7 @@ import com.microservice.film_service.film_service.model.Season;
 import com.microservice.film_service.film_service.model.Status;
 import com.microservice.film_service.film_service.service.SeasonService;
 import com.mongodb.lang.Nullable;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +46,7 @@ public class SeasonController {
     }
 
     @PostMapping("")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Object> addSeason(@RequestParam("banner") MultipartFile banner,
                                             @Nullable @RequestParam Date expectedReleaseDate,
                                             @RequestParam String name, @RequestParam int duration, @RequestParam int firstYearRelease,
@@ -69,6 +71,7 @@ public class SeasonController {
     }
 
     @PutMapping("/{id}")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Object> updateSeason(@PathVariable String id, @RequestParam("banner") MultipartFile banner,
                                                @Nullable @RequestParam Date expectedReleaseDate,
                                             @RequestParam boolean isChangeBanner, @RequestParam String bannerLink,
@@ -108,6 +111,7 @@ public class SeasonController {
     }
 
     @DeleteMapping("/{id}")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Object> deleteSeason(@PathVariable String id){
         try{
             Season season = seasonService.deleteSeason(id);

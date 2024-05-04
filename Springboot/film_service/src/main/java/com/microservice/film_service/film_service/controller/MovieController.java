@@ -9,6 +9,7 @@ import com.microservice.film_service.film_service.model.Genre;
 import com.microservice.film_service.film_service.model.Status;
 import com.microservice.film_service.film_service.service.MovieService;
 import com.mongodb.lang.Nullable;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -63,6 +64,7 @@ public class MovieController {
 
 //    Add film + upload film to cloudinary
     @PostMapping("")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Object> addMovie(@RequestParam("banner") MultipartFile banner,
                                           @RequestParam("video") MultipartFile video, @Nullable @RequestParam Date expectedReleaseDate,
                                           @RequestParam String name, @RequestParam int duration,@RequestParam int firstYearRelease,
@@ -90,6 +92,7 @@ public class MovieController {
     }
 
     @PutMapping("/{id}")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Object> updateMovie(@PathVariable String id, @RequestParam("banner") MultipartFile banner,
                                               @RequestParam("video") MultipartFile video, @Nullable @RequestParam Date expectedReleaseDate,
                                               @RequestParam String videoLink, @RequestParam String bannerLink,
@@ -156,6 +159,7 @@ public class MovieController {
     }
 
     @DeleteMapping("/{movieID}")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Object> deleteMovie(@PathVariable String movieID){
         try{
             Movie movie = movieService.deleteFilm(movieID);
@@ -169,6 +173,7 @@ public class MovieController {
     }
 
     @PutMapping("/update-rate")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Object> updateRate(@RequestBody Map<String, Object> map){
         try {
             String movieID = map.get("id").toString();
