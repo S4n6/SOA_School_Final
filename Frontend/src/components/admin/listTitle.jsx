@@ -29,58 +29,16 @@ export const mainListItems = (setMainContent) => {
       <ListItemText primary="Dashboard" />
     </ListItemButton>
 
-    <ListItemButton>
+    <ListItemButton
+       onClick={() => {
+        setMainContent("TVShow");
+        console.log("ListItemButton clicked");
+      }}
+    >
       <ListItemIcon>
         <TvIcon />
       </ListItemIcon>
-      <Accordion
-        sx={{
-          width: "100%",
-          backgroundColor: "transparent",
-        }}
-      >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1-content"
-          id="panel1-header"
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-          }}
-        >
-          TV Show
-        </AccordionSummary>
-        <AccordionDetails>
-          <ListItemButton
-            onClick={() => {
-              setMainContent("ShowAll");
-              console.log("ListItemButton clicked");
-            }}
-          >
-            <ListItemText primary="Show All" />
-          </ListItemButton>
-        </AccordionDetails>
-        <AccordionDetails>
-          <ListItemButton
-            onClick={() => {
-              setMainContent("Seasons");
-              console.log("ListItemButton clicked");
-            }}
-          >
-            <ListItemText primary="Seasons" />
-          </ListItemButton>
-        </AccordionDetails>
-        <AccordionDetails>
-          <ListItemButton
-             onClick={() => {
-              setMainContent("Eposides");
-              console.log("ListItemButton clicked");
-            }}
-          >
-            <ListItemText primary="Eposides" />
-          </ListItemButton>
-        </AccordionDetails>
-      </Accordion>
+      <ListItemText primary="TV Show" />
     </ListItemButton>
 
     <ListItemButton

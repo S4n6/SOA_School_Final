@@ -92,6 +92,8 @@ const defaultTheme = createTheme();
 
 export default function Dashboard() {
   const [open, setOpen] = React.useState(true);
+  const [mainContent, setMainContent] = React.useState('Dashboard');
+  const [objectIntermediate, setObjectIntermediate] = React.useState(null);
   const mainContents = [
     {
       title: 'Dashboard',
@@ -107,19 +109,19 @@ export default function Dashboard() {
     },
     {
       title: 'Eposides',
-      content: <ManageEposide/>
+      content: <ManageEposide season={objectIntermediate}/>
     },
     {
-      title: 'ShowAll',
-      content: <ManageTvshow/>
+      title: 'TVShow',
+      content: <ManageTvshow setMainContent={setMainContent} setObjectIntermediate={setObjectIntermediate}/>
     },
     {
       title: 'Seasons',
-      content: <ManageSeason/>
+      content: <ManageSeason setMainContent={setMainContent} tvshow={objectIntermediate} setObjectIntermediate={setObjectIntermediate}/>
     },
   ]
 
-    const [mainContent, setMainContent] = React.useState('Dashboard');
+
     const toggleDrawer = () => {
         setOpen(!open);
     };

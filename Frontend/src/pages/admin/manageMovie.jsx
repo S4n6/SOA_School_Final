@@ -55,27 +55,18 @@ function createCellMovie(name, duration, img) {
 
 function ManageMovie() {
   const [openEdit, setOpenEdit] = React.useState(false);
-  function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-  }
-
-  const rows = [
-    createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-    createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-    createData("Eclair", 262, 16.0, 24, 6.0),
-    createData("Cupcake", 305, 3.7, 67, 4.3),
-    createData("Gingerbread", 356, 16.0, 49, 3.9),
-  ];
-
   const [page, setPage] = React.useState(2);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [showDialogDelete, setShowDialogDelete] = React.useState(false);
   const [objectToDelete, setObjectToDelete] = React.useState(null);
   const [movies, setMovies] = React.useState([]);
   const [tvShowEdit, setTvShowEdit] = React.useState(null);
+  const [searchTimeout, setSearchTimeout] = React.useState(null);
+  const [search, setSearch] = React.useState("");
 
 
   const handleChangePage = (event, newPage) => {
+    console.log('newPage', newPage);
     setPage(newPage);
   };
 
@@ -89,6 +80,23 @@ function ManageMovie() {
     setShowDialogDelete(true)
     console.log("Delete");
   };
+
+  const handleSearch = (event) => {
+    setSearch(event.target.value);
+  };
+
+  React.useEffect(() => {
+    setTimeout(() => {
+      let params = 'name='+search+'&page='+(page-1);
+      filterMovie(params).then((res) => {
+        if (res) {
+          setMovies(res);
+        }
+      }
+      );
+    }, 2000)
+
+  }, [search, page]);
 
   React.useEffect(() => {
     filterMovie().then((res) => {
@@ -110,7 +118,7 @@ function ManageMovie() {
           marginTop: "2rem",
         }}
       >
-        <TextField id="outlined-basic" label="Search..." variant="outlined" />
+        <TextField id="outlined-basic" label="Search..." variant="outlined" onChange={handleSearch}/>
         <Button
           variant="contained"
           color="primary"
@@ -156,7 +164,7 @@ function ManageMovie() {
                       {createCellMovie(movie?.name, movie?.duration, movie?.banner)}
                     </TableCell>
                     <TableCell align="left">{movie?.productionCompany}</TableCell>
-                    <TableCell align="left">{movie?.genresmovie?.join(', ')}</TableCell>
+                    <TableCell align="left">{movie?.genres?.join(', ')}</TableCell>
                     <TableCell align="left">{movie?.firstYearRelease}</TableCell>
                     <TableCell align="left">11/04/2024</TableCell>
                     <TableCell align="left">
@@ -186,7 +194,7 @@ function ManageMovie() {
 
         <Pagination
           count={11}
-          defaultPage={6}
+          onChange={handleChangePage}
           boundaryCount={2}
           sx={{
             marginTop: "2rem",

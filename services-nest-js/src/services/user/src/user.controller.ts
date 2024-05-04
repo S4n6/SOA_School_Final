@@ -13,7 +13,19 @@ export class UserController {
 
   @Get('/email/:email')
   async findByEmail(@Param('email') email: string): Promise<User> {
+    if (typeof email !== 'string') {
+      throw new Error('Email must be a string');
+    }
     return await this.userService.findByEmail(email);
+  }
+
+  @Get('/search/:email')
+  async searchByEmail(@Param('email') email: string): Promise<User[]> {
+    if (typeof email !== 'string') {
+      throw new Error('Email must be a string');
+    }
+    console.log('email', email)
+    return await this.userService.searchByEmail(email)
   }
 
   @Get(':id')

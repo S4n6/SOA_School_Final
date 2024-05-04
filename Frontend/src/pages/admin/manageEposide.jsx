@@ -24,6 +24,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import AddAndEditTvEposide from "../../components/admin/addAndEditEposide";
 import DialogDelete from "../../components/dialogDelete";
 import { getEposide } from "../../api/tvShow";
+import { getEpisodeBySeasonID } from "../../api/episode";
 
 function createCellMovie(name, duration, img) {
   return (
@@ -35,7 +36,7 @@ function createCellMovie(name, duration, img) {
         alignItems: "center",
       }}
     >
-      <Avatar variant="square" src={img} />
+      <Avatar variant="square" src={img} style={{height: '50px', width: '60px'}}/>
       <Box
         sx={{
           marginLeft: "1rem",
@@ -54,21 +55,9 @@ function createCellMovie(name, duration, img) {
   );
 }
 
-function ManageEposide() {
+function ManageEposide({season}) {
   const [openEdit, setOpenEdit] = React.useState(false);
-  const [episode, setEpisode] = React.useState(null);
-  function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-  }
-
-  const rows = [
-    createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-    createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-    createData("Eclair", 262, 16.0, 24, 6.0),
-    createData("Cupcake", 305, 3.7, 67, 4.3),
-    createData("Gingerbread", 356, 16.0, 49, 3.9),
-  ];
-
+  const [episodes, setEpisodes] = React.useState(null);
   const [page, setPage] = React.useState(2);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [showDialogDelete, setShowDialogDelete] = React.useState(false);
@@ -90,10 +79,11 @@ function ManageEposide() {
   };
 
   React.useEffect(() => {
-    getEposide().then((data) => {
-      console.log("data", data);
-      setEpisode(data);
-    });
+    
+      getEpisodeBySeasonID({seasonID: season?.id}).then((data) => {
+          console.log(data);
+          setEpisodes(data);
+      })
   }, []);
 
 
@@ -139,27 +129,25 @@ function ManageEposide() {
                   backgroundColor: "grey.500",
                 }}
               >
-                <TableCell align="left">TV Show</TableCell>
+                <TableCell align="left">Info</TableCell>
                 <TableCell align="left">Season</TableCell>
                 <TableCell align="left">Eposide</TableCell>
-                <TableCell align="left">Quality</TableCell>
-                <TableCell align="left">Category</TableCell>
+                <TableCell align="left">Name</TableCell>
+                <TableCell align="left">Status</TableCell>
                 <TableCell align="left">Publish Date</TableCell>
-                <TableCell align="left">Added Date</TableCell>
                 <TableCell align="left">Action</TableCell>
               </TableRow>
             </TableHead>
 
             <TableBody>
-              {rows.map((row) => (
-                <TableRow key={row.name}>
-                  {createCellMovie("Frozen yoghurt", 159, 6.0)}
-                  <TableCell align="left">1</TableCell>
-                  <TableCell align="left">12</TableCell>
-                  <TableCell align="left">480/720/1080</TableCell>
-                  <TableCell align="left">Action</TableCell>
-                  <TableCell align="left">10/07/2018</TableCell>
-                  <TableCell align="left">11/04/2024</TableCell>
+              {episodes?.map((episode) => (
+                <TableRow key={episode?.name}>
+                  {createCellMovie(episode?.name, episode?.duration, episode?.banner)}
+                  <TableCell align="left">{season?.name}</TableCell>
+                  <TableCell align="left">{episode?.episodeNumber}</TableCell>
+                  <TableCell align="left">{episode?.name}</TableCell>
+                  <TableCell align="left">{episode?.status}</TableCell>
+                  <TableCell align="left">{new Date(episode?.property?.expectedReleaseDate).toLocaleDateString()}</TableCell>
                   <TableCell align="left">
                     <Tooltip title="Edit Movie">
                       <IconButton

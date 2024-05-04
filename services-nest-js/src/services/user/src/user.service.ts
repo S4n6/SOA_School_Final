@@ -37,5 +37,10 @@ export class UserService {
   async delete(id: string): Promise<User> {
     return this.userModel.findByIdAndDelete(id).exec();
   }
+
+  async searchByEmail(emailSearch: string): Promise<User[]> {
+    const regex = new RegExp(emailSearch, 'i');
+    return await this.userModel.find({ email: { $regex: regex } }).exec();
+  }
   
 }
