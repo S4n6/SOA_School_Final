@@ -6,6 +6,7 @@ import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 
 @Configuration
 public class GatewayConfig {
@@ -17,6 +18,14 @@ public class GatewayConfig {
     public RouteLocator routes(RouteLocatorBuilder builder) {
         return builder.routes()
 //                .route("auth", r -> r.path("/auth/**").filters(f -> f.filter(filter)).uri("lb://auth"))
+//                Swagger url
+                .route("film-swagger", r -> r.path("/api/v1/film-swagger/**").uri("lb://film-service"))
+                .route("notification-swagger", r -> r.path("/api/v1/notification-swagger/**").uri("lb://notification-service"))
+                .route("payment-swagger", r -> r.path("/api/v1/payment-swagger/**").uri("lb://payment-service"))
+                .route("rating-swagger", r -> r.path("/api/v1/rating-swagger/**").uri("lb://rating-service"))
+                .route("review-swagger", r -> r.path("/api/v1/review-swagger/**").uri("lb://review-service"))
+                .route("view-swagger", r -> r.path("/api/v1/view-swagger/**").uri("lb://view-service"))
+//                Url for backend
                 .route("film-service", r -> r.path("/api/v1/film/**").uri("lb://film-service"))
                 .route("movie-service", r -> r.path("/api/v1/movie/**").uri("lb://film-service"))
                 .route("tv-show-service", r -> r.path("/api/v1/tv_show/**").uri("lb://film-service"))
@@ -34,7 +43,7 @@ public class GatewayConfig {
                 .route("account-notification-service", r -> r.path("/api/v1/account-notification/**").uri("lb://notification-service"))
                 .route("film-notification-service", r -> r.path("/api/v1/film-notification/**").uri("lb://notification-service"))
                 .route("email-notification-service", r -> r.path("/api/v1/email/**").filters(f -> f.filter(filter)).uri("lb://notification-service"))
-                .route("payment-service", r -> r.path("/api/v1/bill/**").filters(f -> f.filter(filter)).uri("lb://payment-service"))
+                .route("payment-service", r -> r.path("/api/v1/payment/**").filters(f -> f.filter(filter)).uri("lb://payment-service"))
                 .route("user-service", r -> r.path("/api/v1/user/**").filters(f -> f.filter(filter)).uri("lb://user-service"))
                 .route("recommendation-service", r -> r.path("/api/v1/recommendation/**").filters(f -> f.filter(filter)).uri("lb://recommendation-service")).build();
     }
