@@ -22,3 +22,4 @@ export async function getNotifications({ userID, page, size }) {
         console.error('There has been a problem with your fetch operation:', error);
     }
 }
+

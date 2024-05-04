@@ -53,7 +53,7 @@ export async function createMovie(formData){
                 }
             }
         )
-        if (response.status == 200) {
+        if (response.status == 201) {
             return response.data.data
         } else {
             throw new Error(response.status);

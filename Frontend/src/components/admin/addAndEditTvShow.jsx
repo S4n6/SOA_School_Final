@@ -1,9 +1,14 @@
 import {
+  Alert,
   Avatar,
+    Backdrop,
     Button,
     Checkbox,
+  CircularProgress,
   Divider,
   Drawer,
+  FormControl,
+  InputLabel,
   List,
   ListItem,
   ListItemButton,
@@ -19,26 +24,44 @@ import {
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import { createTvShow, updateTvShow } from "../../api/tvShow";
+import { COUNTRY, GENRES, STATUS } from "../../utils/contants";
+
+function alert(type, message) {
+  if (type === "success") {
+    return <Alert severity="success">{message}</Alert>;
+  }
+  return <Alert severity="error">{message}</Alert>;
+}
 
 function AddAndEditTvShow({ film, isOpen, setIsOpen }) {
   console.log("isOpenppppppp", isOpen);
   const [open, setOpen] = useState(false);
   const [categoriesSelected, setCategoriesSelected] = useState( film ? film?.genres : []);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState(GENRES);
   const [banner, setBanner] = useState(null);
   const [name, setName] = useState("");
   const [duration, setDuration] = useState(0);
   const [firstYearRelease, setFirstYearRelease] = useState(0);
-  const [countryOfOrigin, setCountryOfOrigin] = useState("");
+  const [countryOfOrigin, setCountryOfOrigin] = useState(COUNTRY);
+  const [countrySelected, setCountrySelected] = useState("");
   const [productionCompany, setProductionCompany] = useState("");
   const [status, setStatus] = useState("");
   const [genres, setGenres] = useState([]);
   const [actors, setActors] = useState([]);
   const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
     
   useEffect(() => {
     setOpen(isOpen);
   }, [isOpen]);
+
+  useEffect(() => {
+    if (film?.genres) {
+      setCategoriesSelected(film.genres);
+    }
+  }, [film]);
 
   const toggleDrawer = (newOpen) => () => {
       setOpen(newOpen);
@@ -67,40 +90,70 @@ function AddAndEditTvShow({ film, isOpen, setIsOpen }) {
     categoriesSelected.forEach((genre) => formData.append("genres[]", genre));
     actors.forEach((actor) => formData.append("actors[]", actor));
     formData.append("description", description);
+    setLoading(true);
     if (film) {
       updateTvShow(formData, film?.id)
         .then((data) => {
           console.log("data update tv show", data);
+          if(data === undefined) {
+            setIsSuccess(false);
+          }else{
+            setIsSuccess(true);
+          }
+          setTimeout(() => {
+            setLoading(false);
+            setIsOpen(false);
+            setShowAlert(true);
+            setTimeout(() => {
+              setShowAlert(false);
+            }, 2000);
+          }, 1500);
         })
         .catch((error) => {
           console.error("error", error);
+          setIsSuccess(false);
+          setTimeout(() => {
+            setLoading(false);
+            setIsOpen(false);
+            setShowAlert(true);
+            setTimeout(() => {
+              setShowAlert(false);
+            }, 2000);
+          }, 1500);
         });
     }else{
         createTvShow(formData)
             .then((data) => {
                 console.log('data create tv show', data);
+                if(data === undefined) {
+                  setIsSuccess(false);
+                }else{
+                  setIsSuccess(true);
+                }
+                setTimeout(() => {
+                  setLoading(false);
+                  setIsOpen(false);
+                  setShowAlert(true);
+                  setTimeout(() => {
+                    setShowAlert(false);
+                  }, 2000);
+                }, 1500);
             })
             .catch((error) => {
                 console.error('error', error);
+                setIsSuccess(false);
+                setTimeout(() => {
+                  setLoading(false);
+                  setIsOpen(false);
+                  setShowAlert(true);
+                  setTimeout(() => {
+                    setShowAlert(false);
+                  }, 2000);
+                }, 1500);
             })
     }
     
   }
-
-  useEffect(() => {
-    setCategories([
-        'Action',
-        'Adventure',
-        'Animation',
-        'Biography',
-        'Comedy',
-        'Crime',
-        'MYSTERY',
-        'DRAMA',
-        'FANTASY',
-        'HORROR',
-    ]);
-  }, []);
 
   const DrawerList = (
     <Box sx={{ width: "50rem", marginTop: "5rem" }} role="presentation">
@@ -136,7 +189,7 @@ function AddAndEditTvShow({ film, isOpen, setIsOpen }) {
             label="TV Show Name"
             variant="outlined"
             fullWidth
-            value={film?.name || ""}
+            value={film?.name || name}
             InputLabelProps={{ shrink: true }}
             onChange={(e) => setName(e.target.value)}
           />
@@ -145,7 +198,7 @@ function AddAndEditTvShow({ film, isOpen, setIsOpen }) {
             label="Duration"
             variant="outlined"
             fullWidth
-            value={film?.duration || ""}
+            value={film?.duration || duration}
             InputLabelProps={{ shrink: true }}
             onChange={(e) => setDuration(e.target.value)}
 
@@ -155,72 +208,94 @@ function AddAndEditTvShow({ film, isOpen, setIsOpen }) {
             label="Description"
             variant="outlined"
             fullWidth
-            value={film?.description || ""}
+            value={film?.description || description}
             InputLabelProps={{ shrink: true }}
             onChange={(e) => setDescription(e.target.value)}
           />
-           <TextField
-            id="outlined-basic"
-            label="Country"
-            variant="outlined"
-            fullWidth
-            value={film?.countryOfOrigin || ""}
-            InputLabelProps={{ shrink: true }}
-            onChange={(e) => setCountryOfOrigin(e.target.value)}
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">
+              Country of origin
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={film?.countryOfOrigin || countrySelected}
+              label="Country of Origin"
+              onChange={(e) => setCountrySelected(e.target.value)}
+            >
+              {countryOfOrigin?.map((country) => (
+                <MenuItem key={country} value={country}>
+                  {country}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
-          />
           <TextField
             id="outlined-basic"
             label="Casts / Crews"
             variant="outlined"
             fullWidth
-            value={film?.actors?.join(', ') || ""}
+            value={film?.actors?.join(', ') || actors.join(',')}
             InputLabelProps={{ shrink: true }}
             onChange={(e) => setActors(e.target.value.split(","))}
 
           />
-          <TextField
-            id="outlined-basic"
-            label="Status"
-            variant="outlined"
-            fullWidth
-            value={film?.status || ""}
-            InputLabelProps={{ shrink: true }}
-            onChange={(e) => setStatus(e.target.value)}
 
-          />
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">
+              Status
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={film?.status || status}
+              label="Status"
+              onChange={(e) => setStatus(e.target.value)}
+            >
+              {STATUS?.map((status) => (
+                <MenuItem key={status} value={status}>
+                  {status}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
            <TextField
             id="outlined-basic"
             label="Company"
             variant="outlined"
             fullWidth
-            value={film?.productionCompany || ""}
+            value={film?.productionCompany || productionCompany}
             InputLabelProps={{ shrink: true }}
             onChange={(e) => setProductionCompany(e.target.value)}
           />
 
           
-
-          <Select
-            labelId="demo-multiple-checkbox-label"
-            id="demo-multiple-checkbox"
-            multiple
-            value={categoriesSelected}
-            onChange={handleChange}
-            input={<OutlinedInput label="Category" />}
-            renderValue={(selected) => selected.join(", ")}
-            sx={{
-                width: "100%",
-            }}
-          >
-            {categories.map((category) => (
-              <MenuItem key={category} value={category}>
-                <Checkbox checked={categoriesSelected.indexOf(category) > -1} />
-                <ListItemText primary={category} />
-              </MenuItem>
-            ))}
-          </Select>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">
+             Genres
+            </InputLabel>
+            <Select
+              labelId="demo-multiple-checkbox-label"
+              id="demo-multiple-checkbox"
+              multiple
+              value={categoriesSelected}
+              onChange={handleChange}
+              input={<OutlinedInput label="Category" />}
+              renderValue={(selected) => selected.join(", ")}
+              sx={{
+                  width: "100%",
+              }}
+            >
+              {categories.map((category) => (
+                <MenuItem key={category} value={category}>
+                  <Checkbox checked={categoriesSelected.indexOf(category) > -1} />
+                  <ListItemText primary={category} />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
           <TextField
             id="outlined-basic"
@@ -228,7 +303,7 @@ function AddAndEditTvShow({ film, isOpen, setIsOpen }) {
             variant="outlined"
             fullWidth
             type="number"
-            value={film?.firstYearRelease || ""}
+            value={film?.firstYearRelease || firstYearRelease}
             InputLabelProps={{ shrink: true }}
             InputProps={{
               inputProps: { 
@@ -241,9 +316,6 @@ function AddAndEditTvShow({ film, isOpen, setIsOpen }) {
                 setFirstYearRelease(year);
               }
             }}
-            InputLabelProps={{
-              shrink: true,
-            }}
           />
 
           <TextField
@@ -251,6 +323,7 @@ function AddAndEditTvShow({ film, isOpen, setIsOpen }) {
             type="file"
             InputLabelProps={{ shrink: true }}
             inputProps={{ accept: "image/*" }}
+            value={film?.banner}
             onChange={(e) => setBanner(e.target.files[0])}
           />
 
@@ -269,6 +342,7 @@ function AddAndEditTvShow({ film, isOpen, setIsOpen }) {
       </Paper>
     </Box>
   );
+
   return (
     <Box
       sx={{
@@ -279,6 +353,24 @@ function AddAndEditTvShow({ film, isOpen, setIsOpen }) {
       <Drawer open={open} onClose={toggleDrawer(false)} anchor="right">
         {DrawerList}
       </Drawer>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      {showAlert && (
+        <Box
+          sx={{
+            position: "fixed",
+            top: "7rem",
+            left: "50%",
+          }}
+        >
+          {isSuccess ? alert("success", "Create season successfully") : null}
+          {isSuccess === false ? alert("error", "Create season failed") : null}
+        </Box>
+      )}
     </Box>
   );
 }
