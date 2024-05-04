@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.Scanner;
 
 @RestController
-@RequestMapping("/api/v1/bill")
+@RequestMapping("/api/v1/payment")
 public class BillController {
     private Bill bill = new Bill();
 
@@ -32,10 +32,6 @@ public class BillController {
 
     @Autowired
     private BillService billService;
-
-//    @GetMapping("/get-all-transaction")
-//    public ResponseEntity<Object> getAllTransaction() throws IOException {
-//    }
 
     @PostMapping("/create-bill")
     public ResponseEntity<Object> createBill(@RequestBody Bill bill){
@@ -48,8 +44,8 @@ public class BillController {
         payment.setPayer(payer);
 
         RedirectUrls redirectUrls = new RedirectUrls();
-        redirectUrls.setReturnUrl("http://localhost:8086/api/v1/bill/execute-payment");
-        redirectUrls.setCancelUrl("http://localhost:8086/api/v1/bill/cancel-payment");
+        redirectUrls.setReturnUrl("http://localhost:8086/api/v1/payment/execute-payment");
+        redirectUrls.setCancelUrl("http://localhost:8086/api/v1/payment/cancel-payment");
         payment.setRedirectUrls(redirectUrls);
 
         Transaction transaction = new Transaction();
