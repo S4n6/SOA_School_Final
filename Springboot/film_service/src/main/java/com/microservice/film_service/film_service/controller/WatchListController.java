@@ -7,6 +7,7 @@ import com.microservice.film_service.film_service.model.WatchList;
 import com.microservice.film_service.film_service.service.MovieService;
 import com.microservice.film_service.film_service.service.TVShowService;
 import com.microservice.film_service.film_service.service.WatchListService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,7 @@ public class WatchListController {
     private TVShowService tvShowService;
 
     @GetMapping("/{id}")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Object> getWatchList(@PathVariable String id){
         try {
             WatchList watchList = watchListService.getWatchListById(id);
@@ -41,6 +43,7 @@ public class WatchListController {
     }
 
     @GetMapping("")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Object> getWatchListsByUser(@RequestParam String userID){
         try {
             List<WatchList> watchLists = watchListService.getWatchListsByUserID(userID);
@@ -53,6 +56,7 @@ public class WatchListController {
     }
 
     @PostMapping("")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Object> addWatchList(@RequestBody WatchList watchList){
         try {
             System.out.println(watchList);
@@ -69,6 +73,7 @@ public class WatchListController {
     }
 
     @PutMapping("/{action}/{id}")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Object> addFilmWatchList(@PathVariable String action, @PathVariable String id, @RequestBody Map<String, Object> object){
         Movie movie = null;
         TVShow tvShow = null;
@@ -120,6 +125,7 @@ public class WatchListController {
     }
 
     @DeleteMapping("/{id}")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Object> removeWatchList(@PathVariable String id){
         try {
             boolean isSuccess = watchListService.removeWatchList(id);

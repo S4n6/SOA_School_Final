@@ -25,6 +25,7 @@ public class GatewayConfig {
                 .route("rating-swagger", r -> r.path("/api/v1/rating-swagger/**").uri("lb://rating-service"))
                 .route("review-swagger", r -> r.path("/api/v1/review-swagger/**").uri("lb://review-service"))
                 .route("view-swagger", r -> r.path("/api/v1/view-swagger/**").uri("lb://view-service"))
+                .route("recommendation-swagger", r -> r.path("/api/v1/recommendation-swagger/**").uri("lb://recommendation-service"))
 //                Url for backend
                 .route("film-service", r -> r.path("/api/v1/film/**").uri("lb://film-service"))
                 .route("movie-service", r -> r.path("/api/v1/movie/**").uri("lb://film-service"))
@@ -45,7 +46,7 @@ public class GatewayConfig {
                 .route("email-notification-service", r -> r.path("/api/v1/email/**").filters(f -> f.filter(filter)).uri("lb://notification-service"))
                 .route("payment-service", r -> r.path("/api/v1/payment/**").filters(f -> f.filter(filter)).uri("lb://payment-service"))
                 .route("user-service", r -> r.path("/api/v1/user/**").filters(f -> f.filter(filter)).uri("lb://user-service"))
-                .route("recommendation-service", r -> r.path("/api/v1/recommendation/**").filters(f -> f.filter(filter)).uri("lb://recommendation-service")).build();
+                .route("recommendation-service", r -> r.path("/api/v1/recommendation/**").uri("lb://recommendation-service")).build();
     }
 
 }

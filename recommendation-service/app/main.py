@@ -61,6 +61,8 @@ app = FastAPI(
     lifespan=lifespan,
     title="Recommendation System - FastAPI",
     summary="A sample application showing how to use FastAPI to add a ReST API to a MongoDB collection.",
+    openapi_url="/api/v1/recommendation-swagger/v3/api-docs",
+
 )
 
 
@@ -99,8 +101,11 @@ def get_recommendation_movie(title: str):
 
         movie_indices_movie = [i[0] for i in sim_scores_movie]
 
-        for value in movie_data['movieID'].iloc[movie_indices_movie]:
-            result.append(value)
+        for value in movie_data['_id'].iloc[movie_indices_movie]:
+            if isinstance(value, ObjectId):
+                result.append(str(value))
+            else:
+                result.append(value)
         return result
     except:
         return result
@@ -118,8 +123,11 @@ def get_recommendation_tv_show(title: str):
 
         tv_show_indices_tv_show = [i[0] for i in sim_scores_tv_show]
 
-        for value in tv_show_data['tvShowID'].iloc[tv_show_indices_tv_show]:
-            result.append(value)
+        for value in tv_show_data['_id'].iloc[tv_show_indices_tv_show]:
+            if isinstance(value, ObjectId):
+                result.append(str(value))
+            else:
+                result.append(value)
         return result
     except:
         return result
