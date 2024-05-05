@@ -3,8 +3,12 @@ import { Box } from "@mui/system";
 import MovieRecommendItem from "./movieRecommendItem";
 import MovieIcon from "@mui/icons-material/Movie";
 import AddIcon from '@mui/icons-material/Add';
+import { getCommingSoonFilm } from "../../api/film";
+import { useEffect } from "react";
 
 function MoviesRecommend({ films }) {
+   
+ 
     return (
         <Box
             sx={{

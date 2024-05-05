@@ -36,6 +36,7 @@ import {
   OutlinedInput,
   Select,
   TextField,
+  useTheme,
 } from "@mui/material";
 import Search from "../search";
 import SearchIcon from "@mui/icons-material/Search";
@@ -106,14 +107,15 @@ function Header({ mode, toggleColorMode }) {
     setGenre(GENRES);
   }, []);
 
-  const [notifications, setNotifications] = React.useState([]);
-
   const [filmNotification, setFilmNotification] = React.useState([]);
   const [accountNotification, setAccountNotification] = React.useState([]);
   const [commentNotification, setCommentNotification] = React.useState([]);
 
+  const theme = useTheme();
+
   React.useEffect(() => {
-    getNotifications({ userID: "66200673fc13ae7cc6a242a1", page: 0, size: 12 })
+    console.log(user?.userId)
+    getNotifications({ userID: user?.userId, page: 0, size: 12 })
       .then((value) => {
         setFilmNotification(value.film_notification);
         setAccountNotification(value.account_notification);
@@ -122,7 +124,7 @@ function Header({ mode, toggleColorMode }) {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [user?.userId]);
 
   // Init 3 websocket for film-notification, account-notification, comment-notification
   const { sendMessage: sendFilmMessage, lastMessage: lastFilmMessage } =
@@ -399,13 +401,14 @@ function Header({ mode, toggleColorMode }) {
                       overflow: "auto",
                       padding: "4px",
                       boxShadow: 3,
+                      background: theme.palette.background.default
                     }}
                   >
                     <List>
                       {filmNotification.map((notification, index) => {
                         return (
                           <ListItemButton key={index}>
-                            <Typography variant="h6" color="text.primary">
+                            <Typography variant="h6" sx={{color: theme.palette.text.primary}}>
                               {notification.title}
                             </Typography>
                           </ListItemButton>
@@ -414,7 +417,7 @@ function Header({ mode, toggleColorMode }) {
                       {accountNotification.map((notification, index) => {
                         return (
                           <ListItemButton key={index}>
-                            <Typography variant="h6" color="text.primary">
+                            <Typography variant="h6" sx={{color: theme.palette.text.primary}}>
                               {notification.title}
                             </Typography>
                           </ListItemButton>
@@ -423,7 +426,7 @@ function Header({ mode, toggleColorMode }) {
                       {commentNotification.map((notification, index) => {
                         return (
                           <ListItemButton key={index}>
-                            <Typography variant="h6" color="text.primary">
+                            <Typography variant="h6" sx={{color: theme.palette.text.primary}}>
                               {notification.title}
                             </Typography>
                           </ListItemButton>

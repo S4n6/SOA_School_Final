@@ -3,28 +3,21 @@ import { Box } from "@mui/system";
 import Carousel from "react-material-ui-carousel";
 import { Paper, Button } from "@mui/material";
 import CarouselItem from "./carouselitem";
+import { useEffect, useState } from "react";
+import { getCommingSoonFilm } from "../../api/film";
 
 function CarouselComponent({ items }) {
-  const trendingMovies = [
-    {
-      id: 1,
-      title: "Movie Title 1",
-      poster_path: "/path/to/movie1.jpg",
-    },
-    {
-      id: 2,
-      title: "Movie Title 2",
-      poster_path: "/path/to/movie2.jpg",
-    },
-    {
-      id: 3,
-      title: "Movie Title 3",
-      poster_path: "/path/to/movie3.jpg",
-    },
-    // ... more movies
-  ];
-
-  
+  const [comingSoonFilm, setComingSoonFilm] = useState([]);
+  useEffect(() => {
+    getCommingSoonFilm()
+      .then((value) => {
+        console.log("coming soon filmmmm", value);
+        setComingSoonFilm([...value?.movies, ...value?.tvShows]);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
   return (
     <Box
       sx={{
@@ -43,7 +36,7 @@ function CarouselComponent({ items }) {
           padding: "1.5rem",
         }}
       >
-        {trendingMovies.map((item, i) => {
+        {comingSoonFilm?.map((item, i) => {
           return <CarouselItem key={i} item={item} />;
         })}
       </Carousel>

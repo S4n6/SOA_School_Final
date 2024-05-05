@@ -24,11 +24,11 @@ function CommentOthers({ comment }) {
     const handleClickSendComment = () => {
         const message = {
             user: {
-                id: "66200673fc13ae7cc6a242a1",
-                name: "Neymar",
-                email: "neymar@gmail.com"
+                id: user?.userId,
+                name: user?.name,
+                email: user?.email
             },
-            filmID: "66200673fc13ae7cc6a242a2",
+            filmID: comment.filmID,
             content: postedComment,
             replyCommentID: comment?.id, 
             action: "reply"

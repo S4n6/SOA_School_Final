@@ -1,14 +1,56 @@
-import { Button, Paper, Typography } from "@mui/material";
+import { Button, Dialog, DialogTitle, Paper, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import StarIcon from "@mui/icons-material/Star";
 import { object } from "yup";
+import { useContext, useEffect } from "react";
+import CircleIcon from "@mui/icons-material/Circle";
+import { registerFilmCommingSoon } from "../../api/film";
+import { AuthContext } from "../../context/AuthContext";
 
 function CarouselItem({ item }) {
+  const { user } = useContext(AuthContext);
   const truncateText = (text, maxLength) => {
     if (text.length > maxLength) {
       return text.substring(0, maxLength) + "...";
     }
     return text;
+  };
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+  const day = String(currentDate.getDate()).padStart(2, "0");
+  const hours = String(currentDate.getHours()).padStart(2, "0");
+  const minutes = String(currentDate.getMinutes()).padStart(2, "0");
+  const seconds = String(currentDate.getSeconds()).padStart(2, "0");
+
+  const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  console.log(formattedDate);
+  useEffect(() => {
+    console.log("item comming sônnnnn", item);
+  }, [item]);
+
+  console.log(
+    "date tetstodimhgod",
+    new Date().setMonth(new Date().getMonth() + 1)
+  );
+
+  const regiserFilm = () => {
+    registerFilmCommingSoon({
+      filmID: item?.id,
+      id: item?.property?.id,
+      email: user?.email,
+      userID: user?.userId,
+      type: item?.type,
+      expectedReleaseDate: item?.property?.expectedReleaseDate
+        ? item?.property?.expectedReleaseDate
+        : formattedDate,
+    })
+      .then((value) => {
+        console.log("register film comming soon", value);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
   return (
     <Box
@@ -18,7 +60,6 @@ function CarouselItem({ item }) {
         display: "flex",
         "&:hover": {
           cursor: "pointer",
-          // border: '2px solid blue',
         },
         justifyContent: "center",
         borderRadius: "12px",
@@ -72,7 +113,7 @@ function CarouselItem({ item }) {
               marginY: "1rem",
             }}
           >
-            Civil War
+            {item?.name}
           </Typography>
         </Box>
         <Box
@@ -95,12 +136,7 @@ function CarouselItem({ item }) {
                 textOverflow: "ellipsis",
               }}
             >
-              The American Civil War, fought from 1861 to 1865, was a conflict
-              between the Northern states (Union) and the Southern states
-              (Confederacy) over issues including slavery, states rights, and
-              regional autonomy. It resulted in significant loss of life and
-              ultimately led to the preservation of the Union and the abolition
-              of slavery in the United States.
+              {truncateText(item?.description, 200)}
             </Typography>
           </Box>
           <Box>
@@ -120,14 +156,40 @@ function CarouselItem({ item }) {
                 }}
               >
                 <StarIcon fontSize="small" />
-                7.6
+                {item?.rating}
               </Box>
-              , 2016, 147 min
+              <CircleIcon
+                sx={{
+                  fontSize: "12px",
+                  marginX: "0.5rem",
+                }}
+              />
+              {item?.firstYearRelease}
+              <CircleIcon
+                sx={{
+                  fontSize: "12px",
+                  marginX: "0.5rem",
+                }}
+              />
+              {item?.duration} min
             </Box>
             <Typography variant="h10" component="h4">
-              Action
+              {item?.genres?.join(", ")}
             </Typography>
           </Box>
+          <Button
+            sx={{
+              marginTop: "1rem",
+              borderRadius: "1rem",
+              ":hover": {
+                boxShadow: "0 0 10px 0.5px black",
+              },
+            }}
+            onClick={regiserFilm}
+            disabled={item?.property?.registerUserIds?.includes(user?.userId)}
+          >
+            {item?.property?.registerUserIds?.includes(user?.userId) ? 'Đã đăng ký' : 'Đăng ký'}
+          </Button>
         </Box>
       </Box>
 
@@ -140,7 +202,7 @@ function CarouselItem({ item }) {
           display: "flex",
           pointerEvents: "none",
         }}
-        src="https://m.media-amazon.com/images/M/MV5BYTYyODhlODktYjUzNC00NjUyLWI1MzYtNmI0MTY3YTUxYjY2XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_FMjpg_UX1000_.jpg"
+        src={item?.banner}
       />
     </Box>
   );

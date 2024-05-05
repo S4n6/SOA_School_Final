@@ -28,6 +28,12 @@ export class UserController {
     return await this.userService.searchByEmail(email)
   }
 
+  
+  @Get('/checkVip/:id')
+  async checkVip(@Param('id') id: string): Promise<boolean> {
+    return await this.userService.checkVip(id);
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<User> {
     return await this.userService.findOne(id);

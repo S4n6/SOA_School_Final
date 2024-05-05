@@ -87,6 +87,47 @@ function Video({ video, filmID }) {
 
     setIsAddedToWatchList(isAdded);
   }, [watchList]);
+  const [updatedTime, setUpdatedTime] = React.useState(0)
+
+  React.useEffect(() => {
+    const videoElement = videoRef.current;
+
+    const handleTimeUpdate = () => {
+      const { currentTime } = videoElement;
+      console.log("Current Time:", currentTime);
+
+      setUpdatedTime(currentTime)
+
+      // if (currentTime != null) {
+      //   setInterval(() => {
+      //     sendMessage(
+      //       JSON.stringify({
+      //         userID: user?.userId,
+      //         filmID,
+      //         duration: currentTime,
+      //       })
+      //     );
+      //   }, 5000);
+      // }
+      // Thực hiện các xử lý khác với thời gian hiện tại của video
+    };
+
+    videoElement.addEventListener("timeupdate", handleTimeUpdate);
+
+    return () => {
+      videoElement.removeEventListener("timeupdate", handleTimeUpdate);
+    };
+  }, [])
+
+  React.useEffect(() => {
+    sendMessage(
+      JSON.stringify({
+        userID: user?.userId,
+        filmID,
+        duration: updatedTime,
+      })
+    );
+  }, [updatedTime / 5 != 0])
 
   return (
     <Box
@@ -109,7 +150,7 @@ function Video({ video, filmID }) {
           marginTop: "8px",
         }}
       >
-        <CardMedia
+        <video
           ref={videoRef}
           component="video"
           src={video}
@@ -272,6 +313,26 @@ function Video({ video, filmID }) {
                 );
               })}
             </Dialog>
+            {user ?
+              (
+                <Button
+                  sx={{
+                    right: 0,
+                    position: "absolute",
+                    whiteSpace: "normal",
+                    width: "10%",
+                    marginRight: "16px",
+                    marginTop: "4px",
+                  }}
+                >
+                  Thêm vào danh sách xem sau
+                </Button>
+              ) : (
+                <></>
+              )
+
+            }
+
           </CardContent>
         </CardActionArea>
         {openDialogAddWatchList ? (

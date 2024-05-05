@@ -46,6 +46,7 @@ function WatchList() {
       .then((value) => {
         console.log(value);
         setOpen(false);
+        window.location.reload();
       })
       .catch((error) => {
         console.error(error);

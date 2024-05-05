@@ -12,7 +12,6 @@ import { useNavigate } from 'react-router-dom';
 export default function MovieRecommendItem({film}) {
     const theme = useTheme();
     const navigate = useNavigate();
-    console.log('filmmmmmmmmdfgggggggg', film)
     return (
         <Card sx={{ display: 'flex' }}>
             <Box 

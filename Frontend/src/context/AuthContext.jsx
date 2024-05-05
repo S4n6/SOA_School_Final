@@ -1,11 +1,11 @@
 import { createContext, useState, useEffect } from "react";
+import { getUserById } from "../api/user";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const tokenCookie = document.cookie
       .split("; ")
@@ -13,8 +13,14 @@ export const AuthProvider = ({ children }) => {
 
     if (tokenCookie) {
       const token = JSON.parse(decodeURIComponent(tokenCookie.split("=")[1]));
-      console.log("tokenhfhgfhf", token);
-      setUser(token?.userId);
+      // console.log("tokenhfhgfhf", token);
+      getUserById(token?.userId)
+        .then((value) => {
+          setUser(Object.assign(value, token))
+        })
+        .catch((error) => {
+          console.error(error)
+        })
     }
   }, []);
 

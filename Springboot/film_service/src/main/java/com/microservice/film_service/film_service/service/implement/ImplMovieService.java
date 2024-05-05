@@ -6,6 +6,7 @@ import com.cloudinary.utils.ObjectUtils;
 import com.microservice.film_service.film_service.model.ComingSoonProperty;
 import com.microservice.film_service.film_service.model.Movie;
 import com.microservice.film_service.film_service.model.Genre;
+import com.microservice.film_service.film_service.model.Status;
 import com.microservice.film_service.film_service.repository.ComingSoonPropertyRepository;
 import com.microservice.film_service.film_service.repository.MovieRepository;
 import com.microservice.film_service.film_service.repository.PagingAndSortingMovieRepository;
@@ -41,6 +42,12 @@ public class ImplMovieService implements MovieService {
     @Override
     public Movie getFilm(String id){
         return movieRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<Movie> getFilmByStatus(Status status, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "firstYearRelease");
+        return pagingAndSortingRepository.findByStatus(pageable, status).getContent();
     }
 
     @Override
@@ -556,6 +563,18 @@ public class ImplMovieService implements MovieService {
             return movieRepository.save(film);
         }
         catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public Movie updateExpectedReleaseDate(String movieID, ComingSoonProperty property){
+        try {
+            Movie movie = getFilm(movieID);
+            movie.setProperty(property);
+            return movieRepository.save(movie);
+        } catch (Exception e){
             e.printStackTrace();
         }
         return null;
