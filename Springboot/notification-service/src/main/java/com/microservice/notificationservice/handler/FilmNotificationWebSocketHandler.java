@@ -37,7 +37,7 @@ public class FilmNotificationWebSocketHandler implements WebSocketHandler {
                         // Process the payload and create a new account notification
                         FilmNotification filmNotification = new FilmNotification(
                                 "Film notification",
-                                "This film is released yesterday, don't forget to watch!",
+                                payload.getContent(),
                                 LocalDateTime.now(),
                                 payload.getUserID(),
                                 "/film/"+payload.getFilmID(),

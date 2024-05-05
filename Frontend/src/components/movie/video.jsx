@@ -18,27 +18,48 @@ function Video({ video, filmID }) {
   );
 
   const videoRef = React.useRef(null);
-  const [duration, setDuration] = React.useState(null);
-  const {user} = React.useContext(AuthContext)
+  const { user } = React.useContext(AuthContext)
+  const [updatedTime, setUpdatedTime] = React.useState(0)
 
-  const handleDurationChange = () => {
-    if (videoRef.current) {
-      setDuration(videoRef.current.duration);
-    }
-  };
+  React.useEffect(() => {
+    const videoElement = videoRef.current;
 
-  if (duration != null) {
-    setInterval(() => {
-      sendMessage(
-        JSON.stringify({
-          userID: "66227018dea6cbf7a9ab36ba",
-          filmID,
-          duration,
-        })
-      );
-      console.log(duration);
-    }, 5000);
-  }
+    const handleTimeUpdate = () => {
+      const { currentTime } = videoElement;
+      console.log("Current Time:", currentTime);
+
+      setUpdatedTime(currentTime)
+
+      // if (currentTime != null) {
+      //   setInterval(() => {
+      //     sendMessage(
+      //       JSON.stringify({
+      //         userID: user?.userId,
+      //         filmID,
+      //         duration: currentTime,
+      //       })
+      //     );
+      //   }, 5000);
+      // }
+      // Thực hiện các xử lý khác với thời gian hiện tại của video
+    };
+
+    videoElement.addEventListener("timeupdate", handleTimeUpdate);
+
+    return () => {
+      videoElement.removeEventListener("timeupdate", handleTimeUpdate);
+    };
+  }, [])
+
+  React.useEffect(() => {
+    sendMessage(
+      JSON.stringify({
+        userID: user?.userId,
+        filmID,
+        duration: updatedTime,
+      })
+    );
+  }, [updatedTime / 5 != 0])
 
   return (
     <Box
@@ -61,7 +82,7 @@ function Video({ video, filmID }) {
           marginTop: "8px",
         }}
       >
-        <CardMedia
+        <video
           ref={videoRef}
           component="video"
           src={video}
@@ -71,7 +92,6 @@ function Video({ video, filmID }) {
             width: "70%",
             objectFit: "contain",
           }}
-          onDurationChange={handleDurationChange}
         />
         <CardActionArea>
           <CardContent
@@ -185,26 +205,26 @@ function Video({ video, filmID }) {
                 <Typography variant="h5">Three</Typography>
               </Box>
             </Box>
-            {user ? 
-            (
-              <Button
-                sx={{
-                  right: 0,
-                  position: "absolute",
-                  whiteSpace: "normal",
-                  width: "10%",
-                  marginRight: "16px",
-                  marginTop: "4px",
-                }}
-              >
-                Thêm vào danh sách xem sau
-              </Button>
-            ) : (
-              <></>
-            )
-            
+            {user ?
+              (
+                <Button
+                  sx={{
+                    right: 0,
+                    position: "absolute",
+                    whiteSpace: "normal",
+                    width: "10%",
+                    marginRight: "16px",
+                    marginTop: "4px",
+                  }}
+                >
+                  Thêm vào danh sách xem sau
+                </Button>
+              ) : (
+                <></>
+              )
+
             }
-            
+
           </CardContent>
         </CardActionArea>
       </Card>

@@ -5,6 +5,7 @@ import com.microservice.film_service.film_service.client.RecommendationClient;
 import com.microservice.film_service.film_service.client.ViewClient;
 import com.microservice.film_service.film_service.model.FilmModel;
 import com.microservice.film_service.film_service.model.Movie;
+import com.microservice.film_service.film_service.model.Status;
 import com.microservice.film_service.film_service.model.TVShow;
 import com.microservice.film_service.film_service.service.MovieService;
 import com.microservice.film_service.film_service.service.TVShowService;
@@ -118,5 +119,26 @@ public class FilmController {
             e.printStackTrace();
         }
         return ResponseMessage.createResponse(HttpStatus.NOT_FOUND, "GET FILMS FAILED!", null);
+    }
+
+    @GetMapping("/coming_soon")
+    public ResponseEntity<Object> getComingSoonFilm(
+            @RequestParam(defaultValue = "0", required = false) int page,
+            @RequestParam(defaultValue = "10", required = false) int size
+    ) {
+        try {
+            Map<String, Object> map = new HashMap<>();
+            List<Movie> movies = movieService.getFilmByStatus(Status.COMING_SOON, page, size);
+            List<TVShow> tvShows = tvShowService.getTVShowByStatus(Status.COMING_SOON, page, size);
+
+            map.put("movies", movies);
+            map.put("tvShows", tvShows);
+
+            return ResponseMessage.createResponse(HttpStatus.OK, "GET FILMS SUCCESSFULLY!", map);
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return ResponseMessage.createResponse(HttpStatus.NOT_FOUND, "GET COMING SOON FAILED!", null);
     }
 }

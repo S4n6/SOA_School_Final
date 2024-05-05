@@ -25,6 +25,7 @@ public class GatewayConfig {
                 .route("rating-swagger", r -> r.path("/api/v1/rating-swagger/**").uri("lb://rating-service"))
                 .route("review-swagger", r -> r.path("/api/v1/review-swagger/**").uri("lb://review-service"))
                 .route("view-swagger", r -> r.path("/api/v1/view-swagger/**").uri("lb://view-service"))
+                .route("user-swagger", r -> r.path("/api/v1/user-swagger/**").uri("lb://user-service"))
                 .route("recommendation-swagger", r -> r.path("/api/v1/recommendation-swagger/**").uri("lb://recommendation-service"))
 //                Url for backend
                 .route("film-service", r -> r.path("/api/v1/film/**").uri("lb://film-service"))

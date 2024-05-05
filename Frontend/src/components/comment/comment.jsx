@@ -18,7 +18,7 @@ function renderComment(comment, index) {
     );
 }
 
-function Comment(props) {
+function Comment({ filmID }) {
 
     const [postedComment, setPostedComment] = useState("")
     const { sendMessage, lastMessage, readyState } = useWebSocket("ws://localhost:8080/api/v1/websocket-comment", { share: true });
@@ -34,14 +34,14 @@ function Comment(props) {
     const { user } = useContext(AuthContext)
 
     useEffect(() => {
-        getComments("66200673fc13ae7cc6a242a2", 0, 5)
+        getComments(filmID, 0, 5)
             .then((value) => {
                 setComments(value || [])
             })
             .catch((error) => {
                 console.error(error)
             })
-    }, [])
+    }, [filmID])
 
     useEffect(() => {
         if (lastMessage !== null) {
@@ -56,17 +56,18 @@ function Comment(props) {
     const handleClickSendComment = () => {
         const message = {
             user: {
-                id: "66200673fc13ae7cc6a242a1",
-                name: "Neymar",
-                email: "neymar@gmail.com"
+                id: user?.userId,
+                name: user?.name,
+                email: user?.email
             },
-            filmID: "66200673fc13ae7cc6a242a2",
+            filmID,
             content: postedComment,
             action: "add"
         }
         sendMessage(JSON.stringify(message))
+        setPostedComment("")
     }
-   
+
     return (
         <Box
             sx={{
@@ -113,6 +114,7 @@ function Comment(props) {
                     variant="outlined"
                     placeholder="Write a comment..."
                     sx={{ width: "100%", mt: 2 }}
+                    value={postedComment}
                     onChange={handleTextChange}
                     disabled={readyState !== ReadyState.OPEN || !user}
                 />

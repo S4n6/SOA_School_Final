@@ -2,7 +2,9 @@ package com.microservice.film_service.film_service.service.implement;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.microservice.film_service.film_service.model.ComingSoonProperty;
 import com.microservice.film_service.film_service.model.Genre;
+import com.microservice.film_service.film_service.model.Status;
 import com.microservice.film_service.film_service.model.TVShow;
 import com.microservice.film_service.film_service.repository.PagingAndSortingTVShowRepository;
 import com.microservice.film_service.film_service.repository.TVShowRepository;
@@ -36,6 +38,12 @@ public class ImplTVShowService implements TVShowService {
     @Override
     public TVShow getTVShow(String id){
         return tvShowRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<TVShow> getTVShowByStatus(Status status, int page, int size){
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "firstYearRelease");
+        return pagingAndSortingTVShowRepository.findByStatus(pageable, status).getContent();
     }
 
     @Override
@@ -500,6 +508,18 @@ public class ImplTVShowService implements TVShowService {
             e.printStackTrace();
         }
 
+        return null;
+    }
+
+    @Override
+    public TVShow updateExpectedReleaseDate(String tvShowID, ComingSoonProperty property){
+        try {
+            TVShow tvShow = getTVShow(tvShowID);
+            tvShow.setProperty(property);
+            return tvShowRepository.save(tvShow);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         return null;
     }
 

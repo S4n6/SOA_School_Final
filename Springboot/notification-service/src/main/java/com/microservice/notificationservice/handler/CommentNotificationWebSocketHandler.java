@@ -39,9 +39,9 @@ public class CommentNotificationWebSocketHandler implements WebSocketHandler {
                                 );
                         CommentNotification commentNotification = new CommentNotification(
                                 "A replied your comment",
-                                "A replied your comment, click to read detail!",
+                                payload.getContent(),
                                 LocalDateTime.now(),
-                                "66200673fc13ae7cc6a242a1",
+                                payload.getUserID(),
                                 "/film/66200673fc13ae7cc6a242a2",
                                 payload.getReplyCommentID());
                         CommentNotification addedNotification = commentNotificationService.addNotification(commentNotification);

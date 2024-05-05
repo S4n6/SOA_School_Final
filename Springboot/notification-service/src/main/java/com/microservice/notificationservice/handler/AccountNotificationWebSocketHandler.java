@@ -38,9 +38,9 @@ public class AccountNotificationWebSocketHandler implements WebSocketHandler {
                         // Process the payload and create a new account notification
                         AccountNotification accountNotification = new AccountNotification(
                                 "Account notification",
-                                "Thank fot registering with use!",
+                                payload.getContent(),
                                 LocalDateTime.now(),
-                                "66200673fc13ae7cc6a242a1",
+                                payload.getUserID(),
                                 "/film/66200673fc13ae7cc6a242a2");
 
                         // Save the notification

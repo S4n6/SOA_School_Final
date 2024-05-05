@@ -73,7 +73,7 @@ function Watching() {
                 </Box>: null
             }
             
-            <Comment />
+            <Comment filmID={film?.id}/>
         </Box>
     );
 }

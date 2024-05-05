@@ -35,7 +35,7 @@ public class NotificationController {
     @GetMapping("")
     public ResponseEntity<Object> getNotification(@RequestParam String userID,
                                                   @RequestParam(defaultValue = "0", required = false) int page,
-                                                  @RequestParam(defaultValue = "0", required = false) int size){
+                                                  @RequestParam(defaultValue = "10", required = false) int size){
         try {
             List<FilmNotification> filmNotifications = filmNotificationService.getFilmNotifications(userID, page, size);
             List<AccountNotification> accountNotifications = accountNotificationService.getAccountNotifications(userID, page, size);

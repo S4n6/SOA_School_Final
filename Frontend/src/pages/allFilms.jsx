@@ -123,7 +123,7 @@ function AllFilm() {
         setCountry(["Vietnam", "Korea", "Japan", "China", "USA", "UK"]);
         setRating(["1", "2", "3", "4", "5"]);
         setYear(["2021", "2020", "2019", "2018", "2017"]);
-        // getCommendedFilms()
+
         // getCommendedFilms({ userID: "66227018dea6cbf7a9ab36ba", page: 0, size: 10 })
         //     .then((value) => {
         //         setFilms(value)
