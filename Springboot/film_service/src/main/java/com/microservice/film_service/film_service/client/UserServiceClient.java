@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "user-service")
 public interface UserServiceClient {
-    @GetMapping(value = "/api/v1/user/check-vip/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/api/v1/user/checkVip/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> checkUser(@PathVariable String id);
 }

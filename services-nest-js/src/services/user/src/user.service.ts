@@ -48,9 +48,9 @@ export class UserService {
     return await this.userModel.find({ email: { $regex: regex } }).exec();
   }
 
-  async checkVip(id: string): Promise<boolean> {
+  async checkVip(id: string): Promise<any> {
     const userGet = await this.userModel.findById(id).exec();
-    return userGet.isVip;
+    return {isVip: userGet.isVip};
   }
   
 }

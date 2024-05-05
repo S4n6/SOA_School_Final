@@ -38,6 +38,7 @@ public class ImplWatchListService implements WatchListService {
             ResponseEntity<String> response = userServiceClient.checkUser(watchList.getUserID());
             JSONObject json = new JSONObject(response.getBody());
             boolean isVip = json.getBoolean("isVip");
+            System.out.println("check VIp  " + isVip);
             if(!isVip && watchLists.size() >= 5){
                 return null;
             }

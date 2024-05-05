@@ -46,7 +46,7 @@ function WatchList() {
       .then((value) => {
         console.log(value);
         setOpen(false);
-        window.location.reload();
+        // window.location.reload();
       })
       .catch((error) => {
         console.error(error);
@@ -117,6 +117,9 @@ function WatchList() {
         sx={{
           width: "100%",
           height: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
         <WatchListContainer setIsOpenListFilm={setIsOpenListFilm} watchlist={watchlist} setWatchlistSelected={setWatchlistSelected}/>
