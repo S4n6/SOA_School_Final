@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,7 +69,7 @@ public class BillController {
     }
 
     @GetMapping("/execute-payment")
-    public ResponseEntity<Object> executePayment(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerID){
+    public RedirectView executePayment(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerID){
         try {
             APIContext apiContext = new APIContext(paypal_client_id, paypal_secret, "sandbox");
             Payment payment = Payment.get(apiContext, paymentId);
@@ -80,9 +81,11 @@ public class BillController {
             billService.addBill(this.bill);
 
             Payment executedPayment = payment.execute(apiContext, paymentExecution);
-            return ResponseMessage.createResponse(HttpStatus.OK, "PAY SUCCESSFULLY!", executedPayment.getState());
+//            return ResponseMessage.createResponse(HttpStatus.OK, "PAY SUCCESSFULLY!", executedPayment.getState());
+            return new RedirectView("http://localhost:5173");
         } catch (PayPalRESTException e) {
-            return ResponseMessage.createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "PAY FAILED, PLEASE CHECK PAYMENT INFORMATION AGAIN!", null);
+//            return ResponseMessage.createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "PAY FAILED, PLEASE CHECK PAYMENT INFORMATION AGAIN!", null);
+            return new RedirectView("http://localhost:5173");
         }
     }
 

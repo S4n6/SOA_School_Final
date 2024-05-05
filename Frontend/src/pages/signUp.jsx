@@ -72,12 +72,15 @@ export default function SignUp() {
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
                 <Box
-                    sx={{
+                     sx={{
                         marginTop: 8,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                    }}
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        backgroundColor: "background.paper",
+                        borderRadius: "12px",
+                        padding: "20px",
+                      }}
                 >
                     <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                         <LockOutlinedIcon />
@@ -210,3 +213,5 @@ export default function SignUp() {
         </ThemeProvider>
     );
 }
+
+

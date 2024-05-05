@@ -9,9 +9,9 @@ import { Box } from '@mui/system';
 function Layout({ children, mode, toggleColorMode, showCustomTheme}) {
     const defaultTheme = (mode) => ({
         palette: {
-          mode, // This will set the mode to either 'light' or 'dark'
+          mode,
           primary: {
-            main: mode === 'light' ? 'rgba(255,0,0,1.0)' : '#0d47a1',
+            main: mode === 'light' ? 'rgba(255,0,0,1.0)' : 'rgba(255, 255, 255, 1.0)',
           },
           secondary: {
             main: mode === 'light' ? 'rgba(0,255,0,0.6)' : '#c51162',

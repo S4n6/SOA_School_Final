@@ -12,6 +12,7 @@ export const UserSchema = new Schema({
     isVip: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },
     created_at: { type: Date, default: Date.now },
+    vipDeadline: { type: Date, default: Date.now }
 });
 
 
@@ -26,6 +27,7 @@ export interface User extends Document {
     isVip: boolean;
     isBlocked: boolean;
     created_at: Date;
+    vipDeadline: Date;
 }
 
 

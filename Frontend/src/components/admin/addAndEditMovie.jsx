@@ -42,15 +42,15 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
   const [banner, setBanner] = useState(null);
   const [video, setVideo] = useState(null);
   const [expectedReleaseDate, setExpectedReleaseDate] = useState(null);
-  const [name, setName] = useState("");
-  const [duration, setDuration] = useState(0);
+  const [name, setName] = useState(film?.name || "");
+  const [duration, setDuration] = useState(film?.duration || 0);
   const [firstYearRelease, setFirstYearRelease] = useState(0);
-  const [countryOfOrigin, setCountryOfOrigin] = useState("");
-  const [productionCompany, setProductionCompany] = useState("");
-  const [status, setStatus] = useState("");
+  const [countryOfOrigin, setCountryOfOrigin] = useState(film?.countryOfOrigin || '');
+  const [productionCompany, setProductionCompany] = useState(film?.productionCompany || '');
+  const [status, setStatus] = useState(film?.status || '');
   const [genres, setGenres] = useState([]);
-  const [actors, setActors] = useState([]);
-  const [description, setDescription] = useState("");
+  const [actors, setActors] = useState(film?.actors || []);
+  const [description, setDescription] = useState(film?.description || '');
   const [loading, setLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
@@ -58,6 +58,20 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
   useEffect(() => {
     setOpen(isOpen);
   }, [isOpen]);
+
+  useEffect(() => {
+    if (film) {
+      setName(film?.name || "");
+      setDuration(film?.duration || 0);
+      setFirstYearRelease(film?.firstYearRelease || 0);
+      setCountryOfOrigin(film?.countryOfOrigin || '');
+      setProductionCompany(film?.productionCompany || '');
+      setStatus(film?.status || '');
+      setActors(film?.actors || []);
+      setDescription(film?.description || '');
+      setExpectedReleaseDate(film?.property?.expectedReleaseDate ? new Date(film?.property?.expectedReleaseDate).toISOString().substring(0, 10) : expectedReleaseDate)
+    }
+  }, [film]);
 
   useEffect(() => {
     if (film?.genres) {
@@ -81,8 +95,22 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
 
   const handleUpload = () => {
     const formData = new FormData();
-    formData.append("banner", banner);
-    formData.append("video", video);
+    if (banner) {
+      formData.append("banner", banner);
+      formData.append("isChangeBanner", true);
+    }else{
+      formData.append("isChangeBanner", false);
+      formData.append("bannerLink", film?.banner);
+    }
+
+    if (banner) {
+      formData.append("video", video);
+      formData.append("isChangeVideo", true);
+    }else{
+      formData.append("isChangeVideo", false);
+      formData.append("videoLink", film?.video);
+    }
+
     formData.append("expectedReleaseDate", new Date(expectedReleaseDate));
     formData.append("name", name);
     formData.append("duration", duration);
@@ -157,7 +185,7 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
             id="outlined-basic"
             label="Movie Name"
             variant="outlined"
-            value={film?.name ? film.name : name}
+            value={name}
             fullWidth
             onChange={(e) => setName(e.target.value)}
           />
@@ -166,7 +194,7 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
             label="Duration"
             variant="outlined"
             fullWidth
-            value={film?.duration ? film?.duration : duration}
+            value={duration}
             onChange={(e) => setDuration(e.target.value)}
           />
           <TextField
@@ -174,7 +202,7 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
             label="Description"
             variant="outlined"
             fullWidth
-            value={film?.description ? film?.description : description}
+            value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
 
@@ -184,7 +212,7 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={film?.countryOfOrigin ? film?.countryOfOrigin : countryOfOrigin}
+              value={countryOfOrigin}
               label="Countryoforigin"
               onChange={(e) => setCountryOfOrigin(e.target.value)}
             >
@@ -201,7 +229,7 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
             label="Company"
             variant="outlined"
             fullWidth
-            value={film?.productionCompany ? film?.productionCompany : productionCompany}
+            value={productionCompany}
             onChange={(e) => setProductionCompany(e.target.value)}
           />
 
@@ -210,7 +238,7 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={film?.status ? film?.status : status}
+              value={status}
               label="Status"
               onChange={(e) => setStatus(e.target.value)}
             >
@@ -228,7 +256,7 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
             variant="outlined"
             helperText='Separate by ","'
             fullWidth
-            value={film?.actors ? (film?.actors)?.join(', ') : actors}
+            value={actors}
             onChange={(e) => setActors(e.target.value.split(","))}
           />
            <TextField
@@ -237,7 +265,7 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
             variant="outlined"
             fullWidth
             type="number"
-            value={film?.firstYearRelease ? film?.firstYearRelease : firstYearRelease}
+            value={firstYearRelease}
             InputProps={{
               inputProps: { 
                 min: 1900, max: new Date().getFullYear() 
@@ -245,9 +273,10 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
             }}
             onChange={(e) => {
               const year = e.target.value;
-              if (year >= 1900 && year <= new Date().getFullYear()) {
-                setFirstYearRelease(year);
-              }
+              // if (year >= 1900 && year <= new Date().getFullYear()) {
+                
+              // }
+              setFirstYearRelease(year);
             }}
             InputLabelProps={{
               shrink: true,
@@ -260,7 +289,7 @@ function AddAndEditMovie({ film, isOpen, setIsOpen }) {
             variant="outlined"
             type="date"
             fullWidth
-            value={film?.property?.expectedReleaseDate ? new Date(film?.property?.expectedReleaseDate).toISOString().substring(0, 10) : expectedReleaseDate}
+            value={expectedReleaseDate}
             onChange={(e) => setExpectedReleaseDate(e.target.value)}
             InputLabelProps={{
               shrink: true,

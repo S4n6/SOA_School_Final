@@ -7,13 +7,25 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import { useNavigate } from 'react-router-dom';
 
 export default function MovieRecommendItem({film}) {
     const theme = useTheme();
-
+    const navigate = useNavigate();
+    console.log('filmmmmmmmmdfgggggggg', film)
     return (
         <Card sx={{ display: 'flex' }}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+            <Box 
+                sx={{ 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    justifyContent: 'flex-end',
+                    ":hover": {
+                        cursor: "pointer",
+                    },
+                }}
+                onClick={() => navigate(`/${film?.type}/${film?.id}`)}
+            >
                 <CardContent >
                     <Typography
                         component="div"

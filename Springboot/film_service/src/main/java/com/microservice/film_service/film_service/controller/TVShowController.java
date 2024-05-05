@@ -79,7 +79,7 @@ public class TVShowController {
     //    Add film + upload film to cloudinary
     @PutMapping("/{id}")
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<Object> updateTVShow(@PathVariable String id, @RequestParam("banner") MultipartFile banner,
+    public ResponseEntity<Object> updateTVShow(@PathVariable String id, @RequestParam(value = "banner", required = false) MultipartFile banner,
                                             @RequestParam String bannerLink, @RequestParam boolean isChangeBanner,
                                             @RequestParam String name, @RequestParam int duration,@RequestParam int firstYearRelease,
                                             @RequestParam String countryOfOrigin, @RequestParam String productionCompany,

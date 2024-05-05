@@ -64,7 +64,7 @@ public class EpisodeController {
         return ResponseMessage.createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "ADD EPISODE FAILED!", null);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateEpisode(@RequestParam("video") MultipartFile video, @RequestParam("banner") MultipartFile banner,
+    public ResponseEntity<Object> updateEpisode(@RequestParam(value = "video", required = false) MultipartFile video, @RequestParam(value = "banner", required = false) MultipartFile banner,
                                                 @Nullable @RequestParam Date expectedReleaseDate,
                                              @PathVariable String id, @RequestParam String videoLink, @RequestParam String bannerLink,
                                              @RequestParam boolean isChangeVideo, @RequestParam boolean isChangeBanner,

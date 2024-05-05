@@ -72,7 +72,7 @@ public class SeasonController {
 
     @PutMapping("/{id}")
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<Object> updateSeason(@PathVariable String id, @RequestParam("banner") MultipartFile banner,
+    public ResponseEntity<Object> updateSeason(@PathVariable String id, @RequestParam(value = "banner", required = false) MultipartFile banner,
                                                @Nullable @RequestParam Date expectedReleaseDate,
                                             @RequestParam boolean isChangeBanner, @RequestParam String bannerLink,
                                             @RequestParam String name, @RequestParam int duration, @RequestParam int firstYearRelease,

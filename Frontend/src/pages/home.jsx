@@ -7,12 +7,13 @@ import { filterMovie } from "../api/movie";
 import { Tab, Tabs } from "@mui/material";
 import { getTVShows } from "../api/tvShow";
 import { AuthContext } from "../context/AuthContext";
+import { getCommendedFilms } from "../api/film";
 
 
 export default function Home() {
     const [typeAll, setTypeAll] = useState(0);
     const [films, setFilms] = useState([]);
-
+    const [filmsRecommend, setFilmsRecommend] = useState([]);
     const { user } = useContext(AuthContext)    
 
     useEffect(() => {
@@ -34,6 +35,16 @@ export default function Home() {
                 })
         }
     }, [typeAll])
+
+    useEffect(() => {
+        getCommendedFilms({ userID: "66227018dea6cbf7a9ab36ba", page: 0, size: 10 })
+            .then((value) => {
+                setFilmsRecommend(value)
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+    }, [])
 
     const handleChange = (event, newValue) => {
         setTypeAll(newValue);
@@ -84,9 +95,11 @@ export default function Home() {
                         width: '25%',
                         boxShadow: '0 0 4px 0 rgba(0,0,0,0.2)',
                         borderRadius: '8px',
+                        height: '45rem',
+                        overflow: 'auto', 
                     }}
                 >
-                    <MoviesRecommend />
+                    <MoviesRecommend films={filmsRecommend}/>
                 </Box>
 
             </Box>

@@ -25,6 +25,7 @@ import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import { createEposide, getSeasonByTvShow, getTVShows } from "../../api/tvShow";
 import { STATUS } from "../../utils/contants";
+import { updateEpisode } from "../../api/episode";
 
 function alert(type, message) {
   if (type === "success") {
@@ -56,10 +57,34 @@ function AddAndEditTvEposide({ film, isOpen, setIsOpen, season }) {
     setOpen(newOpen);
   };
 
+  useEffect(() => {
+    if (film) {
+      setEpisodeNumber(film?.episodeNumber || 1);
+      setName(film?.name || "");
+      setDuration(film?.duration || 0);
+      setStatus(film?.status || '');
+      setExpectedReleaseDate(film?.property?.expectedReleaseDate ? new Date(film?.property?.expectedReleaseDate).toISOString().substring(0, 10) : expectedReleaseDate)
+    }
+  }, [film]);
+
   const handleUpload = () => {
     const formData = new FormData();
-    formData.append("video", video);
-    formData.append("banner", banner);
+    if (banner) {
+      formData.append("banner", banner);
+      formData.append("isChangeBanner", true);
+    }else{
+      formData.append("isChangeBanner", false);
+      formData.append("bannerLink", film?.banner);
+    }
+
+    if (banner) {
+      formData.append("video", video);
+      formData.append("isChangeVideo", true);
+    }else{
+      formData.append("isChangeVideo", false);
+      formData.append("videoLink", film?.video);
+    }
+
     formData.append("expectedReleaseDate", new Date(expectedReleaseDate));
     formData.append("name", name);
     formData.append("duration", duration);
@@ -67,15 +92,15 @@ function AddAndEditTvEposide({ film, isOpen, setIsOpen, season }) {
     formData.append("episodeNumber", episodeNumber);
     formData.append("seasonID", season?.id);
     setLoading(true);
-    createEposide(formData)
-      .then((data) => {
-        console.log("data", data);
-        if(data === undefined) {
+    if(film) {
+      updateEpisode(formData, film?.id)
+      .then((value) => {
+        console.log('updated episode', value);
+        if(value === undefined) {
           setIsSuccess(false);
         }else{
           setIsSuccess(true);
         }
-        setLoading(true);
         setTimeout(() => {
           setLoading(false);
           setIsOpen(false);
@@ -86,8 +111,31 @@ function AddAndEditTvEposide({ film, isOpen, setIsOpen, season }) {
         }, 1500);
       })
       .catch((error) => {
-        console.log("error", error);
+        console.error(error);
       });
+    }else{
+      createEposide(formData)
+        .then((data) => {
+          console.log("data", data);
+          if(data === undefined) {
+            setIsSuccess(false);
+          }else{
+            setIsSuccess(true);
+          }
+          setLoading(true);
+          setTimeout(() => {
+            setLoading(false);
+            setIsOpen(false);
+            setShowAlert(true);
+            setTimeout(() => {
+              setShowAlert(false);
+            }, 2000);
+          }, 1500);
+        })
+        .catch((error) => {
+          console.log("error", error);
+        }); 
+    }
     console.log("Upload");
   };
 
@@ -110,7 +158,7 @@ function AddAndEditTvEposide({ film, isOpen, setIsOpen, season }) {
             label="Eposide Name"
             variant="outlined"
             fullWidth
-            value={film?.name ? film.name : name}
+            value={name}
             onChange={(e) => setName(e.target.value)}
           />
 
@@ -120,7 +168,7 @@ function AddAndEditTvEposide({ film, isOpen, setIsOpen, season }) {
             label="Eposide Number"
             variant="outlined"
             fullWidth
-            value={film?.episodeNumber ? film.episodeNumber : episodeNumber}
+            value={episodeNumber}
             onChange={(e) => setEpisodeNumber(e.target.value)}
           />
 
@@ -130,7 +178,7 @@ function AddAndEditTvEposide({ film, isOpen, setIsOpen, season }) {
             label="Duration"
             variant="outlined"
             fullWidth
-            value={film?.duration ? film.duration : duration}
+            value={duration}
             onChange={(e) => setDuration(e.target.value)}
           />
 
@@ -139,7 +187,7 @@ function AddAndEditTvEposide({ film, isOpen, setIsOpen, season }) {
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={film?.status ? film.status : status}
+              value={status}
               label="Status"
               onChange={(e) => setStatus(e.target.value)}
             >
@@ -157,7 +205,7 @@ function AddAndEditTvEposide({ film, isOpen, setIsOpen, season }) {
             variant="outlined"
             type="date"
             fullWidth
-            value={film?.property?.expectedReleaseDate ? new Date(film?.property?.expectedReleaseDate).toISOString().substring(0, 10) : expectedReleaseDate}
+            value={expectedReleaseDate}
             onChange={(e) => setExpectedReleaseDate(e.target.value)}
             InputLabelProps={{
               shrink: true,

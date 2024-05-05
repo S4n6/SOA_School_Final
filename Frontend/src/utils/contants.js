@@ -4,6 +4,14 @@ export const IMG = {
   BACKGROUND: "https://images.hdqwalls.com/wallpapers/free-birds-movie.jpg",
 };
 
+export const headers = (token) => {
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+};
+
 export const COUNTRY = [
   "Afghanistan",
   "Albania",

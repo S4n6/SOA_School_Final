@@ -12,13 +12,17 @@ import MenuItem from "@mui/material/MenuItem";
 import Drawer from "@mui/material/Drawer";
 import MenuIcon from "@mui/icons-material/Menu";
 import ToggleColorMode from "./toggleColorMode";
-import { URL_LOGO } from "../../utils/contants";
+import { GENRES, URL_LOGO } from "../../utils/contants";
 import { border } from "@mui/system";
 import SimpleBackdrop from "./backdrop";
 import SignIn from "../../pages/signIn";
 import BasicModal from "./modal";
 import {
   ButtonGroup,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   FormControl,
   Grid,
   IconButton,
@@ -44,6 +48,9 @@ import { AuthContext } from "../../context/AuthContext";
 import LogoutIcon from '@mui/icons-material/Logout';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import ViewListIcon from '@mui/icons-material/ViewList';
+import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
+import { payment } from "../../api/payment";
+import SignUp from "../../pages/signUp";
 
 const logoStyle = {
   width: "100px",
@@ -61,6 +68,8 @@ function Header({ mode, toggleColorMode }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [search, setSearch] = React.useState("");
   const { user , logout } = React.useContext(AuthContext);
+  const [openDiaLogPayment, setOpenDiaLogPayment] = React.useState(false);
+  const [openSignUp, setOpenSignUp] = React.useState(false);
   const navigate = useNavigate();
   const openMenuAccount = Boolean(anchorEl);
   const toggleDrawer = (newOpen) => () => {
@@ -94,32 +103,7 @@ function Header({ mode, toggleColorMode }) {
   };
 
   React.useEffect(() => {
-    setGenre([
-      "Action",
-      "Adventure",
-      "Animation",
-      "Biography",
-      "Comedy",
-      "Crime",
-      "Documentary",
-      "Drama",
-      "Family",
-      "Fantasy",
-      "Film-Noir",
-      "History",
-      "Horror",
-      "Music",
-      "Musical",
-      "Mystery",
-      "Romance",
-      "Sci-Fi",
-      "Short",
-      "Sport",
-      "Superhero",
-      "Thriller",
-      "War",
-      "Western",
-    ]);
+    setGenre(GENRES);
   }, []);
 
   const [notifications, setNotifications] = React.useState([]);
@@ -178,6 +162,18 @@ function Header({ mode, toggleColorMode }) {
     }
   }, [lastCommentMessage]);
 
+
+  function getTimeVip(time){
+      const vipDeadline = new Date(time || '2024-06-04T15:17:20.644+00:00');
+      const localTime = vipDeadline.toLocaleString();
+    
+      // Calculate remaining time
+      const currentTime = new Date();
+      const remainingTimeInMilliseconds = vipDeadline.getTime() - currentTime.getTime();
+
+      const remainingTimeInDays = Math.ceil(remainingTimeInMilliseconds / (1000 * 60 * 60 * 24));
+      return remainingTimeInDays;
+  }
   return (
     <div>
       <AppBar
@@ -279,7 +275,7 @@ function Header({ mode, toggleColorMode }) {
                       <Box
                         sx={{
                           position: "absolute",
-                          width: "32rem",
+                          width: "38rem",
                           height: "12rem",
                           top: "4rem",
                           backgroundColor: "white",
@@ -289,18 +285,26 @@ function Header({ mode, toggleColorMode }) {
                           boxShadow: 3,
                         }}
                       >
-                        <Grid container spacing={1.5}>
+                        <Grid container spacing={1}>
                           {genre?.map((item, index) => {
                             return (
                               <Grid
                                 item
-                                xs={3}
-                                sm={3}
-                                md={3}
-                                lg={3}
+                                xs={4}
+                                sm={4}
+                                md={4}
+                                lg={4}
                                 key={index}
                               >
-                                <Button>{item}</Button>
+                                <Button
+                                  sx={{
+                                    whiteSpace: 'normal', // Allow text to wrap
+                                    overflow: 'hidden', // Hide overflow
+                                    textOverflow: 'ellipsis', // Add ellipsis for overflow text
+                                  }}
+                                >
+                                  {item}
+                                </Button>
                               </Grid>
                             );
                           })}
@@ -469,11 +473,16 @@ function Header({ mode, toggleColorMode }) {
                         component="a"
                         target="_blank"
                         onClick={() => {
-                          setIsOpen(!isOpen);
+                          setOpenDiaLogPayment(true);
                         }}
+                        disabled={user?.isVip}
                       >
-                        <AccountBoxIcon/>
-                        Profile
+                        <WorkspacePremiumIcon
+                          sx={{
+                            marginRight: 1
+                          }}
+                        />
+                        {user?.isVip ? `VIP (${getTimeVip(user?.vipDeadline)})` : "Upgrade to VIP"}
                       </Button>
                     </MenuItem>
                     <MenuItem>
@@ -484,10 +493,15 @@ function Header({ mode, toggleColorMode }) {
                         component="a"
                         target="_blank"
                         onClick={() => {
-                          setIsOpen(!isOpen);
+                          navigate("/watchlist")
                         }}
+
                       >
-                        <ViewListIcon/>
+                        <ViewListIcon
+                          sx={{
+                            marginRight: 1
+                          }}
+                        />
                         Watch List
                       </Button>
                     </MenuItem>
@@ -499,7 +513,6 @@ function Header({ mode, toggleColorMode }) {
                         component="a"
                         target="_blank"
                         onClick={() => {
-                          setIsOpen(!isOpen);
                         }}
                       >
                         Change Password
@@ -517,7 +530,11 @@ function Header({ mode, toggleColorMode }) {
                           logout()
                         }}
                       >
-                        <LogoutIcon />
+                        <LogoutIcon 
+                          sx={{
+                            marginRight: 1
+                          }}
+                        />
                         Log out
                       </Button>
                     </MenuItem>
@@ -539,13 +556,15 @@ function Header({ mode, toggleColorMode }) {
                       </Button>
                     </MenuItem>
 
-                    <MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        setOpenSignUp(true);
+                      }}
+                    >
                       <Button
                         color="primary"
                         variant="contained"
                         size="small"
-                        component="a"
-                        href="/material-ui/getting-started/templates/sign-up/"
                         target="_blank"
                       >
                         Sign up
@@ -642,6 +661,37 @@ function Header({ mode, toggleColorMode }) {
       <BasicModal isOpen={isOpen} setIsOpen={setIsOpen}>
         <SignIn />
       </BasicModal>
+
+      <BasicModal isOpen={openSignUp} setIsOpen={setOpenSignUp}>
+        <SignUp />
+      </BasicModal>
+
+      <Dialog onClose={()=>setOpenDiaLogPayment(false)} open={openDiaLogPayment}>
+        <DialogTitle>Nâng cấp tài khoản</DialogTitle>
+        <DialogContent>
+          <Typography>Chỉ tốn 10$/tháng bạn sẽ được nhận những ưu đãi tốt hơn</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button 
+            onClick={()=>{
+              setOpenDiaLogPayment(false)
+              payment('66213353dfc66d451374342c').then((value) => {
+                if(value){
+                  window.location.href = value.data;
+                }
+              }).catch((error) => {
+                console.error(error)
+              })
+            }}
+            sx={{
+
+            }}
+          >
+            Cancel
+          </Button>
+          <Button onClick={()=>setOpenDiaLogPayment(false)}>Payment</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

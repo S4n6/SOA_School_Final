@@ -78,13 +78,33 @@ function AddAndEditTvShow({ film, isOpen, setIsOpen }) {
     );
   };
 
+  useEffect(() => {
+    if (film) {
+      setName(film.name);
+      setDuration(film.duration);
+      setFirstYearRelease(film.firstYearRelease);
+      setCountrySelected(film.countryOfOrigin);
+      setProductionCompany(film.productionCompany);
+      setStatus(film.status);
+      setActors(film.actors);
+      setDescription(film.description);
+
+    }
+  }, [film]);
+
   const handleUpload = () => {
     const formData = new FormData();
-    formData.append("banner", banner);
+    if (banner) {
+      formData.append("banner", banner);
+      formData.append("isChangeBanner", true);
+    } else {
+      formData.append("isChangeBanner", false);
+      formData.append("bannerLink", film?.banner);
+    }
     formData.append("name", name);
     formData.append("duration", duration);
     formData.append("firstYearRelease", firstYearRelease);
-    formData.append("countryOfOrigin", countryOfOrigin);
+    formData.append("countryOfOrigin", countrySelected);
     formData.append("productionCompany", productionCompany);
     formData.append("status", status);
     categoriesSelected.forEach((genre) => formData.append("genres[]", genre));
@@ -189,7 +209,7 @@ function AddAndEditTvShow({ film, isOpen, setIsOpen }) {
             label="TV Show Name"
             variant="outlined"
             fullWidth
-            value={film?.name || name}
+            value={name}
             InputLabelProps={{ shrink: true }}
             onChange={(e) => setName(e.target.value)}
           />
@@ -198,7 +218,7 @@ function AddAndEditTvShow({ film, isOpen, setIsOpen }) {
             label="Duration"
             variant="outlined"
             fullWidth
-            value={film?.duration || duration}
+            value={duration}
             InputLabelProps={{ shrink: true }}
             onChange={(e) => setDuration(e.target.value)}
 
@@ -208,7 +228,7 @@ function AddAndEditTvShow({ film, isOpen, setIsOpen }) {
             label="Description"
             variant="outlined"
             fullWidth
-            value={film?.description || description}
+            value={description}
             InputLabelProps={{ shrink: true }}
             onChange={(e) => setDescription(e.target.value)}
           />
@@ -219,7 +239,7 @@ function AddAndEditTvShow({ film, isOpen, setIsOpen }) {
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={film?.countryOfOrigin || countrySelected}
+              value={countrySelected}
               label="Country of Origin"
               onChange={(e) => setCountrySelected(e.target.value)}
             >
@@ -236,7 +256,8 @@ function AddAndEditTvShow({ film, isOpen, setIsOpen }) {
             label="Casts / Crews"
             variant="outlined"
             fullWidth
-            value={film?.actors?.join(', ') || actors.join(',')}
+            value={actors.join(',')}
+            helperText="Enter casts and crews separated by ',' "
             InputLabelProps={{ shrink: true }}
             onChange={(e) => setActors(e.target.value.split(","))}
 
@@ -249,7 +270,7 @@ function AddAndEditTvShow({ film, isOpen, setIsOpen }) {
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={film?.status || status}
+              value={status}
               label="Status"
               onChange={(e) => setStatus(e.target.value)}
             >
@@ -266,7 +287,7 @@ function AddAndEditTvShow({ film, isOpen, setIsOpen }) {
             label="Company"
             variant="outlined"
             fullWidth
-            value={film?.productionCompany || productionCompany}
+            value={productionCompany}
             InputLabelProps={{ shrink: true }}
             onChange={(e) => setProductionCompany(e.target.value)}
           />
@@ -303,7 +324,7 @@ function AddAndEditTvShow({ film, isOpen, setIsOpen }) {
             variant="outlined"
             fullWidth
             type="number"
-            value={film?.firstYearRelease || firstYearRelease}
+            value={firstYearRelease}
             InputLabelProps={{ shrink: true }}
             InputProps={{
               inputProps: { 
@@ -312,9 +333,9 @@ function AddAndEditTvShow({ film, isOpen, setIsOpen }) {
             }}
             onChange={(e) => {
               const year = e.target.value;
-              if (year >= 1900 && year <= new Date().getFullYear()) {
-                setFirstYearRelease(year);
-              }
+              // if (year >= 1900 && year <= new Date().getFullYear()) {
+              // }
+              setFirstYearRelease(year);
             }}
           />
 
@@ -323,7 +344,6 @@ function AddAndEditTvShow({ film, isOpen, setIsOpen }) {
             type="file"
             InputLabelProps={{ shrink: true }}
             inputProps={{ accept: "image/*" }}
-            value={film?.banner}
             onChange={(e) => setBanner(e.target.files[0])}
           />
 

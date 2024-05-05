@@ -1,5 +1,5 @@
 import { Prop } from "@nestjs/mongoose";
-import { IsEmail, IsNotEmpty, IsString } from "class-validator";
+import { IsBoolean, IsDate, IsEmail, IsNotEmpty, IsString } from "class-validator";
 
 
 export class AuthRequestDto{
@@ -37,4 +37,8 @@ export class RegisterRequestDto{
 
     @IsString()
     phoneNumber: string;
+
+    @IsDate()
+    vipDeadline: Date;
+
 }

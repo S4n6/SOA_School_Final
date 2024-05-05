@@ -139,7 +139,7 @@ function Statitics() {
           </Carousel>
         </Grid>
 
-        <Grid item xs={12} sm={12}>
+        <Grid item xs={12} sm={6}>
           <Paper
             sx={{
               height: "100%",
@@ -184,57 +184,13 @@ function Statitics() {
                   <MenuItem value={3}>Year</MenuItem>
                 </Select>
               </FormControl>
+             
             </Box>
             <Box
-              sx={{
-                display: "flex",
-                textAlign: "center",
-                width: "100%",
-                height: "100%",
-                marginBottom: "1rem",
-              }}
-            >
-              <Box
                 sx={{
-                  width: "50%",
-                  height: "95%",
-                  display: "flex",
-                  justifyContent: "space-evenly",
-                  alignItems: "center",
-                }}
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-evenly",
-                    alignItems: "center",
-                    height: "100%",
-                  }}
-                >
-                  <Typography>Action</Typography>
-                  <Typography>Scienfic</Typography>
-                  <Typography>Adventure</Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-evenly",
-                    alignItems: "center",
-                    height: "100%",
-                  }}
-                >
-                  <Typography>Fantasy</Typography>
-                  <Typography>Drama</Typography>
-                  <Typography>Comedy</Typography>
-                </Box>
-              </Box>
-              <Box
-                sx={{
-                  width: "50%",
-                  height: "95%",
-                  display: "flex",
+                  width: "100%%",
+                  height: "100%",
+                  padding: "1rem"
                 }}
               >
                 <PieChart
@@ -247,7 +203,6 @@ function Statitics() {
                   height={200}
                 />
               </Box>
-            </Box>
           </Paper>
         </Grid>
       </Grid>

@@ -42,7 +42,7 @@ function WatchList() {
 
   const handleCreateWatchList = () => {
     console.log(name);
-    createWatchList(user, name)
+    createWatchList('662131dea7c2be6e48d203d3', name)
       .then((value) => {
         console.log(value);
         setOpen(false);

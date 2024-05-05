@@ -93,8 +93,8 @@ public class MovieController {
 
     @PutMapping("/{id}")
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<Object> updateMovie(@PathVariable String id, @RequestParam("banner") MultipartFile banner,
-                                              @RequestParam("video") MultipartFile video, @Nullable @RequestParam Date expectedReleaseDate,
+    public ResponseEntity<Object> updateMovie(@PathVariable String id, @RequestParam(value = "banner", required = false) MultipartFile banner,
+                                              @RequestParam(value = "video", required = false) MultipartFile video, @Nullable @RequestParam Date expectedReleaseDate,
                                               @RequestParam String videoLink, @RequestParam String bannerLink,
                                               @RequestParam boolean isChangeVideo, @RequestParam boolean isChangeBanner,
                                               @RequestParam String name, @RequestParam int duration, @RequestParam int firstYearRelease,

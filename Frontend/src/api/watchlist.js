@@ -26,10 +26,13 @@ export async function createWatchList(userID, name) {
         const response = await axios.post(
             'http://localhost:8080/api/v1/watchlist',
             {
+                userID,
+                name
+            },
+            {
                 headers: {
                     "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNzZWEzMDNAZ21haWwuY29tIiwiaWQiOiI2NjAyNjgyN2RhMjgwOTVlODhiM2U4YWIiLCJpYXQiOjE3MTE3Mjg3OTZ9.3zNbbMaQt2YtwqBV5oamFJW1KFlx35TPfNRLIuSQmkQ"
                 },
-                body: JSON.stringify({ userID: userID, name: name }),
             },
         )
         if (response.status == 200) {

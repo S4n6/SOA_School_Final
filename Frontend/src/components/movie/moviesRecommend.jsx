@@ -10,6 +10,7 @@ function MoviesRecommend({ films }) {
             sx={{
                 marginX: "8px",
                 textAlign: "center",
+                overflow: "auto",
             }}
         >
             <Typography

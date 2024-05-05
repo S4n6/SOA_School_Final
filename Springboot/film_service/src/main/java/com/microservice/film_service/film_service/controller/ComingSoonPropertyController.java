@@ -19,7 +19,9 @@ public class ComingSoonPropertyController {
     @PutMapping("/register")
     public ResponseEntity<Object> registerProperty(@RequestBody Map<String, Object> object){
         try {
-            ComingSoonProperty property = propertyService.updateProperty(object.get("id").toString(), object.get("email").toString(), object.get("userID").toString());
+            ComingSoonProperty property = propertyService.updateProperty(object.get("id").toString(),
+                    object.get("email").toString(),
+                    object.get("userID").toString());
             if(property != null){
                 return ResponseMessage.createResponse(HttpStatus.OK, "REGISTER FILM SUCCESSFULLY!", property);
             }

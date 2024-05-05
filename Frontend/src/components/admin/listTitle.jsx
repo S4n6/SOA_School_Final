@@ -55,18 +55,6 @@ export const mainListItems = (setMainContent) => {
 
     <ListItemButton
        onClick={() => {
-        setMainContent("Category");
-        console.log("ListItemButton clicked");
-      }}
-    >
-      <ListItemIcon>
-        <CategoryIcon />
-      </ListItemIcon>
-      <ListItemText primary="Quản lí category" />
-    </ListItemButton>
-
-    <ListItemButton
-       onClick={() => {
         setMainContent("User");
         console.log("ListItemButton clicked");
       }}
@@ -77,7 +65,7 @@ export const mainListItems = (setMainContent) => {
       <ListItemText primary="Quản lí người dùng" />
     </ListItemButton>
 
-    <ListItemButton
+    {/* <ListItemButton
        onClick={() => {
         setMainContent("Report");
         console.log("ListItemButton clicked");
@@ -87,7 +75,7 @@ export const mainListItems = (setMainContent) => {
         <ReportIcon />
       </ListItemIcon>
       <ListItemText primary="Quản lí báo cáo" />
-    </ListItemButton>
+    </ListItemButton> */}
   </React.Fragment>
 )
 };
@@ -102,18 +90,6 @@ export const secondaryListItems = (
         <AssignmentIcon />
       </ListItemIcon>
       <ListItemText primary="Current month" />
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <AssignmentIcon />
-      </ListItemIcon>
-      <ListItemText primary="Last quarter" />
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <AssignmentIcon />
-      </ListItemIcon>
-      <ListItemText primary="Year-end sale" />
     </ListItemButton>
   </React.Fragment>
 );

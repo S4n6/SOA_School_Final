@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import SignIn from "./pages/signIn";
 import SignUp from "./pages/signUp";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Home from "./pages/home";
 import Introduction from "./pages/introduction";
 import Layout from "./components/layout/layout";
@@ -11,11 +11,12 @@ import AllFilm from "./pages/allFilms";
 import Dashboard from "./pages/admin/admin";
 import WatchList from "./pages/watchList";
 import Profile from "./pages/profile";
+import { AuthContext } from "./context/AuthContext";
 
 function App() {
   const [mode, setMode] = useState("light");
   const [showCustomTheme, setShowCustomTheme] = useState(true);
-
+  const { user } = useContext(AuthContext);
   const toggleColorMode = () => {
     setMode((prev) => (prev === "dark" ? "light" : "dark"));
   };
@@ -39,7 +40,7 @@ function App() {
         />
 
         <Route path="/admin" element={<Dashboard />} />
-        
+
         <Route
           path="/all"
           element={
@@ -61,23 +62,25 @@ function App() {
               toggleColorMode={toggleColorMode}
               showCustomTheme={showCustomTheme}
             >
-              <Profile/>
+              <Profile />
             </Layout>
           }
         />
 
-        <Route
-          path="/watchlist"
-          element={
-            <Layout
-              mode={mode}
-              toggleColorMode={toggleColorMode}
-              showCustomTheme={showCustomTheme}
-            >
-              <WatchList/>
-            </Layout>
-          }
-        />
+        {user && (
+          <Route
+            path="/watchlist"
+            element={
+              <Layout
+                mode={mode}
+                toggleColorMode={toggleColorMode}
+                showCustomTheme={showCustomTheme}
+              >
+                <WatchList />
+              </Layout>
+            }
+          />
+        )}
 
         <Route
           path="/:type"
@@ -101,19 +104,6 @@ function App() {
               showCustomTheme={showCustomTheme}
             >
               <Watching />
-            </Layout>
-          }
-        />
-
-        <Route
-          path="/all"
-          element={
-            <Layout
-              mode={mode}
-              toggleColorMode={toggleColorMode}
-              showCustomTheme={showCustomTheme}
-            >
-              <AllFilm />
             </Layout>
           }
         />

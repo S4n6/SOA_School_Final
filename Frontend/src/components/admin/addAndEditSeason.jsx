@@ -20,6 +20,7 @@ import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import { createSeason } from "../../api/tvShow";
 import { COUNTRY, GENRES, STATUS } from "../../utils/contants";
+import { updateSeason } from "../../api/season";
 
 function alert(type, message) {
   if (type === "success") {
@@ -72,10 +73,31 @@ function AddAndEditTvSeason({ film, isOpen, setIsOpen, tvshow }) {
     setCountrySelected(e.target.value);
   };
 
+  useEffect(() => {
+    if (film) {
+      setName(film?.name);
+      setDuration(film?.duration);
+      setFirstYearRelease(film?.firstYearRelease);
+      setCountrySelected(film?.countryOfOrigin);
+      setStatus(film?.status);
+      setDescription(film?.description);
+      setSeasonNumber(film?.seasonNumber);
+      setExpectedReleaseDate(film?.property?.expectedReleaseDate ? new Date(film?.property?.expectedReleaseDate)?.toISOString().substring(0, 10) : expectedReleaseDate);
+
+    }
+  }, [film]);
+
   const handleUpload = () => {
     setLoading(true);
+    console.log("uploading", tvshow); 
     const formData = new FormData();
-    formData.append("banner", banner);
+    if (banner) {
+      formData.append("banner", banner);
+      formData.append("isChangeBanner", true);
+    }else{
+      formData.append("isChangeBanner", false);
+      formData.append("bannerLink", tvshow?.banner);
+    }
     formData.append("expectedReleaseDate", new Date(expectedReleaseDate));
     formData.append("name", name);
     formData.append("duration", duration);
@@ -88,9 +110,10 @@ function AddAndEditTvSeason({ film, isOpen, setIsOpen, tvshow }) {
     formData.append("tvShowID", tvshow?.id);
     formData.append("description", description);
     console.log("upload");
-    createSeason(formData)
+    if(film) {
+      updateSeason(formData, film?.id)
       .then((value) => {
-        console.log("created season", value);
+        console.log('updated season', value);
         if(value === undefined) {
           setIsSuccess(false);
         }else{
@@ -106,13 +129,35 @@ function AddAndEditTvSeason({ film, isOpen, setIsOpen, tvshow }) {
         }, 1500);
       })
       .catch((error) => {
-        setIsSuccess(false);
-        setTimeout(() => {
-          setLoading(false);
-          setIsOpen(false);
-          setShowAlert(true);
-        }, 2000);
+        console.error(error);
       });
+    }else{
+      createSeason(formData)
+        .then((value) => {
+          console.log("created season", value);
+          if(value === undefined) {
+            setIsSuccess(false);
+          }else{
+            setIsSuccess(true);
+          }
+          setTimeout(() => {
+            setLoading(false);
+            setIsOpen(false);
+            setShowAlert(true);
+            setTimeout(() => {
+              setShowAlert(false);
+            }, 2000);
+          }, 1500);
+        })
+        .catch((error) => {
+          setIsSuccess(false);
+          setTimeout(() => {
+            setLoading(false);
+            setIsOpen(false);
+            setShowAlert(true);
+          }, 2000);
+        });
+    }
   };
 
   const DrawerList = (
@@ -134,7 +179,7 @@ function AddAndEditTvSeason({ film, isOpen, setIsOpen, tvshow }) {
             label="Season Name"
             variant="outlined"
             fullWidth
-            value={film?.name || name}
+            value={name}
             onChange={(e) => setName(e.target.value)}
           />
           <TextField
@@ -142,7 +187,7 @@ function AddAndEditTvSeason({ film, isOpen, setIsOpen, tvshow }) {
             label="Description"
             variant="outlined"
             fullWidth
-            value={film?.description || description}
+            value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
 
@@ -152,7 +197,7 @@ function AddAndEditTvSeason({ film, isOpen, setIsOpen, tvshow }) {
             variant="outlined"
             type="number"
             fullWidth
-            value={film?.firstYearRelease || firstYearRelease}
+            value={firstYearRelease}
             onChange={(e) => setFirstYearRelease(e.target.value)}
           />
 
@@ -161,7 +206,7 @@ function AddAndEditTvSeason({ film, isOpen, setIsOpen, tvshow }) {
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={film?.status || status}
+              value={status}
               label="Status"
               onChange={(e) => setStatus(e.target.value)}
             >
@@ -179,7 +224,7 @@ function AddAndEditTvSeason({ film, isOpen, setIsOpen, tvshow }) {
             type="number"
             variant="outlined"
             fullWidth
-            value={film?.seasonNumber || seasonNumber}
+            value={seasonNumber}
             onChange={(e) => setSeasonNumber(e.target.value)}
           />
 
@@ -190,7 +235,7 @@ function AddAndEditTvSeason({ film, isOpen, setIsOpen, tvshow }) {
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={film?.countryOfOrigin || countrySelected}
+              value={countrySelected}
               label="Country of Origin"
               onChange={handleChangeCountry}
             >
@@ -208,7 +253,7 @@ function AddAndEditTvSeason({ film, isOpen, setIsOpen, tvshow }) {
             type="number"
             variant="outlined"
             fullWidth
-            value={film?.duration || duration}
+            value={duration}
             onChange={(e) => setDuration(e.target.value)}
           />
 
@@ -218,7 +263,7 @@ function AddAndEditTvSeason({ film, isOpen, setIsOpen, tvshow }) {
             variant="outlined"
             type="date"
             fullWidth
-            value={ film?.property?.expectedReleaseDate ? new Date(film?.property?.expectedReleaseDate)?.toISOString().substring(0, 10) : expectedReleaseDate}
+            value={expectedReleaseDate}
             onChange={(e) => setExpectedReleaseDate(e.target.value)}
             InputLabelProps={{
               shrink: true,

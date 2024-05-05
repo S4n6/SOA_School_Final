@@ -13,12 +13,24 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditIcon from "@mui/icons-material/Edit";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import { useState } from "react";
+import { deleteWatchList } from "../../api/watchlist";
 
 function Item({setIsOpenListFilm, watchlistItem, setWatchlistSelected}) {
   const [openMenu, setOpenMenu] = useState(false);
   const clickItem = () => {
     setIsOpenListFilm(true);
     setWatchlistSelected(watchlistItem);
+  };
+
+  const handleDeleteWatchList = () => {
+    console.log("delete", watchlistItem);
+    deleteWatchList(watchlistItem?.id)
+    .then((value) => {
+      console.log(value);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   };
   return (
     <Card
@@ -79,22 +91,34 @@ function Item({setIsOpenListFilm, watchlistItem, setWatchlistSelected}) {
                 right: "80%",
                 width: "7rem",
                 height: "5rem",
-                backgroundColor: "rgba(0,0,0,0.5)",
+                // backgroundColor: "rgba(0,0,0,0.5)",
                 display: "flex",
                 flexDirection: "column",
                 borderRadius: "1rem",
+                justifyContent: "space-around",
+                alignItems: "center",
               }}
             >
               <IconButton>
-                <Icon>
+                <Icon
+                  sx={{
+                    marginRight: "4px",
+                  }}
+                >
                   <EditIcon fontSize="small" />
                 </Icon>
                 <Typography variant="subtitle2" component="div">
-                  Edit
+                  Đổi tên
                 </Typography>
               </IconButton>
-              <IconButton>
-                <Icon>
+              <IconButton
+                onClick={() => handleDeleteWatchList()}
+              >
+                <Icon
+                  sx={{
+                    marginRight: "8px",
+                  }}
+                >
                   <RemoveCircleIcon fontSize="small" />
                 </Icon>
                 <Typography variant="subtitle2" component="div">

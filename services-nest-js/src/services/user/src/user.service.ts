@@ -31,7 +31,12 @@ export class UserService {
   }
 
   async update(id: string, user: User): Promise<User> {
-    return this.userModel.findByIdAndUpdate(id, user, { new: true }).exec();
+    if(user.isVip === true){
+      user.vipDeadline = new Date();
+      user.vipDeadline.setDate(user.vipDeadline.getDate() + 30);
+    }
+    const updateUser = await this.userModel.findByIdAndUpdate(id, user, { new: true }).exec();
+    return updateUser;
   }
 
   async delete(id: string): Promise<User> {

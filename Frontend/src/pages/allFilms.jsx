@@ -28,6 +28,7 @@ import { getCommendedFilms } from "../api/film";
 import { unstable_HistoryRouter, useNavigate, useParams } from "react-router-dom";
 import { getTVShows } from "../api/tvShow";
 import { AuthContext } from "../context/AuthContext";
+import { COUNTRY, GENRES } from "../utils/contants";
 
 
 // Hàm để render ô chọn category
@@ -84,7 +85,6 @@ function AllFilm() {
     const [rating, setRating] = useState([]);
     const [year, setYear] = useState([]);
     const [films, setFilms] = useState([]);
-
     const [selectedType, setSelectedType] = useState([]);
     const [selectedGenre, setSelectedGenre] = useState([]);
     const [selectedCountry, setSelectedCountry] = useState([]);
@@ -93,6 +93,7 @@ function AllFilm() {
     const [nameSearch, setNameSearch] = useState('');
     const [url, setUrl] = useState(window.location.search);
     const [page, setPage] = useState(1);
+    const [filmsRecommend, setFilmsRecommend] = useState([]);
     const urlParams = new URLSearchParams(url);
     const name = urlParams.get('name');
 
@@ -108,29 +109,18 @@ function AllFilm() {
     };
 
     useEffect(() => {
-        setType([
-            "Movie",
-            "TV Show",
-        ])
-        setGenre([
-            "Action",
-            "Adventure",
-            "Animation",
-            "Biography",
-            "Comedy",
-            "Crime",
-        ]);
-        setCountry(["Vietnam", "Korea", "Japan", "China", "USA", "UK"]);
+        setType(["Movie", "TV Show",])
+        setGenre(GENRES);
+        setCountry(COUNTRY);
         setRating(["1", "2", "3", "4", "5"]);
         setYear(["2021", "2020", "2019", "2018", "2017"]);
-        // getCommendedFilms()
-        // getCommendedFilms({ userID: "66227018dea6cbf7a9ab36ba", page: 0, size: 10 })
-        //     .then((value) => {
-        //         setFilms(value)
-        //     })
-        //     .catch((error) => {
-        //         console.error(error)
-        //     })
+        getCommendedFilms({ userID: "66227018dea6cbf7a9ab36ba", page: 0, size: 10 })
+            .then((value) => {
+                setFilmsRecommend(value)
+            })
+            .catch((error) => {
+                console.error(error)
+            })
     }, []);
 
     const handleClickFilter = () => {
@@ -319,7 +309,7 @@ function AllFilm() {
                         paddingBottom: "8px",
                     }}
                 >
-                    <MoviesRecommend films={films} />
+                    <MoviesRecommend films={filmsRecommend} />
                 </Box>
             </Box>
             {/* END Danh sách phim */}
