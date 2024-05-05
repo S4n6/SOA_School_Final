@@ -2,15 +2,18 @@ import { Box } from "@mui/system";
 import CarouselComponent from "../components/home/carousel";
 import GridViewMovies from "../components/movie/gridviewMovies";
 import MoviesRecommend from "../components/movie/moviesRecommend";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { filterMovie } from "../api/movie";
 import { Tab, Tabs } from "@mui/material";
 import { getTVShows } from "../api/tvShow";
+import { AuthContext } from "../context/AuthContext";
 
 
 export default function Home() {
     const [typeAll, setTypeAll] = useState(0);
     const [films, setFilms] = useState([]);
+
+    const { user } = useContext(AuthContext)    
 
     useEffect(() => {
         if (typeAll === 0) {
@@ -36,7 +39,7 @@ export default function Home() {
         setTypeAll(newValue);
     };
 
-
+    console.log('user', user)
     return (
         <Box
             sx={

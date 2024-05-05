@@ -45,7 +45,7 @@ export class AuthController {
       }
     }
     console.log('token', JSON.stringify(token));  
-    res.cookie('access_token', JSON.stringify(token), { secure: true });
+    res.cookie('access_token', JSON.stringify(token), { secure: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
     res.redirect('http://localhost:5173/home');
     return { access_token: token };
   }

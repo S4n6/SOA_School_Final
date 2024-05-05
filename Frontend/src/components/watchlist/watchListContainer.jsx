@@ -14,8 +14,12 @@ import EditIcon from "@mui/icons-material/Edit";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import { useState } from "react";
 
-function Item(setIsOpenListFilm) {
+function Item({setIsOpenListFilm, watchlistItem, setWatchlistSelected}) {
   const [openMenu, setOpenMenu] = useState(false);
+  const clickItem = () => {
+    setIsOpenListFilm(true);
+    setWatchlistSelected(watchlistItem);
+  };
   return (
     <Card
       sx={{
@@ -32,7 +36,7 @@ function Item(setIsOpenListFilm) {
         }}
         image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTstirBRd3pYYdCk2HtCbpa73eptwXw2Tt0TA&s"
         title="green iguana"
-        onClick={() => setIsOpenListFilm(true)}
+        onClick={() => clickItem()}
       />
       <Box
         sx={{
@@ -47,13 +51,13 @@ function Item(setIsOpenListFilm) {
               cursor: "pointer",
             },
           }}
-          onClick={() => setIsOpenListFilm(true)}
+          onClick={() => clickItem()}
         >
           <Typography gutterBottom variant="h5" component="div">
-            Name WatchList
+            {watchlistItem?.name}
           </Typography>
           <Typography gutterBottom variant="subtitle1" component="div">
-            10 videos
+            {watchlistItem?.movies?.length + watchlistItem?.tvShows?.length} videos
           </Typography>
         </CardContent>
         <Box
@@ -63,6 +67,7 @@ function Item(setIsOpenListFilm) {
               cursor: "pointer",
             },
             position: "relative",
+            
           }}
         >
           <MoreVertIcon onClick={() => setOpenMenu(!openMenu)} />
@@ -104,69 +109,8 @@ function Item(setIsOpenListFilm) {
   );
 }
 
-function WatchListContainer({ setIsOpenListFilm }) {
-  const watchlist = [
-    {
-      name: "WatchList 1",
-      films: [
-        {
-          name: "Film 1",
-          duration: "120",
-          img: "https://picsum.photos/200/300",
-        },
-        {
-          name: "Film 2",
-          duration: "120",
-          img: "https://picsum.photos/200/300",
-        },
-        {
-          name: "Film 3",
-          duration: "120",
-          img: "https://picsum.photos/200/300",
-        },
-      ],
-    },
-    {
-      name: "WatchList 2",
-      films: [
-        {
-          name: "Film 1",
-          duration: "120",
-          img: "https://picsum.photos/200/300",
-        },
-        {
-          name: "Film 2",
-          duration: "120",
-          img: "https://picsum.photos/200/300",
-        },
-        {
-          name: "Film 3",
-          duration: "120",
-          img: "https://picsum.photos/200/300",
-        },
-      ],
-    },
-    {
-      name: "WatchList 3",
-      films: [
-        {
-          name: "Film 1",
-          duration: "120",
-          img: "https://picsum.photos/200/300",
-        },
-        {
-          name: "Film 2",
-          duration: "120",
-          img: "https://picsum.photos/200/300",
-        },
-        {
-          name: "Film 3",
-          duration: "120",
-          img: "https://picsum.photos/200/300",
-        },
-      ],
-    },
-  ];
+function WatchListContainer({ setIsOpenListFilm, watchlist, setWatchlistSelected }) {
+
   return (
     <Box
       sx={{
@@ -175,9 +119,9 @@ function WatchListContainer({ setIsOpenListFilm }) {
       }}
     >
       <Grid container spacing={2}>
-        {watchlist.map((watchlistItem, index) => (
+        {watchlist?.map((watchlistItem, index) => (
           <Grid item xs={12} md={4} key={index}>
-            <Item setIsOpenListFilm={setIsOpenListFilm} />
+            <Item setIsOpenListFilm={setIsOpenListFilm} watchlistItem={watchlistItem} setWatchlistSelected={setWatchlistSelected}/>
           </Grid>
         ))}
       </Grid>

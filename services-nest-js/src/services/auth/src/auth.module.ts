@@ -28,13 +28,16 @@ import { GoogleStrategy } from './google.strategy';
       isGlobal: true,
       envFilePath: '.env',
     }),
+
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'),
+        secret: Buffer.from(configService.get<string>('JWT_SECRET'), 'base64'),
       }),
     }),
+
+
   ],
   controllers: [AuthController],
   providers: [AuthService, GoogleStrategy],

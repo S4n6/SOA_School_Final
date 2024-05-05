@@ -14,7 +14,7 @@ import {
 import GridViewMovies from "../components/movie/gridviewMovies";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { createWatchList } from "../api/watchlist";
+import { createWatchList, getWatchList } from "../api/watchlist";
 import WatchListContainer from "../components/watchlist/watchListContainer";
 import WatchListItem from "../components/watchlist/watchListItem";
 
@@ -24,6 +24,9 @@ function WatchList() {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [isOpenListFilm, setIsOpenListFilm] = useState(false);
+  const [watchlist, setWatchlist] = useState([]);
+  const [watchlistSelected, setWatchlistSelected] = useState({});
+  const [deletedFilm, setDeletedFilm] = useState();
 
   const handleCloseDrawer = () => {
     setIsOpenListFilm(false);
@@ -50,9 +53,18 @@ function WatchList() {
       });
   };
 
+  
   useEffect(() => {
-    console.log("userrrr", user);
-  }, []);
+    getWatchList({ userID: '662131dea7c2be6e48d203d3' })
+      .then((value) => {
+        console.log(value);
+        setWatchlist(value);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [user, deletedFilm]);
+
 
   return (
     <Box
@@ -106,7 +118,7 @@ function WatchList() {
           height: "100%",
         }}
       >
-        <WatchListContainer setIsOpenListFilm={setIsOpenListFilm}/>
+        <WatchListContainer setIsOpenListFilm={setIsOpenListFilm} watchlist={watchlist} setWatchlistSelected={setWatchlistSelected}/>
       </Box>
       <Drawer
         anchor={'right'}
@@ -124,7 +136,7 @@ function WatchList() {
             padding: "1rem",
           }}
         >
-          <WatchListItem/>
+          <WatchListItem watchlistSelected={watchlistSelected} setDeletedFilm={setDeletedFilm}/>
         </Box>
       </Drawer>
     </Box>

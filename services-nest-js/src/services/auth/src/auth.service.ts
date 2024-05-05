@@ -5,6 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import axios from 'axios';
 import { User } from './user.schema';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AuthService {
@@ -35,7 +36,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
     const token = this.generateToken(user._id, user.isAdmin, user.isVip, user.isBlocked);
-    return { 'token' : token.token, 'refresh_token': token.refreshToken, 'userId': user._id};
+    return { 'token' : token.token, 'refresh_token': token.refreshToken, 'userId': user._id, 'name': user.name, 'email': user.email};
   }
 
   async register(data: RegisterRequestDto){
@@ -56,8 +57,7 @@ export class AuthService {
   
   private generateToken(userId: string, isAdmin: boolean, isVip: boolean, isBlocked: boolean) {
     const payload = { sub: userId };
-    const token = this.jwtService.sign(payload, { expiresIn: '7d' });
-  
+    const token = jwt.sign(payload, Buffer.from(this.configService.get<string>('JWT_SECRET'), "base64"));
     const refreshTokenPayload = { sub: userId, type: 'refresh' };
     const refreshToken = this.jwtService.sign(refreshTokenPayload, { expiresIn: '365d' });
   
