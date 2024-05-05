@@ -3,13 +3,21 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import { CardActionArea } from "@mui/material";
+import {
+  Alert,
+  CardActionArea,
+  Dialog,
+  DialogTitle,
+  IconButton,
+} from "@mui/material";
 import { Box } from "@mui/system";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import StorageIcon from "@mui/icons-material/Storage";
 import useWebSocket from "react-use-websocket";
 import { AuthContext } from "../../context/AuthContext";
+import { getWatchList, updateWatchList } from "../../api/watchlist";
+import CheckIcon from "@mui/icons-material/Check";
 
 function Video({ video, filmID }) {
   const { sendMessage, lastMessage } = useWebSocket(
@@ -19,26 +27,66 @@ function Video({ video, filmID }) {
 
   const videoRef = React.useRef(null);
   const [duration, setDuration] = React.useState(null);
-  const {user} = React.useContext(AuthContext)
+  const { user } = React.useContext(AuthContext);
+  const [openWatchList, setOpenWatchList] = React.useState(false);
+  const [watchList, setWatchList] = React.useState([{}]);
+  const [openDialogAddWatchList, setOpenDialogAddWatchList] =
+    React.useState(false);
+  const [openDialogAddWatchListSuccess, setOpenDialogAddWatchListSuccess] =
+    React.useState(false);
+  const [isAddedToWatchList, setIsAddedToWatchList] = React.useState(false);
 
-  const handleDurationChange = () => {
-    if (videoRef.current) {
-      setDuration(videoRef.current.duration);
-    }
+  React.useEffect(() => {
+    getWatchList({ userID: "662131dea7c2be6e48d203d3" })
+      .then((value) => {
+        console.log(value);
+        setWatchList(value);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [user, openDialogAddWatchListSuccess]);
+
+  const addToWatchList = (watchListID) => {
+    updateWatchList("add", watchListID, filmID)
+      .then((value) => {
+        console.log(value);
+        setOpenDialogAddWatchListSuccess(true);
+        setTimeout(() => {
+          setOpenDialogAddWatchList(true);
+          setTimeout(() => {
+            setOpenDialogAddWatchList(false);
+          }, 2000);
+        }, 1000);
+      })
+      .catch((error) => {
+        setOpenDialogAddWatchListSuccess(false);
+        setTimeout(() => {
+          setOpenDialogAddWatchList(true);
+          setTimeout(() => {
+            setOpenDialogAddWatchList(false);
+          }, 2000);
+        }, 1000);
+        console.error(error);
+      });
   };
 
-  if (duration != null) {
-    setInterval(() => {
-      sendMessage(
-        JSON.stringify({
-          userID: "66227018dea6cbf7a9ab36ba",
-          filmID,
-          duration,
-        })
+  const checkAddedToWatchList = () => {
+    console.log("watchListdkjsnfkjsd", watchList);
+    return watchList?.some((item) => {
+      const isFilmInMovies = item.movies?.some((movie) => movie.id === filmID);
+      const isFilmInTvShows = item.tvshows?.some(
+        (tvshow) => tvshow.id === filmID
       );
-      console.log(duration);
-    }, 5000);
-  }
+      return isFilmInMovies || isFilmInTvShows;
+    });
+  };
+
+  React.useEffect(() => {
+    const isAdded = checkAddedToWatchList();
+
+    setIsAddedToWatchList(isAdded);
+  }, [watchList]);
 
   return (
     <Box
@@ -71,7 +119,6 @@ function Video({ video, filmID }) {
             width: "70%",
             objectFit: "contain",
           }}
-          onDurationChange={handleDurationChange}
         />
         <CardActionArea>
           <CardContent
@@ -185,28 +232,60 @@ function Video({ video, filmID }) {
                 <Typography variant="h5">Three</Typography>
               </Box>
             </Box>
-            {user ? 
-            (
+            {user || isAddedToWatchList ? (
               <Button
                 sx={{
                   right: 0,
                   position: "absolute",
                   whiteSpace: "normal",
-                  width: "10%",
+                  width: "10rem",
                   marginRight: "16px",
                   marginTop: "4px",
                 }}
+                disabled={isAddedToWatchList}
+                onClick={() => setOpenWatchList(true)}
               >
-                Thêm vào danh sách xem sau
+                {isAddedToWatchList
+                  ? "Đã thêm vào danh sách xem"
+                  : "Thêm vào danh sách xem sau"}
               </Button>
             ) : (
               <></>
-            )
-            
-            }
-            
+            )}
+
+            <Dialog
+              open={openWatchList}
+              onClose={() => setOpenWatchList(false)}
+            >
+              <DialogTitle>Danh sách xem</DialogTitle>
+              {watchList?.map((item) => {
+                return (
+                  <IconButton
+                    key={item?.id}
+                    onClick={() => {
+                      addToWatchList(item?.id);
+                      setOpenWatchList(false);
+                    }}
+                  >
+                    {item?.name}
+                  </IconButton>
+                );
+              })}
+            </Dialog>
           </CardContent>
         </CardActionArea>
+        {openDialogAddWatchList ? (
+          <Alert
+            icon={<CheckIcon fontSize="inherit" />}
+            severity={openDialogAddWatchListSuccess ? "success" : "error"}
+          >
+            {openDialogAddWatchListSuccess
+              ? "Thêm vào danh sách xem thành công"
+              : "Thêm vào danh sách xem thất bại"}
+          </Alert>
+        ) : (
+          <></>
+        )}
       </Card>
     </Box>
   );
