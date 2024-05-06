@@ -1,24 +1,22 @@
-import { useState } from 'react';
+
 import axios from 'axios';
 
-function useSignUp() {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-
-    const signUp = async (firstName, lastName, email, password) => {
-        setLoading(true);
-        setError(null);
-        try {
-            const response = await axios.post('/api/auth/signup', { firstName, lastName, email, password });
-            setLoading(false);
-            return response.data;
-        } catch (error) {
-            setLoading(false);
-            setError(error.message);
+export async function register(name, email, password) {
+    try {
+        const response = await axios.post(
+            'http://localhost:5001/api/v1/auth/signup',
+            {
+                name,
+                email,
+                password
+            },
+        )
+        if (response.status == 200) {
+            return response.data.data
+        } else {
+            throw new Error(response.status);
         }
-    };
-
-    return { signUp, loading, error };
+    } catch (error) {
+        console.error('There has been a problem with your fetch operation:', error);
+    }
 }
-
-export default useSignUp;

@@ -15,6 +15,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { validationSchemaRegister } from "../utils/validateYup";
 import { useFormik } from "formik";
 import loginHook from "../api/login";
+import axios from "axios";
+import { AuthContext } from "../context/AuthContext";
 
 function Copyright(props) {
   return (
@@ -38,7 +40,9 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-export default function SignIn() {
+export default function SignIn({setIsOpen}) {
+  const [loginError, setLoginError] = React.useState(false);
+  const { login } = React.useContext(AuthContext)
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -60,6 +64,20 @@ export default function SignIn() {
     },
   });
 
+  const handleLogin =(values) => {
+    axios.post("http://localhost:5001/api/v1/auth/login", values)
+    .then((response) => {
+      console.log('loginnn', response.data);
+      login(response.data?.user);
+      window.location.reload();
+      setIsOpen(false);
+    })
+    .catch((error) => {
+      console.log('loginnn errr', error);
+      setLoginError(true);
+    });
+  }
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
@@ -80,6 +98,9 @@ export default function SignIn() {
           </Avatar>
           <Typography component="h1" variant="h5">
             Sign in
+          </Typography>
+          <Typography component="p" variant="subtitle1">
+            Pleased log in by google
           </Typography>
           <Box
             component="form"
@@ -117,15 +138,17 @@ export default function SignIn() {
               helperText={formik.touched.password && formik.errors.password}
               onBlur={formik.handleBlur}
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
+            {
+              loginError && <Typography component="p" variant="subtitle1" color="error">
+                Invalid email or password
+              </Typography>
+            }
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              onClick={() => handleLogin(formik.values)}
             >
               Sign In
             </Button>

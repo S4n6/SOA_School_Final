@@ -39,7 +39,10 @@ function App() {
           }
         />
 
-        <Route path="/admin" element={<Dashboard />} />
+        {
+          user?.isAdmin && <Route path="/admin" element={<Dashboard />} />
+        }
+        
 
         <Route
           path="/all"

@@ -25,6 +25,8 @@ import ManageTvshow from './manageTvshow';
 import ManageSeason from './manageSeason';
 import ManageUser from './manageUser';
 import Statitics from './statitics';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -94,6 +96,7 @@ export default function Dashboard() {
   const [open, setOpen] = React.useState(true);
   const [mainContent, setMainContent] = React.useState('Dashboard');
   const [objectIntermediate, setObjectIntermediate] = React.useState(null);
+  const navigate = useNavigate();
   const mainContents = [
     {
       title: 'Dashboard',
@@ -163,10 +166,13 @@ export default function Dashboard() {
                         >
                             Dashboard
                         </Typography>
-                        <IconButton color="inherit">
-                            <Badge badgeContent={4} color="secondary">
-                                <NotificationsIcon />
-                            </Badge>
+                        <IconButton 
+                            color="inherit"
+                            onClick={() => navigate('/home')}
+                        >
+                            <IconButton color="inherit">
+                                <ArrowBackIcon/>
+                            </IconButton>
                         </IconButton>
                     </Toolbar>
                 </AppBar>

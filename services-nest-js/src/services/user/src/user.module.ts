@@ -5,6 +5,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserSchema } from './user.schema';
 import { EurekaModule } from 'nestjs-eureka';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
+import { AuthGuardModule } from './auth.guard.module';
 
 @Module({
   imports: [
@@ -33,6 +36,10 @@ import { EurekaModule } from 'nestjs-eureka';
       inject: [ConfigService],
     }),
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
+    AuthGuardModule,
+    JwtModule.register({
+      secret: 'ARRjiGBf+uLsc3FzLzm9aLQaM1dQrKXtrut0gwwyJIWhu8tWYmUvhUBHEkGOPl+N',
+    }),
   ],
   controllers: [UserController],
   providers: [UserService],

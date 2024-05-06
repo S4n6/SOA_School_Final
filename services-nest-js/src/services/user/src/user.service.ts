@@ -12,7 +12,10 @@ export class UserService {
   }
 
   async create(user: User): Promise<User> {
-    const newUser = new this.userModel(user);
+    const newUser = new this.userModel({
+      ...user,
+      isBlock: true,
+    });
     return newUser.save();
   }
 
@@ -51,6 +54,15 @@ export class UserService {
   async checkVip(id: string): Promise<any> {
     const userGet = await this.userModel.findById(id).exec();
     return {isVip: userGet.isVip};
+  }
+
+  async findUserVip(): Promise<User[]> {
+    return await this.userModel.find({isVip: true}).exec();
+  }
+
+
+  async updateUserByEmail(email: string) {
+    return await this.userModel.findOneAndUpdate({ email }, { isBlock: false }, { new: true });
   }
   
 }

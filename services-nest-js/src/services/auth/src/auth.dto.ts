@@ -29,16 +29,16 @@ export class RegisterRequestDto{
     @IsString()
     name: string;
 
-    @IsNotEmpty()
-    gender: number;
+    // @IsNotEmpty()
+    // gender: number;
 
-    @IsNotEmpty()
-    birthdate: Date;
+    // @IsNotEmpty()
+    // birthdate: Date;
 
-    @IsString()
-    phoneNumber: string;
+    // @IsString()
+    // phoneNumber: string;
 
-    @IsDate()
-    vipDeadline: Date;
+    // @IsDate()
+    // vipDeadline: Date;
 
 }

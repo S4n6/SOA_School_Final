@@ -17,8 +17,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { validationSchemaRegister } from '../utils/validateYup';
 import { useFormik } from 'formik';
-import signUpHook from '../api/signup';
 import { validateYupSchema } from 'formik/dist';
+import { register } from '../api/signup';
 
 function Copyright(props) {
     return (
@@ -46,6 +46,15 @@ export default function SignUp() {
             email: data.get('email'),
             password: data.get('password'),
         });
+        register( `${data.get('firstName')} ${data.get('lastName')}`,data.get('email'), data.get('password'))
+        .then((res) => {
+            console.log('registerrrr', res);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+        
+
     };
 
     const handleClickShowPassword = () => {

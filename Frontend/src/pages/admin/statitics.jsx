@@ -16,6 +16,10 @@ import Carousel from "react-material-ui-carousel";
 import SlideItem from "../../components/admin/slideItem";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { useEffect, useState } from "react";
+import { getAnalyst } from "../../api/analyst";
+import { format, set } from "date-fns";
+import { eachDayOfInterval, startOfDay, endOfDay } from "date-fns";
+import { LineChart } from "@mui/x-charts/LineChart";
 
 // Hàm trả về số thống kê đơn giản
 function thongkesimple(type, number, IconComponent) {
@@ -73,6 +77,11 @@ function Statitics() {
 
   const [topCategory, setTopCategory] = useState([]);
   const [timeTopCategory, setTimeTopCategory] = useState("Week");
+  const [selectedDateStart, setSelectedDateStart] = useState(new Date());
+  const [selectedDateEnd, setSelectedDateEnd] = useState(new Date());
+  const [totalView, setTotalView] = useState(0);
+  const [arrayView, setArrayView] = useState([]);
+  const [arrayDate, setArrayDate] = useState([]);
   const handleChange = (event) => {
     setTimeTopCategory(event.target.value);
   };
@@ -93,10 +102,50 @@ function Statitics() {
       },
     ]);
   }, []);
+
+  useEffect(() => {
+    const formattedDateStart = format(selectedDateStart, "yyyy/MM/dd HH:mm:ss");
+    const formattedDateEnd = format(selectedDateEnd, "yyyy/MM/dd HH:mm:ss");
+    getAnalyst(formattedDateStart, formattedDateEnd).then((res) => {
+      console.log("ânlysskdjfnd", res);
+      setTotalView(res);
+    });
+
+    const start = new Date(formattedDateStart);
+    const end = new Date(formattedDateEnd);
+
+    const dateInterval = eachDayOfInterval({ start, end });
+
+    Promise.all(
+      dateInterval.map((date) => {
+        const startOfDate = startOfDay(date);
+        const endOfDate = endOfDay(date);
+        return getAnalyst(
+          format(startOfDate, "yyyy/MM/dd HH:mm:ss"),
+          format(endOfDate, "yyyy/MM/dd HH:mm:ss")
+        ).then((res) => {
+          console.log("kljdfkfjfjfffffff", res);
+          return { view: res, date: format(date, "yyyy/MM/dd") };
+        });
+      })
+    ).then((results) => {
+      // arrayView = results.map(result => result.view);
+      // arrayDate = results.map(result => result.date);
+      setArrayView(results.map((result) => result.view));
+      setArrayDate(results.map((result) => result.date));
+    });
+  }, [selectedDateStart, selectedDateEnd]);
+
+  const handleDateStartChange = (event) => {
+    setSelectedDateStart(event.target.value);
+  };
+  const handleDateEndChange = (event) => {
+    setSelectedDateEnd(event.target.value);
+  };
   return (
     <Box>
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={12}>
           <Box
             sx={{
               display: "flex",
@@ -104,42 +153,14 @@ function Statitics() {
               height: "6rem",
             }}
           >
-            {thongkesimple("View", "15K", <RemoveRedEyeIcon />)}
+            {thongkesimple("View", `${totalView}`, <RemoveRedEyeIcon />)}
             {thongkesimple("Visitors", "53K", <GroupIcon />)}
             {thongkesimple("Vip member", "10", <AccountBalanceWalletIcon />)}
           </Box>
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <Paper>My check</Paper>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Typography
-            sx={{
-              fontSize: "1.2rem",
-              fontWeight: "bold",
-              textAlign: "center",
-            }}
-          >
-            Top Rating Film
-          </Typography>
-          <Carousel
-            indicatorContainerProps={{
-              style: {
-                marginTop: "4rem",
-              },
-            }}
-            height={"400px"}
-            sx={{
-              padding: "1.5rem",
-            }}
-          >
-            {trendingMovies.map((item, i) => {
-              return <SlideItem key={i} slide={item} />;
-            })}
-          </Carousel>
-        </Grid>
+     
 
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={12}>
           <Paper
             sx={{
               height: "100%",
@@ -153,56 +174,43 @@ function Statitics() {
                 alignItems: "center",
                 marginBottom: "1rem",
               }}
+            ></Box>
+            <Box
+              sx={{
+                width: "100%%",
+                height: "100%",
+                padding: "1rem",
+              }}
             >
               <Typography
                 sx={{
-                  textAlign: "center",
                   fontSize: "1.2rem",
                   fontWeight: "bold",
-
-                  marginRight: "1rem",
+                  textAlign: "center",
+                  display: "flex",
                 }}
               >
-                Top Category
-              </Typography>
-              <FormControl
-                sx={{
-                  width: "20%",
-                  marginLeft: '1rem',
-                }}
-              >
-                <InputLabel id="demo-simple-select-label">Time</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={timeTopCategory}
-                  label="Time"
-                  onChange={handleChange}
-                >
-                  <MenuItem value={1}>Week</MenuItem>
-                  <MenuItem value={2}>Month</MenuItem>
-                  <MenuItem value={3}>Year</MenuItem>
-                </Select>
-              </FormControl>
-             
-            </Box>
-            <Box
-                sx={{
-                  width: "100%%",
-                  height: "100%",
-                  padding: "1rem"
-                }}
-              >
-                <PieChart
-                  series={[
-                    {
-                      data: topCategory,
-                    },
-                  ]}
-                  width={400}
-                  height={200}
+                Select a date: 
+                Start
+                <input
+                  type="date"
+                  value={selectedDateStart}
+                  onChange={handleDateStartChange}
                 />
-              </Box>
+                End
+                <input
+                  type="date"
+                  value={selectedDateEnd}
+                  onChange={handleDateEndChange}
+                />
+              </Typography>
+              <LineChart
+                series={[{ data: arrayView, label: "Views" }]}
+                xAxis={[{ scaleType: "point", data: arrayDate }]}
+                width={500}
+                height={300}
+              />
+            </Box>
           </Paper>
         </Grid>
       </Grid>
