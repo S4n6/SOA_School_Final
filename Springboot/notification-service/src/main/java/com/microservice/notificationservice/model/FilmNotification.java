@@ -39,6 +39,7 @@ public class FilmNotification extends Notification{
         map.put("userID", this.getUserID());
         map.put("destination", this.getDestination());
         map.put("filmID", this.filmID);
+        map.put("read", this.isRead());
         return map;
     }
 }

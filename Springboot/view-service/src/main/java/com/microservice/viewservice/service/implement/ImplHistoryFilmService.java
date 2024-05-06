@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -23,9 +24,10 @@ public class ImplHistoryFilmService implements HistoryFilmService {
         return historyFilmRepository.findByUserID(pageable, userID).getContent();
     }
 
-//    public Map<String, Object> getFilmAndDuration(String id){
-//
-//    }
+    @Override
+    public long countViewByDate(Date startDate, Date endDate) {
+        return  historyFilmRepository.countByViewedAtGreaterThanAndViewedAtLessThan(startDate, endDate);
+    }
 
     @Override
     public void addIntoListHistoryVideo(HistoryFilm film) {

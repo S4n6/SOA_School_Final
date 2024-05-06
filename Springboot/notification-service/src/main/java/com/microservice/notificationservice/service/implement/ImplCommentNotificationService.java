@@ -36,4 +36,19 @@ public class ImplCommentNotificationService implements CommentNotificationServic
         }
         return null;
     }
+
+    @Override
+    public CommentNotification readNotification(String notificationID){
+
+        try {
+            CommentNotification commentNotification = getNotification(notificationID);
+            if(commentNotification != null){
+                commentNotification.setRead(true);
+                return commentNotificationRepository.save(commentNotification);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

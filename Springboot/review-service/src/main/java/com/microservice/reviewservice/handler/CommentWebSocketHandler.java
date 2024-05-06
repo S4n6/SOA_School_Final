@@ -58,7 +58,7 @@ public class CommentWebSocketHandler implements WebSocketHandler {
 
                                 Map<String, Object> message = new HashMap<>();
                                 message.put("replyCommentID", storedComment.getId());
-                                message.put("userID", storedComment.getUser().getId());
+                                message.put("userID", payload.getRepliedUserID());
                                 message.put("content", storedComment.getContent());
                                 URI serverUri = new URI("ws://localhost:8080/api/v1/comment-notification");
                                 webSocketClient.execute(

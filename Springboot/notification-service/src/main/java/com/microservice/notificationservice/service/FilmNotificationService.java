@@ -8,4 +8,5 @@ public interface FilmNotificationService {
     public List<FilmNotification> getFilmNotifications(String userID, int page, int size);
     public FilmNotification getFilmNotification(String id);
     public FilmNotification addFilmNotification(FilmNotification filmNotification);
+    public FilmNotification readNotification(String notificationID);
 }

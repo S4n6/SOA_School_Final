@@ -36,6 +36,7 @@ public class AccountNotification extends Notification{
         map.put("createdAt", date);
         map.put("userID", this.getUserID());
         map.put("destination", this.getDestination());
+        map.put("read", this.isRead());
         return map;
     }
 }

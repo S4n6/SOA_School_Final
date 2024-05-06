@@ -43,6 +43,13 @@ public class AccountNotificationWebSocketHandler implements WebSocketHandler {
                                 payload.getUserID(),
                                 "/film/66200673fc13ae7cc6a242a2");
 
+                        if(payload.getAction() != null){
+                            if(payload.getAction().equals("read")){
+                                AccountNotification storedNotification = accountNotificationService.readNotification(payload.getNotificationID());
+                                broadcastMessage(session, storedNotification.toMap());
+                                return new ObjectMapper().writeValueAsString(storedNotification.toMap());
+                            }
+                        }
                         // Save the notification
                         AccountNotification storedNotification = accountNotificationService.addAccountNotification(accountNotification);
 

@@ -1,6 +1,7 @@
 package com.microservice.notificationservice.service.implement;
 
 import com.microservice.notificationservice.model.AccountNotification;
+import com.microservice.notificationservice.model.CommentNotification;
 import com.microservice.notificationservice.repository.AccountNotificationRepository;
 import com.microservice.notificationservice.service.AccountNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,21 @@ public class ImplAccountNotificationService implements AccountNotificationServic
         try{
             return accountNotificationRepository.save(accountNotification);
         } catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public AccountNotification readNotification(String notificationID){
+
+        try {
+            AccountNotification accountNotification = getAccountNotification(notificationID);
+            if(accountNotification != null){
+                accountNotification.setRead(true);
+                return accountNotificationRepository.save(accountNotification);
+            }
+        } catch (Exception e){
             e.printStackTrace();
         }
         return null;

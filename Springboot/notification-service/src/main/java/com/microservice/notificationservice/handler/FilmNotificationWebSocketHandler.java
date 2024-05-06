@@ -43,6 +43,13 @@ public class FilmNotificationWebSocketHandler implements WebSocketHandler {
                                 "/film/"+payload.getFilmID(),
                                 payload.getFilmID());
 
+                        if(payload.getAction() != null){
+                            if(payload.getAction().equals("read")){
+                                FilmNotification stored = filmNotificationService.readNotification(payload.getNotificationID());
+                                broadcastMessage(session, stored.toMap());
+                                return new ObjectMapper().writeValueAsString(stored.toMap());
+                            }
+                        }
                         // Save the notification
                         FilmNotification stored = filmNotificationService.addFilmNotification(filmNotification);
 

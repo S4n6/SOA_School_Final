@@ -44,6 +44,16 @@ public class CommentNotificationWebSocketHandler implements WebSocketHandler {
                                 payload.getUserID(),
                                 "/film/66200673fc13ae7cc6a242a2",
                                 payload.getReplyCommentID());
+
+                        if(payload.getAction() != null){
+                            if(payload.getAction().equals("read")){
+                                CommentNotification addedNotification = commentNotificationService.readNotification(payload.getNotificationID());
+
+                                broadcastMessage(session, addedNotification.toMap());
+                                return new ObjectMapper().writeValueAsString(addedNotification.toMap());
+                            }
+                        }
+
                         CommentNotification addedNotification = commentNotificationService.addNotification(commentNotification);
                         broadcastMessage(session, addedNotification.toMap());
                         return new ObjectMapper().writeValueAsString(addedNotification.toMap());

@@ -28,6 +28,7 @@ function CommentOthers({ comment }) {
                 name: user?.name,
                 email: user?.email
             },
+            repliedUserID: comment?.user.id,
             filmID: comment.filmID,
             content: postedComment,
             replyCommentID: comment?.id, 

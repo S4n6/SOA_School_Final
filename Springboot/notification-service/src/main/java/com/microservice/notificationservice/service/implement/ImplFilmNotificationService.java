@@ -36,4 +36,18 @@ public class ImplFilmNotificationService implements FilmNotificationService {
         }
         return null;
     }
+
+    @Override
+    public FilmNotification readNotification(String notificationID){
+        try {
+            FilmNotification filmNotification = getFilmNotification(notificationID);
+            if(filmNotification != null){
+                filmNotification.setRead(true);
+                return filmNotificationRepository.save(filmNotification);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

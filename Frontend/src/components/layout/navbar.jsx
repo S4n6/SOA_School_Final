@@ -18,6 +18,7 @@ import SimpleBackdrop from "./backdrop";
 import SignIn from "../../pages/signIn";
 import BasicModal from "./modal";
 import {
+  Badge,
   ButtonGroup,
   Dialog,
   DialogActions,
@@ -68,7 +69,7 @@ function Header({ mode, toggleColorMode }) {
   const [showNotification, setShowNotification] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [search, setSearch] = React.useState("");
-  const { user , logout } = React.useContext(AuthContext);
+  const { user, logout } = React.useContext(AuthContext);
   const [openDiaLogPayment, setOpenDiaLogPayment] = React.useState(false);
   const [openSignUp, setOpenSignUp] = React.useState(false);
   const navigate = useNavigate();
@@ -111,6 +112,8 @@ function Header({ mode, toggleColorMode }) {
   const [accountNotification, setAccountNotification] = React.useState([]);
   const [commentNotification, setCommentNotification] = React.useState([]);
 
+  const [numberOfReadFalse, setNumberOfReadFalse] = React.useState(0)
+
   const theme = useTheme();
 
   React.useEffect(() => {
@@ -125,6 +128,24 @@ function Header({ mode, toggleColorMode }) {
         console.error(error);
       });
   }, [user?.userId]);
+  React.useEffect(() => {
+    // Function to count falsy 'read' properties
+    const countFalseReads = (notifications) => {
+      return notifications.reduce((count, notification) => {
+        if (!notification.read) {
+          return count + 1;
+        }
+        return count;
+      }, 0);
+    };
+
+    // Update numberOfReadFalse when any of the notification states change
+    setNumberOfReadFalse(
+      countFalseReads(filmNotification) +
+      countFalseReads(accountNotification) +
+      countFalseReads(commentNotification)
+    );
+  }, [filmNotification, accountNotification, commentNotification]);
 
   // Init 3 websocket for film-notification, account-notification, comment-notification
   const { sendMessage: sendFilmMessage, lastMessage: lastFilmMessage } =
@@ -142,39 +163,101 @@ function Header({ mode, toggleColorMode }) {
 
   React.useEffect(() => {
     if (lastFilmMessage != null) {
-      setFilmNotification((prev) =>
-        prev.concat([JSON.parse(lastFilmMessage.data)])
-      );
+      const data = JSON.parse(lastFilmMessage.data)
+      if (data.userID == user?.userId) {
+        setFilmNotification((prev) => {
+          if (!filmNotification?.some(item => item.id == data.id)) {
+            prev.concat([data])
+          }
+          else {
+            return prev.map(item => {
+              if (item.id === data.id) {
+                return { ...item, read: data.read };
+              }
+              return item;
+            });
+          }
+        });
+      }
     }
   }, [lastFilmMessage]);
 
   React.useEffect(() => {
     if (lastAccountMessage != null) {
-      setAccountNotification((prev) =>
-        prev.concat([JSON.parse(lastAccountMessage.data)])
-      );
+      const data = JSON.parse(lastAccountMessage.data)
+      if (data.userID == user?.userId) {
+        setAccountNotification((prev) => {
+          if (!accountNotification?.some(item => item.id == data.id)) {
+
+            prev.concat([data])
+          }
+          else {
+            return prev.map(item => {
+              if (item.id === data.id) {
+                return { ...item, read: data.read };
+              }
+              return item;
+            });
+          }
+        }
+        );
+      }
     }
   }, [lastAccountMessage]);
 
   React.useEffect(() => {
     if (lastCommentMessage != null) {
-      setCommentNotification((prev) =>
-        prev.concat([JSON.parse(lastCommentMessage.data)])
-      );
+      const data = JSON.parse(lastCommentMessage.data)
+      if (data.userID == user?.userId) {
+        setCommentNotification(prev => {
+          if (!prev.some(item => item.id == data.id)) {
+            // Concatenate the new data to the previous state and return it
+            return prev.concat([data]);
+          } else {
+            // Update the 'read' property of the existing item and return the modified array
+            return prev.map(item => {
+              if (item.id === data.id) {
+                return { ...item, read: data.read };
+              }
+              return item;
+            });
+          }
+        });
+      }
     }
   }, [lastCommentMessage]);
 
+  const handleReadNotification = (type, notificationID) => {
+    if (type == "account") {
+      sendAccountMessage(JSON.stringify({
+        action: "read",
+        notificationID
+      }))
+    }
+    if (type == "film") {
+      sendFilmMessage(JSON.stringify({
+        action: "read",
+        notificationID
+      }))
+    } if (type == "comment") {
+      sendCommentMessage(JSON.stringify({
+        action: "read",
+        notificationID
+      }))
+    }
+  }
 
-  function getTimeVip(time){
-      const vipDeadline = new Date(time || '2024-06-04T15:17:20.644+00:00');
-      const localTime = vipDeadline.toLocaleString();
-    
-      // Calculate remaining time
-      const currentTime = new Date();
-      const remainingTimeInMilliseconds = vipDeadline.getTime() - currentTime.getTime();
 
-      const remainingTimeInDays = Math.ceil(remainingTimeInMilliseconds / (1000 * 60 * 60 * 24));
-      return remainingTimeInDays;
+  function getTimeVip(time) {
+    const vipDeadline = new Date(time || '2024-06-04T15:17:20.644+00:00');
+    const localTime = vipDeadline.toLocaleString();
+
+    // Calculate remaining time
+    const currentTime = new Date();
+    const remainingTimeInMilliseconds = vipDeadline.getTime() - currentTime.getTime();
+
+    const remainingTimeInDays = Math.ceil(remainingTimeInMilliseconds / (1000 * 60 * 60 * 24));
+    return remainingTimeInDays;
   }
   return (
     <div>
@@ -386,7 +469,10 @@ function Header({ mode, toggleColorMode }) {
                   }}
                   onClick={() => setShowNotification(!showNotification)}
                 >
-                  <NotificationsIcon />
+
+                  <Badge badgeContent={numberOfReadFalse} color="primary">
+                    <NotificationsIcon />
+                  </Badge>
                 </IconButton>
 
                 {showNotification && (
@@ -405,28 +491,32 @@ function Header({ mode, toggleColorMode }) {
                     }}
                   >
                     <List>
-                      {filmNotification.map((notification, index) => {
+                      {filmNotification?.map((notification, index) => {
                         return (
-                          <ListItemButton key={index}>
-                            <Typography variant="h6" sx={{color: theme.palette.text.primary}}>
+                          <ListItemButton key={index}
+                            onClick={() => handleReadNotification("film", notification.id)}>
+                            <Typography variant="h6"
+                              sx={{ color: notification?.read ? theme.palette.text.primary : "red" }} >
                               {notification.title}
                             </Typography>
                           </ListItemButton>
                         );
                       })}
-                      {accountNotification.map((notification, index) => {
+                      {accountNotification?.map((notification, index) => {
                         return (
-                          <ListItemButton key={index}>
-                            <Typography variant="h6" sx={{color: theme.palette.text.primary}}>
+                          <ListItemButton key={index}
+                            onClick={() => handleReadNotification("account", notification.id)}>
+                            <Typography variant="h6" sx={{ color: notification?.read ? theme.palette.text.primary : "red" }}>
                               {notification.title}
                             </Typography>
                           </ListItemButton>
                         );
                       })}
-                      {commentNotification.map((notification, index) => {
+                      {commentNotification?.map((notification, index) => {
                         return (
-                          <ListItemButton key={index}>
-                            <Typography variant="h6" sx={{color: theme.palette.text.primary}}>
+                          <ListItemButton key={index}
+                            onClick={() => handleReadNotification("comment", notification.id)}>
+                            <Typography variant="h6" sx={{ color: notification?.read ? theme.palette.text.primary : "blue" }}>
                               {notification.title}
                             </Typography>
                           </ListItemButton>
@@ -467,7 +557,7 @@ function Header({ mode, toggleColorMode }) {
               >
                 {user ? (
                   <>
-                    
+
                     <MenuItem>
                       <Button
                         color="primary"
@@ -533,7 +623,7 @@ function Header({ mode, toggleColorMode }) {
                           logout()
                         }}
                       >
-                        <LogoutIcon 
+                        <LogoutIcon
                           sx={{
                             marginRight: 1
                           }}
@@ -669,17 +759,17 @@ function Header({ mode, toggleColorMode }) {
         <SignUp />
       </BasicModal>
 
-      <Dialog onClose={()=>setOpenDiaLogPayment(false)} open={openDiaLogPayment}>
+      <Dialog onClose={() => setOpenDiaLogPayment(false)} open={openDiaLogPayment}>
         <DialogTitle>Nâng cấp tài khoản</DialogTitle>
         <DialogContent>
           <Typography>Chỉ tốn 10$/tháng bạn sẽ được nhận những ưu đãi tốt hơn</Typography>
         </DialogContent>
         <DialogActions>
-          <Button 
-            onClick={()=>{
+          <Button
+            onClick={() => {
               setOpenDiaLogPayment(false)
               payment('66213353dfc66d451374342c').then((value) => {
-                if(value){
+                if (value) {
                   window.location.href = value.data;
                 }
               }).catch((error) => {
@@ -692,7 +782,7 @@ function Header({ mode, toggleColorMode }) {
           >
             Cancel
           </Button>
-          <Button onClick={()=>setOpenDiaLogPayment(false)}>Payment</Button>
+          <Button onClick={() => setOpenDiaLogPayment(false)}>Payment</Button>
         </DialogActions>
       </Dialog>
     </div>

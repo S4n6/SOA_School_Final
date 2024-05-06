@@ -16,4 +16,13 @@ public class Notification {
     private LocalDateTime createdAt;
     private String userID;
     private String destination; //link UI
+    private boolean isRead = false;
+
+    public Notification(String title, String content, LocalDateTime createdAt, String userID, String destination) {
+        this.title = title;
+        this.content = content;
+        this.createdAt = createdAt;
+        this.userID = userID;
+        this.destination = destination;
+    }
 }

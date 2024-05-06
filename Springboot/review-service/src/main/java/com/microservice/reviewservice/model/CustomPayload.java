@@ -17,6 +17,7 @@ public class CustomPayload {
     private String filmID;
     private String content;
     private String replyCommentID;
+    private String repliedUserID;
     private String action;
 
     public CustomPayload(User user, String filmID, String content, String action){

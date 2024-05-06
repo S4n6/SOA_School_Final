@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -33,13 +34,14 @@ public class ListHistoryFilmController {
         return ResponseMessage.createResponse(HttpStatus.NOT_FOUND, "DON'T HAVE ANY VIDEO IN LIST OF HISTORY VIDEO", null);
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Object> getFilmAndDuration(@PathVariable String id){
-//        try{
-//            Map<String, Object> film =
-//        }catch(Exception e){
-//            e.printStackTrace();
-//        }
-//        return ResponseMessage.createResponse(HttpStatus.NOT_FOUND, "DON'T HAVE ANY VIDEO IN LIST OF HISTORY VIDEO", null);
-//    }
+    @GetMapping("/analysis")
+    public ResponseEntity<Object> countViewByPeriodTime(@RequestParam Date startDate, @RequestParam Date endDate){
+        try {
+            long views = historyFilmService.countViewByDate(startDate, endDate);
+            return ResponseMessage.createResponse(HttpStatus.OK, "COUNT VIEW BY A PERIOD TIME SUCCESSFULLT!", views);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return ResponseMessage.createResponse(HttpStatus.INTERNAL_SERVER_ERROR, "CAN'T COUNT VIEW BY A PERIOD TIME", null);
+    }
 }

@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CustomPayload {
     private String id;
+    private String notificationID;
     private String userID;
     private String filmID;
     private String content;
@@ -30,5 +31,10 @@ public class CustomPayload {
         this.filmID = filmID;
         this.content = content;
         this.action = action;
+    }
+
+    public CustomPayload(String action, String notificationID) {
+        this.action = action;
+        this.notificationID = notificationID;
     }
 }
