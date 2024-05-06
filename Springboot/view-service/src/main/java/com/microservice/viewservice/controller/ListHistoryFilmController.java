@@ -34,6 +34,19 @@ public class ListHistoryFilmController {
         return ResponseMessage.createResponse(HttpStatus.NOT_FOUND, "DON'T HAVE ANY VIDEO IN LIST OF HISTORY VIDEO", null);
     }
 
+    @GetMapping("/{filmID}")
+    public ResponseEntity<Object> getHistoryVideoByUserIDAndFilmID(@PathVariable String filmID, @RequestParam String userID){
+        try {
+            HistoryFilm film = historyFilmService.getFilmByIDAndUserID(filmID, userID);
+            if(film != null){
+                return ResponseMessage.createResponse(HttpStatus.OK, "GET HISTORY VIDEO SUCCESSFULLY!", film);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return ResponseMessage.createResponse(HttpStatus.NOT_FOUND, "DON'T HAVE ANY VIDEO IN LIST OF HISTORY VIDEO", null);
+    }
+
     @GetMapping("/analysis")
     public ResponseEntity<Object> countViewByPeriodTime(@RequestParam Date startDate, @RequestParam Date endDate){
         try {

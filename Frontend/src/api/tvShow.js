@@ -2,7 +2,6 @@ import axios from "axios";
 
 export async function getTVShowByID({id}) {
     try {
-        console.log('id', id)
         const response = await axios.get(
             'http://localhost:8080/api/v1/tv_show/' + id,
             {
@@ -23,7 +22,6 @@ export async function getTVShowByID({id}) {
 
 export async function getTVShows(queryParams) {
     try {
-        console.log('queryParams', queryParams)
         const response = await axios.get(
             'http://localhost:8080/api/v1/tv_show?' + queryParams,
             {

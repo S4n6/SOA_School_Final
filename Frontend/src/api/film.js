@@ -23,7 +23,6 @@ export async function getCommendedFilms({ userID, page, size, token }) {
 
 export async function registerFilmCommingSoon({ filmID, id, email, userID, type, expectedReleaseDate }) {
     try {
-        console.log('paramss register', id, filmID, email, userID, type, expectedReleaseDate)
         const response = await axios.put(
             'http://localhost:8080/api/v1/property/register',
             {

@@ -42,7 +42,6 @@ export async function deleteSeasonById({ id }) {
 
 export async function getSeasonByFilmID({ tvShowID }) {
     try {
-        console.log('tvShowID', tvShowID);
         const response = await axios.get(
             'http://localhost:8080/api/v1/season',
             {

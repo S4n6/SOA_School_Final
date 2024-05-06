@@ -30,6 +30,11 @@ public class ImplHistoryFilmService implements HistoryFilmService {
     }
 
     @Override
+    public HistoryFilm getFilmByIDAndUserID(String filmID, String userID){
+        return historyFilmRepository.findByUserIDAndFilmID(userID, filmID).orElse(null);
+    }
+
+    @Override
     public void addIntoListHistoryVideo(HistoryFilm film) {
         try{
             HistoryFilm historyFilm = historyFilmRepository.findByUserIDAndFilmID(film.getUserID(), film.getFilmID()).orElse(null);

@@ -18,6 +18,7 @@ import useWebSocket from "react-use-websocket";
 import { AuthContext } from "../../context/AuthContext";
 import { getWatchList, updateWatchList } from "../../api/watchlist";
 import CheckIcon from "@mui/icons-material/Check";
+import { getViewedFilm } from "../../api/view";
 
 function Video({ video, filmID }) {
   const { sendMessage, lastMessage } = useWebSocket(
@@ -39,7 +40,6 @@ function Video({ video, filmID }) {
   React.useEffect(() => {
     getWatchList({ userID: user?.userId })
       .then((value) => {
-        console.log(value);
         setWatchList(value);
       })
       .catch((error) => {
@@ -47,10 +47,19 @@ function Video({ video, filmID }) {
       });
   }, [user, openDialogAddWatchListSuccess]);
 
+  React.useEffect(() => {
+    getViewedFilm(filmID, user?.userId)
+      .then((value) => {
+        setDuration(value.duration)
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [user])
+
   const addToWatchList = (watchListID) => {
     updateWatchList("add", watchListID, filmID)
       .then((value) => {
-        console.log(value);
         setOpenDialogAddWatchListSuccess(true);
         setTimeout(() => {
           setOpenDialogAddWatchList(true);
@@ -72,7 +81,6 @@ function Video({ video, filmID }) {
   };
 
   const checkAddedToWatchList = () => {
-    console.log("watchListdkjsnfkjsd", watchList);
     return watchList?.some((item) => {
       const isFilmInMovies = item.movies?.some((movie) => movie.id === filmID);
       const isFilmInTvShows = item.tvshows?.some(
@@ -87,6 +95,7 @@ function Video({ video, filmID }) {
 
     setIsAddedToWatchList(isAdded);
   }, [watchList]);
+
   const [updatedTime, setUpdatedTime] = React.useState(0)
 
   React.useEffect(() => {
@@ -94,22 +103,7 @@ function Video({ video, filmID }) {
 
     const handleTimeUpdate = () => {
       const { currentTime } = videoElement;
-      console.log("Current Time:", currentTime);
-
-      setUpdatedTime(currentTime)
-
-      // if (currentTime != null) {
-      //   setInterval(() => {
-      //     sendMessage(
-      //       JSON.stringify({
-      //         userID: user?.userId,
-      //         filmID,
-      //         duration: currentTime,
-      //       })
-      //     );
-      //   }, 5000);
-      // }
-      // Thực hiện các xử lý khác với thời gian hiện tại của video
+      setUpdatedTime(currentTime);
     };
 
     videoElement.addEventListener("timeupdate", handleTimeUpdate);
@@ -117,7 +111,7 @@ function Video({ video, filmID }) {
     return () => {
       videoElement.removeEventListener("timeupdate", handleTimeUpdate);
     };
-  }, [])
+  }, []);
 
   React.useEffect(() => {
     sendMessage(
@@ -127,8 +121,16 @@ function Video({ video, filmID }) {
         duration: updatedTime,
       })
     );
-  }, [updatedTime / 5 != 0])
+  }, [updatedTime]);
 
+  const handleLoadedMetadata = () => {
+    if (videoRef.current) {
+      
+      setUpdatedTime(duration)
+      setDuration(duration);
+      videoRef.current.currentTime = duration
+    }
+  };
   return (
     <Box
       sx={{
@@ -152,12 +154,13 @@ function Video({ video, filmID }) {
       >
         <video
           ref={videoRef}
-          // src={video}
+          src={video}
           controls
-          width="100%" 
+          width="100%"
           height="100%"
+          onLoadedMetadata={handleLoadedMetadata}
         >
-           <source src={video} type="video/mp4" />
+          {/* <source src={video} type="video/mp4" /> */}
         </video>
         <CardActionArea>
           <CardContent
@@ -311,7 +314,7 @@ function Video({ video, filmID }) {
                 );
               })}
             </Dialog>
-            
+
 
           </CardContent>
         </CardActionArea>

@@ -99,7 +99,6 @@ export async function updateMovie(formData, id){
                 }
             }
         )
-        console.log('response', response.data)
         if (response.status == 200) {
             return response.data
         } else {

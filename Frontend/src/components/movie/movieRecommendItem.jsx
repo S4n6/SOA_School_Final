@@ -56,7 +56,7 @@ export default function MovieRecommendItem({film}) {
                 style={{ flexGrow: 1 }}
                 component="img"
                 sx={{ width: 130, height: 100 }}
-                image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3Z179QxswXB2qBZkLtuMTVl_ZdH5Gx6uIbA&s"
+                image={film?.banner}
                 alt="Live from space album cover"
             />
         </Card>

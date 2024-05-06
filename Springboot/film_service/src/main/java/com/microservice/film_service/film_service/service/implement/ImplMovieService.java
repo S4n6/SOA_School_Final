@@ -537,7 +537,7 @@ public class ImplMovieService implements MovieService {
                                 "eager_async", true,
                                 "eager_notification_url", "http://localhost:8080/api/v1/film"));
                 System.out.println("Url: " + videoMap.get("url"));
-                film.setVideo(publicId + ".mp4");
+                film.setVideo(videoMap.get("url"));
             }
             if(isChangeBanner){
                 Map<String, String> image = cloudinary.uploader().upload(convertMultiPartToFile(banner), ObjectUtils.asMap(

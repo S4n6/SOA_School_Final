@@ -2,7 +2,6 @@ import axios from "axios";
 
 export async function payment(userID){
     try {
-        console.log('ruserID', userID)
         const response = await axios.post(
             'http://localhost:8080/api/v1/payment/create-bill',
             {
@@ -15,7 +14,6 @@ export async function payment(userID){
                 }
             }
         )
-        console.log('response payment', response)
         if (response.status == 200) {
             return response.data
         } else {

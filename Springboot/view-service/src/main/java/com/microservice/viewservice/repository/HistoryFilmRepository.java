@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface HistoryFilmRepository extends CrudRepository<HistoryFilm, String> {
-    List<HistoryFilm> findByUserID(String userID);
     @Query(value = "{ 'viewedAt' : { $gte:?0, $lte:?1 } }", count = true)
     long countByViewedAtGreaterThanAndViewedAtLessThan(Date startDate, Date endDate);
     Page<HistoryFilm> findByUserID(Pageable pageable, String userID);

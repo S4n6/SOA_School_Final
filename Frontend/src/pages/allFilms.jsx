@@ -97,7 +97,7 @@ function AllFilm() {
     const urlParams = new URLSearchParams(url);
     const name = urlParams.get('name');
 
-    const {user} = useContext(AuthContext)
+    const { user } = useContext(AuthContext)
 
     useEffect(() => {
         setUrl(window.location.search)
@@ -117,6 +117,7 @@ function AllFilm() {
         getCommendedFilms({ userID: user?.userId, page: 0, size: 10, token: user?.token })
             .then((value) => {
                 setFilmsRecommend(value)
+                setFilms(value)
             })
             .catch((error) => {
                 console.error(error)
@@ -137,25 +138,44 @@ function AllFilm() {
 
         queryParams.append("name", nameSearch)
 
-        console.log(queryParams.toString())
-
         setFilms([])
 
         setPage(1)
-        filterMovie(queryParams.toString())
-            .then((value) => {
-                setFilms(prev => prev.concat(value))
-            })
-            .catch((error) => {
-                console.error(error)
-            })
-        getTVShows(queryParams.toString())
-            .then((value) => {
-                setFilms(prev => prev.concat(value))
-            })
-            .catch((error) => {
-                console.error(error)
-            })
+        if (selectedType.includes("Movie") && !selectedType.includes("TV Show")) {
+            filterMovie(queryParams.toString())
+                .then((value) => {
+                    setFilms(value)
+                })
+                .catch((error) => {
+                    console.error(error)
+                })
+        }
+        else if (!selectedType.includes("Movie") && selectedType.includes("TV Show")) {
+            getTVShows(queryParams.toString())
+                .then((value) => {
+                    setFilms(value)
+                })
+                .catch((error) => {
+                    console.error(error)
+                })
+        }
+        else {
+
+            filterMovie(queryParams.toString())
+                .then((value) => {
+                    setFilms(prev => prev.concat(value))
+                })
+                .catch((error) => {
+                    console.error(error)
+                })
+            getTVShows(queryParams.toString())
+                .then((value) => {
+                    setFilms(prev => prev.concat(value))
+                })
+                .catch((error) => {
+                    console.error(error)
+                })
+        }
     }
 
     useEffect(() => {
@@ -179,21 +199,20 @@ function AllFilm() {
                 })
         } else {
             const params = name ? 'name=' + name + '&' + pageNumber : '';
-            console.log('paramsssssss', params)
             filterMovie(params)
-            .then((value) => {
-                setFilms(value)
-                getTVShows(params)
                 .then((value) => {
-                    setFilms(prevFilms => prevFilms.concat(value));
+                    setFilms(value)
+                    getTVShows(params)
+                        .then((value) => {
+                            setFilms(prevFilms => prevFilms.concat(value));
+                        })
+                        .catch((error) => {
+                            console.error(error)
+                        })
                 })
                 .catch((error) => {
                     console.error(error)
                 })
-            })
-            .catch((error) => {
-                console.error(error)
-            })
         }
     }, [page, name])
 

@@ -85,7 +85,7 @@ function Eposide({ filmID, setVideo }) {
                     <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={seasons.length > 0? seasons[0].id: null}
+                        value={seasonID}
                         disabled={seasons.length < 1}
                         label="Season"
                         onChange={handleChange}

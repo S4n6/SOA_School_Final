@@ -34,7 +34,6 @@ function alert(type, message) {
 }
 
 function AddAndEditTvShow({ film, isOpen, setIsOpen }) {
-  console.log("isOpenppppppp", isOpen);
   const [open, setOpen] = useState(false);
   const [categoriesSelected, setCategoriesSelected] = useState( film ? film?.genres : []);
   const [categories, setCategories] = useState(GENRES);
@@ -114,7 +113,6 @@ function AddAndEditTvShow({ film, isOpen, setIsOpen }) {
     if (film) {
       updateTvShow(formData, film?.id)
         .then((data) => {
-          console.log("data update tv show", data);
           if(data === undefined) {
             setIsSuccess(false);
           }else{
