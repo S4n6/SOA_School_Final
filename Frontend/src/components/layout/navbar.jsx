@@ -335,11 +335,11 @@ function Header({ mode, toggleColorMode }) {
                   </Typography>
                 </MenuItem>
                 <MenuItem
-                  onClick={() => navigate("/TVSeries")}
+                  onClick={() => navigate("/TV_SHOW")}
                   sx={{ py: "6px", px: "12px" }}
                 >
                   <Typography variant="button" color="text.primary">
-                    TV Series
+                    TV SHOW
                   </Typography>
                 </MenuItem>
                 <MenuItem

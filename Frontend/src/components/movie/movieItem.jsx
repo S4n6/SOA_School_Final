@@ -25,7 +25,7 @@ function MovieItem({ film }) {
     >
       <CardMedia
         sx={{ height: 250 }}
-        image="https://i0.wp.com/exquisitemag.com/wp-content/uploads/2022/07/2A56CE5C-3D67-4F7A-B0CD-3406CA97FB2B.jpeg?resize=405%2C600&ssl=1"
+        image={film?.banner}
         title="green iguana"
       />
       <CardContent>

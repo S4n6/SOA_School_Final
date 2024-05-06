@@ -37,7 +37,7 @@ function Video({ video, filmID }) {
   const [isAddedToWatchList, setIsAddedToWatchList] = React.useState(false);
 
   React.useEffect(() => {
-    getWatchList({ userID: "662131dea7c2be6e48d203d3" })
+    getWatchList({ userID: user?.userId })
       .then((value) => {
         console.log(value);
         setWatchList(value);
@@ -313,25 +313,6 @@ function Video({ video, filmID }) {
                 );
               })}
             </Dialog>
-            {user ?
-              (
-                <Button
-                  sx={{
-                    right: 0,
-                    position: "absolute",
-                    whiteSpace: "normal",
-                    width: "10%",
-                    marginRight: "16px",
-                    marginTop: "4px",
-                  }}
-                >
-                  Thêm vào danh sách xem sau
-                </Button>
-              ) : (
-                <></>
-              )
-
-            }
 
           </CardContent>
         </CardActionArea>

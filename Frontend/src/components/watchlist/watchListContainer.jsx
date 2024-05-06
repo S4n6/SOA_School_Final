@@ -15,7 +15,7 @@ import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import { useState } from "react";
 import { deleteWatchList } from "../../api/watchlist";
 
-function Item({setIsOpenListFilm, watchlistItem, setWatchlistSelected}) {
+function Item({ setIsOpenListFilm, watchlistItem, setWatchlistSelected }) {
   const [openMenu, setOpenMenu] = useState(false);
   const clickItem = () => {
     setIsOpenListFilm(true);
@@ -25,12 +25,12 @@ function Item({setIsOpenListFilm, watchlistItem, setWatchlistSelected}) {
   const handleDeleteWatchList = () => {
     console.log("delete", watchlistItem);
     deleteWatchList(watchlistItem?.id)
-    .then((value) => {
-      console.log(value);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+      .then((value) => {
+        console.log(value);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
   return (
     <Card
@@ -46,7 +46,7 @@ function Item({setIsOpenListFilm, watchlistItem, setWatchlistSelected}) {
             cursor: "pointer",
           },
         }}
-        image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTstirBRd3pYYdCk2HtCbpa73eptwXw2Tt0TA&s"
+        image="https://img.buzzfeed.com/buzzfeed-static/static/2020-01/16/20/enhanced/630de5f85769/original-2489-1579205525-15.png"
         title="green iguana"
         onClick={() => clickItem()}
       />
@@ -79,7 +79,7 @@ function Item({setIsOpenListFilm, watchlistItem, setWatchlistSelected}) {
               cursor: "pointer",
             },
             position: "relative",
-            
+
           }}
         >
           <MoreVertIcon onClick={() => setOpenMenu(!openMenu)} />
@@ -145,7 +145,7 @@ function WatchListContainer({ setIsOpenListFilm, watchlist, setWatchlistSelected
       <Grid container spacing={2}>
         {watchlist?.map((watchlistItem, index) => (
           <Grid item xs={12} md={4} key={index}>
-            <Item setIsOpenListFilm={setIsOpenListFilm} watchlistItem={watchlistItem} setWatchlistSelected={setWatchlistSelected}/>
+            <Item setIsOpenListFilm={setIsOpenListFilm} watchlistItem={watchlistItem} setWatchlistSelected={setWatchlistSelected} />
           </Grid>
         ))}
       </Grid>

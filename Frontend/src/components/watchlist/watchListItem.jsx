@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { updateWatchList } from "../../api/watchlist";
+import { useNavigate } from "react-router-dom";
 
 function WatchListItem({watchlistSelected, setDeletedFilm}) {
   const [dialogDelete, setDialogDelete] = useState(false);
@@ -21,6 +22,7 @@ function WatchListItem({watchlistSelected, setDeletedFilm}) {
   const [watchListFilms, setWatchListFilms] = useState(watchlistSelected);
   const [filmDeleted, setFilmDeleted] = useState();
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const handleDelete = (film) => {
     setDialogDelete(true);
@@ -42,8 +44,6 @@ function WatchListItem({watchlistSelected, setDeletedFilm}) {
 
   useEffect(() => {
     if (filmDeleted) {
-      console.log('watchlistSelectedkkkkkk', watchListFilms);
-      console.log('watchlistSelectedhuhuhuhu', filmDeleted);
 
       let newWatchList = watchListFilms;
       if (filmDeleted?.type === 'MOVIE') {
@@ -88,6 +88,9 @@ function WatchListItem({watchlistSelected, setDeletedFilm}) {
                   },
                 }}
                 image={item?.banner}
+                onClick={() => {
+                  navigate(`/${item?.type}/${item?.id}`)
+                }}
                 title="green iguana"
               />
               <Box
@@ -125,7 +128,7 @@ function WatchListItem({watchlistSelected, setDeletedFilm}) {
         })
       }
       {
-        watchListFilms?.tvshows?.map((item) => {
+        watchListFilms?.tvShows?.map((item) => {
           return (
             <Card
               sx={{
@@ -143,7 +146,11 @@ function WatchListItem({watchlistSelected, setDeletedFilm}) {
                   },
                 }}
                 image={item?.banner}
+                onClick={() => {
+                  navigate(`/${item?.type}/${item?.id}`)
+                }}
                 title="green iguana"
+                
               />
               <Box
                 sx={{

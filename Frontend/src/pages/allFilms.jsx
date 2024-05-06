@@ -97,12 +97,12 @@ function AllFilm() {
     const urlParams = new URLSearchParams(url);
     const name = urlParams.get('name');
 
+    const {user} = useContext(AuthContext)
+
     useEffect(() => {
         setUrl(window.location.search)
 
     }, [window.location.search])
-
-    const navigate = useNavigate();
 
     const handleChangePage = (event, value) => {
         setPage(value);
@@ -114,14 +114,14 @@ function AllFilm() {
         setCountry(COUNTRY);
         setRating(["1", "2", "3", "4", "5"]);
         setYear(["2021", "2020", "2019", "2018", "2017"]);
-        getCommendedFilms({ userID: "66227018dea6cbf7a9ab36ba", page: 0, size: 10 })
+        getCommendedFilms({ userID: user?.userId, page: 0, size: 10, token: user?.token })
             .then((value) => {
                 setFilmsRecommend(value)
             })
             .catch((error) => {
                 console.error(error)
             })
-    }, []);
+    }, [user]);
 
     const handleClickFilter = () => {
 

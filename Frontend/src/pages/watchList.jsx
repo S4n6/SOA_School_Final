@@ -42,11 +42,11 @@ function WatchList() {
 
   const handleCreateWatchList = () => {
     console.log(name);
-    createWatchList('662131dea7c2be6e48d203d3', name)
+    createWatchList(user?.userId, name)
       .then((value) => {
         console.log(value);
         setOpen(false);
-        // window.location.reload();
+        window.location.reload();
       })
       .catch((error) => {
         console.error(error);
@@ -56,7 +56,7 @@ function WatchList() {
 
   
   useEffect(() => {
-    getWatchList({ userID: '662131dea7c2be6e48d203d3' })
+    getWatchList({ userID: user?.userId })
       .then((value) => {
         console.log(value);
         setWatchlist(value);

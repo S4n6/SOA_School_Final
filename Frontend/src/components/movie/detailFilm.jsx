@@ -8,11 +8,13 @@ import Button from "@mui/material/Button";
 import StarIcon from '@mui/icons-material/Star';
 import Rating from '@mui/material/Rating';
 import { Stack } from '@mui/material';
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { addRate, getRateByFilmID } from "../../api/rate";
+import { AuthContext } from "../../context/AuthContext";
 
 function DetailMovie({ film }) {
     var genres_string = film?.genres.join(" ")
+    const {user} = useContext(AuthContext)
 
     const [rate, setRate] = useState()
 
@@ -101,7 +103,7 @@ function DetailMovie({ film }) {
                 }}
             >
                 <Rating name="half-rating" defaultValue={5} precision={0.5} value={rate?.average / 10 * 5} onChange={(e, value) => {
-                    addRate({ userID: "66227018dea6cbf7a9ab36ba", filmID: film?.id, score: value * 2 })
+                    addRate({ userID: user?.userId, filmID: film?.id, score: value * 2 })
                         .then((value) => {
                             setVote(value.average)
                         })
