@@ -36,10 +36,29 @@ public class FilmController {
     private TVShowService tvShowService;
 
     @GetMapping("")
-    public ResponseEntity<Object> getFilms(@RequestParam String userID,
+    public ResponseEntity<Object> getFilms(@RequestParam(defaultValue = "", required = false) String userID,
                                            @RequestParam(defaultValue = "0", required = false) int page,
                                            @RequestParam(defaultValue = "12", required = false) int size){
         try{
+            if(userID.isEmpty()){List<Movie> movies = movieService.getFilms(page, size, new ArrayList<>(), "", new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+                List<FilmModel> films = new ArrayList<>();
+                List<TVShow> tvShows = tvShowService.getTVShows(page, size, new ArrayList<>(), "", new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+
+                for(Movie movie: movies){
+                    if(movie != null){
+                        films.add(movie);
+                    }
+                }
+                for(TVShow tvShow: tvShows){
+                    if(tvShow != null){
+                        films.add(tvShow);
+                    }
+                }
+
+                List<FilmModel> result = films.stream().filter(Objects::nonNull)
+                        .sorted(Comparator.comparing(FilmModel::getFirstYearRelease).reversed()).toList();
+                return ResponseMessage.createResponse(HttpStatus.OK, "USER HAVEN'T SEEN ANY FILM BEFORE, RECOMMEND BY THE NEW FILMS", result);
+            }
             ResponseEntity<String> historyFilmResponse = viewClient.getListHistoryFilm(userID);
             JSONObject historyFilmJson = new JSONObject(historyFilmResponse.getBody());
             Map<String, Object> historyFilmMap = historyFilmJson.toMap();
