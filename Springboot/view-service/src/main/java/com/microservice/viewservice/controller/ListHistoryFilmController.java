@@ -38,7 +38,7 @@ public class ListHistoryFilmController {
     public ResponseEntity<Object> countViewByPeriodTime(@RequestParam Date startDate, @RequestParam Date endDate){
         try {
             long views = historyFilmService.countViewByDate(startDate, endDate);
-            return ResponseMessage.createResponse(HttpStatus.OK, "COUNT VIEW BY A PERIOD TIME SUCCESSFULLT!", views);
+            return ResponseMessage.createResponse(HttpStatus.OK, "COUNT VIEW BY A PERIOD TIME SUCCESSFULLY!", views);
         } catch (Exception e){
             e.printStackTrace();
         }
