@@ -152,15 +152,13 @@ function Video({ video, filmID }) {
       >
         <video
           ref={videoRef}
-          component="video"
-          src={video}
-          autoPlay
+          // src={video}
           controls
-          sx={{
-            width: "70%",
-            objectFit: "contain",
-          }}
-        />
+          width="100%" 
+          height="100%"
+        >
+           <source src={video} type="video/mp4" />
+        </video>
         <CardActionArea>
           <CardContent
             sx={{
@@ -313,25 +311,7 @@ function Video({ video, filmID }) {
                 );
               })}
             </Dialog>
-            {user ?
-              (
-                <Button
-                  sx={{
-                    right: 0,
-                    position: "absolute",
-                    whiteSpace: "normal",
-                    width: "10%",
-                    marginRight: "16px",
-                    marginTop: "4px",
-                  }}
-                >
-                  Thêm vào danh sách xem sau
-                </Button>
-              ) : (
-                <></>
-              )
-
-            }
+            
 
           </CardContent>
         </CardActionArea>

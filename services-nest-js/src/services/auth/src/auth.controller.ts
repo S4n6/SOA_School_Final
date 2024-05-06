@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Post,
+  Query,
   Req,
   Res,
   UnauthorizedException,
@@ -11,6 +12,7 @@ import {
 import { AuthService } from './auth.service';
 import { AuthRequestDto, RegisterRequestDto } from './auth.dto';
 import { GoogleAuthGuard } from './guard';
+import { Request } from 'express';
 
 @Controller('/api/v1/auth')
 export class AuthController {
@@ -53,6 +55,14 @@ export class AuthController {
   @Post('login')
   async login(@Body() data: AuthRequestDto) {
     return this.authService.login(data);
+  }
+
+  @Get('verify_register')
+  async verifyRegister(@Query('email') email: string,  @Res() res) {
+    const result = this.authService.verifyRegister(email);
+    if(result){
+      res.redirect('http://localhost:5173/home');
+    }
   }
 
   @Post('signup')

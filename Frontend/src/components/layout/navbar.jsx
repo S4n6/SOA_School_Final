@@ -47,12 +47,13 @@ import { useNavigate } from "react-router-dom";
 import { getNotifications } from "../../api/notification";
 import useWebSocket from "react-use-websocket";
 import { AuthContext } from "../../context/AuthContext";
-import LogoutIcon from '@mui/icons-material/Logout';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import ViewListIcon from '@mui/icons-material/ViewList';
-import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
+import LogoutIcon from "@mui/icons-material/Logout";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import ViewListIcon from "@mui/icons-material/ViewList";
+import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 import { payment } from "../../api/payment";
 import SignUp from "../../pages/signUp";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 
 const logoStyle = {
   width: "100px",
@@ -112,12 +113,12 @@ function Header({ mode, toggleColorMode }) {
   const [accountNotification, setAccountNotification] = React.useState([]);
   const [commentNotification, setCommentNotification] = React.useState([]);
 
-  const [numberOfReadFalse, setNumberOfReadFalse] = React.useState(0)
+  const [numberOfReadFalse, setNumberOfReadFalse] = React.useState(0);
 
   const theme = useTheme();
 
   React.useEffect(() => {
-    console.log(user?.userId)
+    console.log(user?.userId);
     getNotifications({ userID: user?.userId, page: 0, size: 12 })
       .then((value) => {
         setFilmNotification(value.film_notification);
@@ -142,8 +143,8 @@ function Header({ mode, toggleColorMode }) {
     // Update numberOfReadFalse when any of the notification states change
     setNumberOfReadFalse(
       countFalseReads(filmNotification) +
-      countFalseReads(accountNotification) +
-      countFalseReads(commentNotification)
+        countFalseReads(accountNotification) +
+        countFalseReads(commentNotification)
     );
   }, [filmNotification, accountNotification, commentNotification]);
 
@@ -163,14 +164,13 @@ function Header({ mode, toggleColorMode }) {
 
   React.useEffect(() => {
     if (lastFilmMessage != null) {
-      const data = JSON.parse(lastFilmMessage.data)
+      const data = JSON.parse(lastFilmMessage.data);
       if (data.userID == user?.userId) {
         setFilmNotification((prev) => {
-          if (!filmNotification?.some(item => item.id == data.id)) {
-            prev.concat([data])
-          }
-          else {
-            return prev.map(item => {
+          if (!filmNotification?.some((item) => item.id == data.id)) {
+            prev.concat([data]);
+          } else {
+            return prev.map((item) => {
               if (item.id === data.id) {
                 return { ...item, read: data.read };
               }
@@ -184,38 +184,35 @@ function Header({ mode, toggleColorMode }) {
 
   React.useEffect(() => {
     if (lastAccountMessage != null) {
-      const data = JSON.parse(lastAccountMessage.data)
+      const data = JSON.parse(lastAccountMessage.data);
       if (data.userID == user?.userId) {
         setAccountNotification((prev) => {
-          if (!accountNotification?.some(item => item.id == data.id)) {
-
-            prev.concat([data])
-          }
-          else {
-            return prev.map(item => {
+          if (!accountNotification?.some((item) => item.id == data.id)) {
+            prev.concat([data]);
+          } else {
+            return prev.map((item) => {
               if (item.id === data.id) {
                 return { ...item, read: data.read };
               }
               return item;
             });
           }
-        }
-        );
+        });
       }
     }
   }, [lastAccountMessage]);
 
   React.useEffect(() => {
     if (lastCommentMessage != null) {
-      const data = JSON.parse(lastCommentMessage.data)
+      const data = JSON.parse(lastCommentMessage.data);
       if (data.userID == user?.userId) {
-        setCommentNotification(prev => {
-          if (!prev.some(item => item.id == data.id)) {
+        setCommentNotification((prev) => {
+          if (!prev.some((item) => item.id == data.id)) {
             // Concatenate the new data to the previous state and return it
             return prev.concat([data]);
           } else {
             // Update the 'read' property of the existing item and return the modified array
-            return prev.map(item => {
+            return prev.map((item) => {
               if (item.id === data.id) {
                 return { ...item, read: data.read };
               }
@@ -229,34 +226,43 @@ function Header({ mode, toggleColorMode }) {
 
   const handleReadNotification = (type, notificationID) => {
     if (type == "account") {
-      sendAccountMessage(JSON.stringify({
-        action: "read",
-        notificationID
-      }))
+      sendAccountMessage(
+        JSON.stringify({
+          action: "read",
+          notificationID,
+        })
+      );
     }
     if (type == "film") {
-      sendFilmMessage(JSON.stringify({
-        action: "read",
-        notificationID
-      }))
-    } if (type == "comment") {
-      sendCommentMessage(JSON.stringify({
-        action: "read",
-        notificationID
-      }))
+      sendFilmMessage(
+        JSON.stringify({
+          action: "read",
+          notificationID,
+        })
+      );
     }
-  }
-
+    if (type == "comment") {
+      sendCommentMessage(
+        JSON.stringify({
+          action: "read",
+          notificationID,
+        })
+      );
+    }
+  };
 
   function getTimeVip(time) {
-    const vipDeadline = new Date(time || '2024-06-04T15:17:20.644+00:00');
+    const vipDeadline = new Date(time || "2024-06-04T15:17:20.644+00:00");
     const localTime = vipDeadline.toLocaleString();
 
     // Calculate remaining time
     const currentTime = new Date();
-    const remainingTimeInMilliseconds = vipDeadline.getTime() - currentTime.getTime();
+    const remainingTimeInMilliseconds =
+      vipDeadline.getTime() - currentTime.getTime();
 
-    const remainingTimeInDays = Math.ceil(remainingTimeInMilliseconds / (1000 * 60 * 60 * 24));
+    const remainingTimeInDays = Math.ceil(
+      remainingTimeInMilliseconds / (1000 * 60 * 60 * 24)
+    );
     return remainingTimeInDays;
   }
   return (
@@ -383,9 +389,9 @@ function Header({ mode, toggleColorMode }) {
                               >
                                 <Button
                                   sx={{
-                                    whiteSpace: 'normal', // Allow text to wrap
-                                    overflow: 'hidden', // Hide overflow
-                                    textOverflow: 'ellipsis', // Add ellipsis for overflow text
+                                    whiteSpace: "normal", // Allow text to wrap
+                                    overflow: "hidden", // Hide overflow
+                                    textOverflow: "ellipsis", // Add ellipsis for overflow text
                                   }}
                                 >
                                   {item}
@@ -469,7 +475,6 @@ function Header({ mode, toggleColorMode }) {
                   }}
                   onClick={() => setShowNotification(!showNotification)}
                 >
-
                   <Badge badgeContent={numberOfReadFalse} color="primary">
                     <NotificationsIcon />
                   </Badge>
@@ -487,16 +492,26 @@ function Header({ mode, toggleColorMode }) {
                       overflow: "auto",
                       padding: "4px",
                       boxShadow: 3,
-                      background: theme.palette.background.default
+                      background: theme.palette.background.default,
                     }}
                   >
                     <List>
                       {filmNotification?.map((notification, index) => {
                         return (
-                          <ListItemButton key={index}
-                            onClick={() => handleReadNotification("film", notification.id)}>
-                            <Typography variant="h6"
-                              sx={{ color: notification?.read ? theme.palette.text.primary : "red" }} >
+                          <ListItemButton
+                            key={index}
+                            onClick={() =>
+                              handleReadNotification("film", notification.id)
+                            }
+                          >
+                            <Typography
+                              variant="h6"
+                              sx={{
+                                color: notification?.read
+                                  ? theme.palette.text.primary
+                                  : "red",
+                              }}
+                            >
                               {notification.title}
                             </Typography>
                           </ListItemButton>
@@ -504,9 +519,20 @@ function Header({ mode, toggleColorMode }) {
                       })}
                       {accountNotification?.map((notification, index) => {
                         return (
-                          <ListItemButton key={index}
-                            onClick={() => handleReadNotification("account", notification.id)}>
-                            <Typography variant="h6" sx={{ color: notification?.read ? theme.palette.text.primary : "red" }}>
+                          <ListItemButton
+                            key={index}
+                            onClick={() =>
+                              handleReadNotification("account", notification.id)
+                            }
+                          >
+                            <Typography
+                              variant="h6"
+                              sx={{
+                                color: notification?.read
+                                  ? theme.palette.text.primary
+                                  : "red",
+                              }}
+                            >
                               {notification.title}
                             </Typography>
                           </ListItemButton>
@@ -514,9 +540,20 @@ function Header({ mode, toggleColorMode }) {
                       })}
                       {commentNotification?.map((notification, index) => {
                         return (
-                          <ListItemButton key={index}
-                            onClick={() => handleReadNotification("comment", notification.id)}>
-                            <Typography variant="h6" sx={{ color: notification?.read ? theme.palette.text.primary : "blue" }}>
+                          <ListItemButton
+                            key={index}
+                            onClick={() =>
+                              handleReadNotification("comment", notification.id)
+                            }
+                          >
+                            <Typography
+                              variant="h6"
+                              sx={{
+                                color: notification?.read
+                                  ? theme.palette.text.primary
+                                  : "blue",
+                              }}
+                            >
                               {notification.title}
                             </Typography>
                           </ListItemButton>
@@ -557,47 +594,72 @@ function Header({ mode, toggleColorMode }) {
               >
                 {user ? (
                   <>
-
-                    <MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        setOpenDiaLogPayment(true);
+                      }}
+                    >
                       <Button
                         color="primary"
                         variant="text"
                         size="small"
                         component="a"
                         target="_blank"
-                        onClick={() => {
-                          setOpenDiaLogPayment(true);
-                        }}
                         disabled={user?.isVip}
                       >
                         <WorkspacePremiumIcon
                           sx={{
-                            marginRight: 1
+                            marginRight: 1,
                           }}
                         />
-                        {user?.isVip ? `VIP (${getTimeVip(user?.vipDeadline)})` : "Upgrade to VIP"}
+                        {user?.isVip
+                          ? `VIP (${getTimeVip(user?.vipDeadline)})`
+                          : "Upgrade to VIP"}
                       </Button>
                     </MenuItem>
-                    <MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        navigate("/watchlist");
+                      }}
+                    >
                       <Button
                         color="primary"
                         variant="text"
                         size="small"
                         component="a"
                         target="_blank"
-                        onClick={() => {
-                          navigate("/watchlist")
-                        }}
-
                       >
                         <ViewListIcon
                           sx={{
-                            marginRight: 1
+                            marginRight: 1,
                           }}
                         />
                         Watch List
                       </Button>
                     </MenuItem>
+                    {user?.isAdmin && (
+                      <MenuItem
+                        onClick={() => {
+                          navigate("/admin");
+                        }}
+                      >
+                        <Button
+                          color="primary"
+                          variant="text"
+                          size="small"
+                          component="a"
+                          target="_blank"
+                        >
+                          <AdminPanelSettingsIcon
+                            sx={{
+                              marginRight: 1,
+                            }}
+                          />
+                          Admin
+                        </Button>
+                      </MenuItem>
+                    )}
+
                     <MenuItem>
                       <Button
                         color="primary"
@@ -605,8 +667,7 @@ function Header({ mode, toggleColorMode }) {
                         size="small"
                         component="a"
                         target="_blank"
-                        onClick={() => {
-                        }}
+                        onClick={() => {}}
                       >
                         Change Password
                       </Button>
@@ -620,12 +681,12 @@ function Header({ mode, toggleColorMode }) {
                         target="_blank"
                         onClick={() => {
                           setIsOpen(!isOpen);
-                          logout()
+                          logout();
                         }}
                       >
                         <LogoutIcon
                           sx={{
-                            marginRight: 1
+                            marginRight: 1,
                           }}
                         />
                         Log out
@@ -759,26 +820,31 @@ function Header({ mode, toggleColorMode }) {
         <SignUp />
       </BasicModal>
 
-      <Dialog onClose={() => setOpenDiaLogPayment(false)} open={openDiaLogPayment}>
+      <Dialog
+        onClose={() => setOpenDiaLogPayment(false)}
+        open={openDiaLogPayment}
+      >
         <DialogTitle>Nâng cấp tài khoản</DialogTitle>
         <DialogContent>
-          <Typography>Chỉ tốn 10$/tháng bạn sẽ được nhận những ưu đãi tốt hơn</Typography>
+          <Typography>
+            Chỉ tốn 10$/tháng bạn sẽ được nhận những ưu đãi tốt hơn
+          </Typography>
         </DialogContent>
         <DialogActions>
           <Button
             onClick={() => {
-              setOpenDiaLogPayment(false)
-              payment('66213353dfc66d451374342c').then((value) => {
-                if (value) {
-                  window.location.href = value.data;
-                }
-              }).catch((error) => {
-                console.error(error)
-              })
+              setOpenDiaLogPayment(false);
+              payment("66213353dfc66d451374342c")
+                .then((value) => {
+                  if (value) {
+                    window.location.href = value.data;
+                  }
+                })
+                .catch((error) => {
+                  console.error(error);
+                });
             }}
-            sx={{
-
-            }}
+            sx={{}}
           >
             Cancel
           </Button>

@@ -6,6 +6,7 @@ import * as bcrypt from 'bcrypt';
 import axios from 'axios';
 import { User } from './user.schema';
 import * as jwt from 'jsonwebtoken';
+import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class AuthService {
@@ -17,17 +18,29 @@ export class AuthService {
   async login(data: AuthRequestDto){
     const user = await this.getUserByEmail(data.email);
     if (!user) {
+      console.log('vong 1')
       throw new UnauthorizedException('Invalid credentials');
     }
 
     const isPasswordValid = await bcrypt.compare(data.password, user.password);
 
     if (!isPasswordValid) {
+      console.log('vong 2')
+
       throw new UnauthorizedException('Invalid credentials');
     }
 
+    // if(!user.isAdmin){
+    //   console.log('vong 3')
+
+    //   throw new UnauthorizedException('Invalid credentials');
+    // }
+
     const token = this.generateToken(user.id, user.isAdmin, user.isVip, user.isBlocked);
-    return { 'token' : token.token, 'refresh_token': token.refreshToken};
+    let userCopy = { ...user, userId: user._id };
+    delete userCopy._id;
+    delete userCopy.password
+    return { 'token' : token.token, 'refresh_token': token.refreshToken, user: userCopy};
   }
 
   async loginWithGoogle(data: any){
@@ -40,10 +53,13 @@ export class AuthService {
   }
 
   async register(data: RegisterRequestDto){
+    console.log('registerrr')
     const user = await this.getUserByEmail(data.email);
     if (user) {
       throw new UnauthorizedException('User already exists');
     }
+
+    await this.sendEmail(data.email)
 
     const hashedPassword = await this.hashPassword(data.password);
     const response = await axios.post(this.configService.get('URL_USER_SERVICE'), {
@@ -74,6 +90,47 @@ export class AuthService {
   private async getUserByEmail(email: string) {
     try {
       const response = await axios.get(this.configService.get('URL_USER_SERVICE') + '/email/' + email);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  private async sendEmail(email: string) {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: "nguyenhuutin124@gmail.com",
+        pass: "bddp roje wrvm fpvy",
+      },
+    });
+    try {
+      // const response = await axios.post(this.configService.get('URL_EMAIL_SERVICE'), {
+      //   email,
+      //   subject,
+      //   content,
+      // });
+      // return response.data;
+      const mailOptions = {
+        from: 'nguyenhuutin124@gmail.com',
+        to: email,
+        subject: 'Xác nhận đăng ký tài khoản',
+        text: 'Hello world?',
+        html: `Vui lòng nhấn vào link sau để xác nhận đăng kí <a href='http://localhost:5001/api/v1/auth/verify_register?email="${email}"'>Xác nhận đăng kí</a>`,
+      };
+
+      await transporter.sendMail(mailOptions);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
+  async verifyRegister(email: string) {
+    try {
+      const response = await axios.post(this.configService.get('URL_USER_SERVICE') + '/unblock', {
+        email,
+      });
       return response.data;
     } catch (error) {
       console.error(error);

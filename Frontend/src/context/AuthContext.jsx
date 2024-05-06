@@ -13,7 +13,6 @@ export const AuthProvider = ({ children }) => {
 
     if (tokenCookie) {
       const token = JSON.parse(decodeURIComponent(tokenCookie.split("=")[1]));
-      // console.log("tokenhfhgfhf", token);
       getUserById(token?.userId)
         .then((value) => {
           setUser(Object.assign(value, token))
@@ -22,15 +21,24 @@ export const AuthProvider = ({ children }) => {
           console.error(error)
         })
     }
+
+    const storedUser = sessionStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+    // setUser(user)
+    
   }, []);
 
   const login = (user) => {
     setUser(user);
+    sessionStorage.setItem('user', JSON.stringify(user));
   };
 
   // Hàm đăng xuất
   const logout = () => {
     setUser(null);
+    sessionStorage.removeItem('user');
     document.cookie =
       "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
   };
